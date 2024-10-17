@@ -3,11 +3,13 @@ package com.nihongo.sep490g2fa24.exception;
 import com.nihongo.sep490g2fa24.utils.BeanUtils;
 import com.nihongo.sep490g2fa24.utils.MessageUtils;
 
-public class NhgErrorHandler implements INhgErrorHandler {
+public enum NhgErrorHandler implements INhgErrorHandler {
+    SYSTEM_ERROR("MEA0000011", "common.BaseApiResponse.systemError"),
+    INVALID_INPUT("MEA000001", "common.apiResponse.invalidInput" );
     private final String code;
     private final String message;
 
-    public NhgErrorHandler(String code, String message) {
+    NhgErrorHandler(String code, String message) {
         this.code = code;
         this.message = message;
     }
