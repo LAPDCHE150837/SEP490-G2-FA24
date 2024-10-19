@@ -26,8 +26,12 @@ security:
   oauth2:
     client:
       registration:
-        google.client-id: 182534795296-7pu8qv2kdlmjfql8ujer899djgjq2s7b.apps.googleusercontent.com
-        google.client-secret: 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
+        google:
+          client-id: 182534795296-7pu8qv2kdlmjfql8ujer899djgjq2s7b.apps.googleusercontent.com
+          client-secret: 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
+          scope:
+            - email
+            - profile
 application:
   security:
     jwt:
