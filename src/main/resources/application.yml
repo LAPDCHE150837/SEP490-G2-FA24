@@ -12,8 +12,8 @@ spring:
       maximum-pool-size: 20
       max-lifetime: 2000000
       connection-timeout: 30000
-      username:
-      password:
+      username: root
+      password: lappro123
     jpa:
       show-sql: true
       properties:
