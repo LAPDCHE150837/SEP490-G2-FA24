@@ -14,6 +14,10 @@ public class NhgClientException extends RuntimeException {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
+    public NhgClientException(NhgErrorHandler error) {
+        this.errorCode = error.getCode();
+        this.errorMessage = error.getMessage();
+    }
     public static NhgClientException ofHandler(INhgErrorHandler error) {
         return new NhgClientException(error.getCode(), error.getMessage());
     }
@@ -28,5 +32,9 @@ public class NhgClientException extends RuntimeException {
     public static Supplier<NhgClientException> supplier(INhgErrorHandler error) {
         return () -> ofHandler(error);
     }
-
+    public static void assertTrue(boolean expression, NhgErrorHandler error) {
+        if (!expression) {
+            throw new NhgClientException(error);
+        }
+    }
 }

@@ -6,7 +6,9 @@ import com.nihongo.sep490g2fa24.utils.MessageUtils;
 public enum NhgErrorHandler implements INhgErrorHandler {
     SYSTEM_ERROR("MEA0000011", "common.BaseApiResponse.systemError"),
     INVALID_INPUT("MEA000001", "common.apiResponse.invalidInput" ),
-    UNAUTHORIZED("Unauthorized", "common.apiResponse.unauthorized"),;
+    UNAUTHORIZED("Unauthorized", "common.apiResponse.unauthorized"),
+    LOGIN_ERROR("MEI009023", "Login error" ),
+    EMAIL_NOT_FOUND("MEA000002", "common.apiResponse.emailNotFound" ),;
     private final String code;
     private final String message;
 
