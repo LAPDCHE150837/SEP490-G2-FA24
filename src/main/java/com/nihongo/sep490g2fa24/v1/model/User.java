@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.*;
+
 import jakarta.persistence.Id;
 
 import org.springframework.security.core.GrantedAuthority;
