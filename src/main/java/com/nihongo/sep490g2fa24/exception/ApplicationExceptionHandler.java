@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,7 +23,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 @ControllerAdvice
 public class ApplicationExceptionHandler {
-
     private static final Logger log = LoggerFactory.getLogger(ApplicationExceptionHandler.class);
     private final MessageUtils messageUtils;
 
@@ -68,6 +68,10 @@ public class ApplicationExceptionHandler {
 
         log.error("Error MethodArgumentNotValidException: {}", finalMessage);
         return new ResponseEntity<>(BaseApiResponse.failedOfBadRequest(this.toError(NhgErrorHandler.INVALID_INPUT.getCode(), finalMessage)), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handle401Unauthorized(NhgClientException ex) {
+        return new ResponseEntity<>(BaseApiResponse.invalidCredentials(this.toError(NhgErrorHandler.UNAUTHORIZED.getCode(), ex.getMessage())), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
