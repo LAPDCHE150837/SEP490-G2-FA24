@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 public interface AuthenService{
-    void login (String username, String password, HttpSession session);
+
 
     LoginResponse login(OAuth2AuthenticationToken authentication);
     LoginResponse register(RegisterRequest registerRequest);
