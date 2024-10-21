@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.nihongo.sep490g2fa24.v1.dtos.users.Permisstion.*;
+import static com.nihongo.sep490g2fa24.v1.dtos.users.Permission.*;
 
 
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public enum Role {
             )
     );
     @Getter
-    private final Set<Permisstion> permissions;
+    private final Set<Permission> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = getPermissions().stream()
