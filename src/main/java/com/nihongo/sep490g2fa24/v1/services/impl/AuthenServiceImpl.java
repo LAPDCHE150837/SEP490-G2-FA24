@@ -14,7 +14,6 @@ import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,7 +30,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AuthenServiceImpl implements AuthenService {
+public abstract class AuthenServiceImpl implements AuthenService {
     private final OAuth2Properties oAuth2Properties;
     private final JwtService jwtService;
     private final UserRepository userRepository;
