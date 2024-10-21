@@ -5,7 +5,6 @@ import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

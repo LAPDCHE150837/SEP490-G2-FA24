@@ -2,7 +2,7 @@ package com.nihongo.sep490g2fa24.v1.dtos.users;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
+@Getter
 @RequiredArgsConstructor
 public enum Permisstion {
     ADMIN_READ("admin:read"),
