@@ -1,9 +1,15 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
+
+import com.nihongo.sep490g2fa24.v1.dtos.users.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.*;
+
+import jakarta.persistence.Id;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +19,7 @@ import java.util.List;
 
 @Getter
 @Setter
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,9 +27,13 @@ import java.util.List;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false, length = 36)
+    private String id;
 
     @Column(name = "username", length = 45)
     private String username;
@@ -41,9 +52,15 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getAuthorities();
     }
 
     @Override
