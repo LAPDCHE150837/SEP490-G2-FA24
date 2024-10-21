@@ -8,9 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoginResponse {
-    private static final long serialVersionUID = 1L;
     private String token;
-    private String tokenType;
-    private long expireIn;
     private String refreshToken;
 }
