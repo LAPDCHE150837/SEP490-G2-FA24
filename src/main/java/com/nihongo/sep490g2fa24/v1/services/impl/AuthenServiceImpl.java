@@ -63,8 +63,6 @@ public abstract class AuthenServiceImpl implements AuthenService {
         return null;
     }
 
-
-
     @Override
     public LoginResponse register(RegisterRequest registerRequest) {
 
@@ -90,8 +88,14 @@ public abstract class AuthenServiceImpl implements AuthenService {
 
     @Override
     public LoginResponse authenticate(LoginRequest loginRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()));
+        try {
+            // Authenticate the user with email and password
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getEmail(), loginRequest.getPassword()));
+        } catch (Exception e) {
+            // Handle the exception and return a custom error message
+            throw new NhgClientException(NhgErrorHandler.INVALID_CREDENTIALS);
+        }
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
         String jwtToken = jwtService.generateToken(user);
