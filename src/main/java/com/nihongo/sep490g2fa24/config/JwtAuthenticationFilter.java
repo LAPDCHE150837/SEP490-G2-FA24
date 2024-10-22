@@ -1,5 +1,6 @@
 package com.nihongo.sep490g2fa24.config;
 
+import com.nihongo.sep490g2fa24.v1.model.Token;
 import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -43,7 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            boolean isTokenValid = tokenRepository.findByAccessToken(jwt)
+            Optional<Token> accessToken = tokenRepository.findByAccessToken(jwt);
+            boolean isTokenValid = accessToken
                     .map(t -> !t.getExpired() && !t.getRevoked())
                     .orElse(false);
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
@@ -52,6 +56,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                if (accessToken.isPresent()) {
+                    accessToken.get().setExpired(true);
+                    accessToken.get().setRevoked(true);
+                    tokenRepository.save(accessToken.get());
+                }
             }
         }
         filterChain.doFilter(request, response);
