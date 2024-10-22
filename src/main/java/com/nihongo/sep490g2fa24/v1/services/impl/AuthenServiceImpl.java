@@ -6,6 +6,7 @@ import com.nihongo.sep490g2fa24.config.OAuth2Properties;
 import com.nihongo.sep490g2fa24.exception.NhgClientException;
 import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
 import com.nihongo.sep490g2fa24.utils.Constants;
+import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
@@ -141,6 +142,17 @@ public class AuthenServiceImpl implements AuthenService {
         tokenRepository.save(token);
     }
 
+    @Override
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+        User user = userRepository.findByEmail(changePasswordRequest.getEmail())
+                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
+        if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+            userRepository.save(user);
+        }else{
+            throw NhgClientException.ofHandler(NhgErrorHandler.INVALID_PASSWORD);
+        }
+    }
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())

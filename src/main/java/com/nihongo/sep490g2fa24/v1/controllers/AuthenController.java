@@ -1,4 +1,5 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
+import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
@@ -30,7 +31,7 @@ public class AuthenController {
     }
 
     @GetMapping("/verifyEmail")
-    public BaseApiResponse<String> verifyEmail(@RequestParam String token,  HttpServletResponse response) throws IOException {
+    public BaseApiResponse<Void> verifyEmail(@RequestParam String token, HttpServletResponse response) throws IOException {
         String successful = authenService.verifyEmail(token);
         if ("Successful".equals(successful)) {
             response.sendRedirect("/verification-success.html");
@@ -40,6 +41,13 @@ public class AuthenController {
 
         return BaseApiResponse.succeed();
     }
+
+    @PostMapping("/changePassword")
+    public BaseApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        authenService.changePassword(changePasswordRequest);
+        return BaseApiResponse.succeed();
+    }
+
     //Oauth2
     // TODO dang fix bug
     @PostMapping("/token")

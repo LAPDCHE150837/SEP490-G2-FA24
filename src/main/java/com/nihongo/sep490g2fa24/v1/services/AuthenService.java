@@ -1,5 +1,6 @@
 package com.nihongo.sep490g2fa24.v1.services;
 
+import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
@@ -15,4 +16,5 @@ public interface AuthenService{
     LoginResponse authenticate(LoginRequest loginRequest);
     String verifyEmail(String token);
     void saveUserToken(User user, String jwtToken);
+    void changePassword(ChangePasswordRequest changePasswordRequest);
 }

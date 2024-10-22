@@ -14,6 +14,7 @@ public enum NhgErrorHandler implements INhgErrorHandler{
     USER_IS_EXISTED("MEA000004", "common.apiResponse.userIsExisted" ),
     SEND_MAIL_ERROR("MEA000005", "common.apiResponse.sendMailError"),
     USER_IS_VERIFIED("MEA000006", "common.apiResponse.userIsVerified" ),
+    INVALID_PASSWORD("MEA000007", "common.apiResponse.invalidPassword" ),
     ;
 
     private final String code;
