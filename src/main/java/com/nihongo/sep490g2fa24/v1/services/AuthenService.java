@@ -6,6 +6,7 @@ import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
 import com.nihongo.sep490g2fa24.v1.model.User;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 public interface AuthenService{
@@ -17,4 +18,8 @@ public interface AuthenService{
     String verifyEmail(String token);
     void saveUserToken(User user, String jwtToken);
     void changePassword(ChangePasswordRequest changePasswordRequest);
+
+    LoginResponse forgotPassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest httpServletRequest);
+
+    void resetPassword(String token, HttpServletResponse response, ChangePasswordRequest changePasswordRequest);
 }
