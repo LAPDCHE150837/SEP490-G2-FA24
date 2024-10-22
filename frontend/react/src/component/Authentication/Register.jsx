@@ -62,7 +62,7 @@ const RegisterPage = () => {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0">
                     <div className="w-full max-w-lg mx-auto h-64 bg-white/20 rounded-t-full flex items-center justify-center text-white text-6xl">
-                        日本語
+                        日本語!
                     </div>
                 </div>
             </div>

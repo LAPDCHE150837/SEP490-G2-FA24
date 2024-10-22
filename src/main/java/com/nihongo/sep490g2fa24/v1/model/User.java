@@ -27,18 +27,14 @@ import java.util.List;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false, length = 36)
     private String id;
 
     @Column(name = "username", length = 45)
     private String username;
 
-    @Column(name = "password", length = 45)
+    @Column(name = "password", length = 100)
     private String password;
 
     @Size(max = 100)
@@ -83,3 +79,4 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 }
+
