@@ -19,7 +19,6 @@ import java.util.List;
 
 @Getter
 @Setter
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,19 +26,21 @@ import java.util.List;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false, length = 36)
     private String id;
 
     @Column(name = "username", length = 45)
     private String username;
 
-    @Column(name = "password", length = 45)
+    @Column(name = "password", length = 100)
     private String password;
+
+    @Size(max = 100)
+    @NotNull
+    @ColumnDefault("'INACTIVE'")
+    @Column(name = "flag_active", nullable = false, length = 100)
+    private String flagActive;
 
     @Size(max = 100)
     @NotNull
@@ -83,3 +84,4 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 }
+
