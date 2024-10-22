@@ -3,49 +3,37 @@ cors:
   allowed-methods: "*"
 spring:
   application:
-    name: SEP490-G2-FA24
+    name: NihonGo-Admin
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url:
-    hikari:
-      minimum-idle: 5
-      idleTimeout: 30000
-      pool-name: HikariCP
-      maximum-pool-size: 20
-      max-lifetime: 2000000
-      connection-timeout: 30000
-      username: root
-      password: lappro123
-    jpa:
-      show-sql: true
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.Oracle12cDialect
-      open-in-view: false
-    lifecycle:
-      timeout-per-shutdown-phase: 30s
+    url: jdbc:mysql://localhost:3306/nihongo
+    username: root
+    password: 1234
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    #    thay = mail cua lap
+    username: btung548@gmail.com
+    password: wtpl thuu nomh hvua
+    properties:
       mail:
-        host: smtp.gmail.com
-        port: 587
-        username: duongtxhe160708@fpt.edu.vn
-        password: gvin cswb dbqk gyty
-        properties:
-          mail:
-            smtp:
-              auth: true
-              starttls:
-                enable: true
-security:
-  oauth2:
-    client:
-      registration:
-        google:
-          client-id: 182534795296-7pu8qv2kdlmjfql8ujer899djgjq2s7b.apps.googleusercontent.com
-          client-secret: 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
-          scope:
-            - email
-            - profile
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 182534795296-7pu8qv2kdlmjfql8ujer899djgjq2s7b.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
 application:
   security:
     jwt:
@@ -53,17 +41,12 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
+logging:
+  level:
+    org.springframework.security: TRACE
 server:
   port: 8080
   shutdown: graceful
   forward-headers-strategy: none
-logging:
-  level:
-    org.springframework.security: TRACE
-
-
 
 
