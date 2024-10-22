@@ -5,17 +5,21 @@ import com.nihongo.sep490g2fa24.config.JwtService;
 import com.nihongo.sep490g2fa24.config.OAuth2Properties;
 import com.nihongo.sep490g2fa24.exception.NhgClientException;
 import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
+import com.nihongo.sep490g2fa24.utils.Constants;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
 import com.nihongo.sep490g2fa24.v1.dtos.tokens.TokenType;
+import com.nihongo.sep490g2fa24.v1.event.RegistrationCompleteEvent;
 import com.nihongo.sep490g2fa24.v1.model.Token;
 import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +41,7 @@ public class AuthenServiceImpl implements AuthenService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
-
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public LoginResponse login(OAuth2AuthenticationToken authentication) {
@@ -65,7 +69,7 @@ public class AuthenServiceImpl implements AuthenService {
     }
 
     @Override
-    public LoginResponse register(RegisterRequest registerRequest) {
+    public LoginResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest) {
         if (userRepository.existsByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername())) {
             throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_EXISTED);
         }
@@ -75,13 +79,15 @@ public class AuthenServiceImpl implements AuthenService {
                         .email(registerRequest.getEmail())
                         .password(passwordEncoder.encode(registerRequest.getPassword()))
                         .createdAt(Instant.now())
+                        .flagActive(Constants.INACTIVE)
                         .role(registerRequest.getRole())
                         .build();
         User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
-//        publisher.publishEvent(new RegistrationCompleteEvent(student, applicationUrl(request)));
+        // Sau khi dang ki thanh cong, can xac thuc qua email
+        publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(httpServletRequest), jwtToken));
         return LoginResponse.builder()
                 .token(jwtToken)
                 .refreshToken(refreshToken)
@@ -106,17 +112,24 @@ public class AuthenServiceImpl implements AuthenService {
                 .refreshToken(refreshToken)
                 .build();
     }
+
     @Override
     public String verifyEmail(String token) {
         Token theToken = tokenRepository.findByAccessToken(token)
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.TOKEN_INVALID));
-//        if(theToken.getUser().isEnabled())
+        if (Constants.ACTIVE.equals(theToken.getUser().getFlagActive())) {
+            throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_VERIFIED);
+        }
+        if (jwtService.isTokenValid(theToken.getAccessToken(), theToken.getUser())
+                && Constants.INACTIVE.equals(theToken.getUser().getFlagActive())) {
+            theToken.getUser().setFlagActive(Constants.ACTIVE);
+            tokenRepository.save(theToken);
+        }
         return "";
     }
 
     @Override
     public void saveUserToken(User user, String jwtToken) {
-
         Token token = Token.builder()
                 .user(user)
                 .accessToken(jwtToken)
@@ -136,5 +149,9 @@ public class AuthenServiceImpl implements AuthenService {
             token.setRevoked(true);
         });
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public String applicationUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }
