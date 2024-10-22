@@ -1,5 +1,4 @@
-package com.nihongo.sep490g2fa24.v1.controllers;
-
+import com.nihongo.sep490g2fa24.v1.controllers.BaseApiResponse;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
