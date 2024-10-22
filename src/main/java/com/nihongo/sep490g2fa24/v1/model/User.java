@@ -38,6 +38,12 @@ public class User implements UserDetails {
 
     @Size(max = 100)
     @NotNull
+    @ColumnDefault("'INACTIVE'")
+    @Column(name = "flag_active", nullable = false, length = 100)
+    private String flagActive;
+
+    @Size(max = 100)
+    @NotNull
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
