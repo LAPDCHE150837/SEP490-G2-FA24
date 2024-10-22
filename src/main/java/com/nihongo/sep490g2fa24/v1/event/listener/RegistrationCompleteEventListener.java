@@ -27,6 +27,7 @@ public class RegistrationCompleteEventListener  implements ApplicationListener<A
     private final AuthenService authenService;
     private final JavaMailSender mailSender;
     User user;
+
     @Override
     public void onApplicationEvent(@NonNull ApplicationEvent event) {
         if (event instanceof RegistrationCompleteEvent registrationCompleteEvent) {
