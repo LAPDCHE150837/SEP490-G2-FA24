@@ -10,7 +10,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -29,6 +28,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     private final JavaMailSender mailSender;
 
     User user;
+
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
         user = event.getUser();
@@ -43,6 +43,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         log.info("Click the link to verify your registration :  {}", url);
 
     }
+
     public void sendVerificationEmail(String url) throws MessagingException, UnsupportedEncodingException {
         String subject = "Email Verification";
         String senderName = "User Registration Portal Service";
