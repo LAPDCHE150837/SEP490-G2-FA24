@@ -1,3 +1,6 @@
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
 spring:
   application:
     name: SEP490-G2-FA24
