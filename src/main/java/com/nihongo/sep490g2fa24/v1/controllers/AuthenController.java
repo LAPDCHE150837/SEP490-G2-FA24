@@ -34,3 +34,4 @@ public class AuthenController {
         return BaseApiResponse.succeed(authenService.login(authentication));
     }
 }
+

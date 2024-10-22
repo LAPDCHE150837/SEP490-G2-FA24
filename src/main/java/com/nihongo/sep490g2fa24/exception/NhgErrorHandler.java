@@ -32,3 +32,4 @@ public enum NhgErrorHandler implements INhgErrorHandler{
         return messageUtils.getMessage(this.message);
     }
 }
+
