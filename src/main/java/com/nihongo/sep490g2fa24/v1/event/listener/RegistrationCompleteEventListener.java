@@ -1,6 +1,5 @@
 package com.nihongo.sep490g2fa24.v1.event.listener;
 
-import com.nihongo.sep490g2fa24.config.JwtService;
 import com.nihongo.sep490g2fa24.exception.NhgClientException;
 import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
 import com.nihongo.sep490g2fa24.utils.Constants;
@@ -21,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+
 public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent> {
     private final AuthenService authenService;
     private final JavaMailSender mailSender;
