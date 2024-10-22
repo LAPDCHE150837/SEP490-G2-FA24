@@ -9,7 +9,6 @@ import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
 import com.nihongo.sep490g2fa24.v1.dtos.tokens.TokenType;
-import com.nihongo.sep490g2fa24.v1.event.RegistrationCompleteEvent;
 import com.nihongo.sep490g2fa24.v1.model.Token;
 import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
@@ -17,7 +16,6 @@ import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +37,6 @@ public class AuthenServiceImpl implements AuthenService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
-    private final ApplicationEventPublisher publisher;
 
 
     @Override
