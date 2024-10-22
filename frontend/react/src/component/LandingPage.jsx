@@ -9,7 +9,7 @@ const LandingPage = () => {
         <div className="bg-gradient-to-b from-[#40E0D0] to-white min-h-screen font-sans">
             <header className="bg-white bg-opacity-90 backdrop-blur-md shadow-md sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-[#40E0D0]">NihongoMaster</h1>
+                    <h1 className="text-3xl font-bold text-[#40E0D0]">NihonGo!</h1>
                     <nav className="hidden md:block">
                         <ul className="flex space-x-8">
                             {['Trang chủ', 'Khóa học', 'Về chúng tôi', 'Liên hệ'].map((item) => (
