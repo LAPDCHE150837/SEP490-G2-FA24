@@ -29,7 +29,7 @@ const LandingPage = () => {
             <main className="container mx-auto px-4 py-16">
                 <section className="text-center mb-24">
                     <h2 className="text-5xl font-extrabold text-white mb-6 drop-shadow-lg">
-                        Khám Phá Tiếng Nhật Cùng NihongoMaster
+                        Khám Phá Tiếng Nhật Cùng NihonGo!
                     </h2>
                     <p className="text-xl text-gray-800 mb-12 max-w-2xl mx-auto">
                         Hành trình học tiếng Nhật của bạn bắt đầu ở đây. Phương pháp học hiệu quả, linh hoạt và thú vị

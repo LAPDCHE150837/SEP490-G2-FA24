@@ -4,8 +4,10 @@ import com.nihongo.sep490g2fa24.exception.INhgErrorHandler;
 import com.nihongo.sep490g2fa24.utils.BeanUtils;
 import com.nihongo.sep490g2fa24.utils.HttpUtils;
 import com.nihongo.sep490g2fa24.utils.MessageUtils;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class BaseApiResponse <T> {
     private static final String SUCCEED_CODE = "MSG000000";
     private static final String SUCCEED_MESSAGE = "common.BaseApiResponse.success";

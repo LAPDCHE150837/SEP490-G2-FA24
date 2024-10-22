@@ -10,6 +10,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,12 +19,15 @@ import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 
 @Slf4j
-@Component
+@Component("sendEmail")
 @RequiredArgsConstructor
 
+
 public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent> {
+
     private final AuthenService authenService;
     private final JavaMailSender mailSender;
+
     User user;
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
