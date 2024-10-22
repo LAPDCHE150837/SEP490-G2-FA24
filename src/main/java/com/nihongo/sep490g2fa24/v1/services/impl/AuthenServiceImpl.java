@@ -73,6 +73,8 @@ public class AuthenServiceImpl implements AuthenService {
         if (userRepository.existsByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername())) {
             throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_EXISTED);
         }
+
+        // Khi user dang ki chua xac thuc mail -> flagActive = INACTIVE
         User user =
                 User.builder()
                         .username(registerRequest.getUsername())
@@ -82,10 +84,9 @@ public class AuthenServiceImpl implements AuthenService {
                         .flagActive(Constants.INACTIVE)
                         .role(registerRequest.getRole())
                         .build();
-        User savedUser = userRepository.save(user);
+        userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
         // Sau khi dang ki thanh cong, can xac thuc qua email
         publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(httpServletRequest), jwtToken));
         return LoginResponse.builder()
@@ -125,7 +126,7 @@ public class AuthenServiceImpl implements AuthenService {
             theToken.getUser().setFlagActive(Constants.ACTIVE);
             tokenRepository.save(theToken);
         }
-        return "";
+        return "Successful";
     }
 
     @Override
