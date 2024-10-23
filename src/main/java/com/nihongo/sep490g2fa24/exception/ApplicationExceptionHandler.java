@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -69,9 +69,10 @@ public class ApplicationExceptionHandler {
         log.error("Error MethodArgumentNotValidException: {}", finalMessage);
         return new ResponseEntity<>(BaseApiResponse.failedOfBadRequest(this.toError(NhgErrorHandler.INVALID_INPUT.getCode(), finalMessage)), HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler({BadCredentialsException.class})
-    public ResponseEntity<Object> handle401Unauthorized(NhgClientException ex) {
-        return new ResponseEntity<>(BaseApiResponse.invalidCredentials(this.toError(NhgErrorHandler.UNAUTHORIZED.getCode(), ex.getMessage())), HttpStatus.UNAUTHORIZED);
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<Object> handleAuthenticationService(NhgClientException ex) {
+        return new ResponseEntity<>(BaseApiResponse.invalidCredentials(this.toError(NhgErrorHandler.UNAUTHORIZED.getCode(), NhgErrorHandler.UNAUTHORIZED.getMessage())), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
