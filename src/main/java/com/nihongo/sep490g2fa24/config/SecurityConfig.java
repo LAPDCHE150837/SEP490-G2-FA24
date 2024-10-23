@@ -1,5 +1,6 @@
 package com.nihongo.sep490g2fa24.config;
 
+import com.nihongo.sep490g2fa24.v1.dtos.users.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +16,14 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig{
-
+public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final LogoutHandler logoutHandler;
@@ -39,7 +40,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> {
 
                     auth.requestMatchers(WHITE_LIST_URL).permitAll();
-//                            .requestMatchers()
+                    auth.requestMatchers(GET, "v1/users/**").hasAnyRole(Role.ADMIN.name());
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
