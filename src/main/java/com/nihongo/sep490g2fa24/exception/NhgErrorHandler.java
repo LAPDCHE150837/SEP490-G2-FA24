@@ -17,7 +17,9 @@ public enum NhgErrorHandler implements INhgErrorHandler{
     INVALID_PASSWORD("MEA000007", "common.apiResponse.invalidPassword" ),
     INVALID_ROLE("MEA000008","common.apiResponse.invalidRole" ),
     EMAIL_NOT_FOUND("MEA000009", "common.apiResponse.emailNotFound"),
-    NOT_VERIFIED("MEA000010", "common.apiResponse.notVerified"),;
+    NOT_VERIFIED("MEA000010", "common.apiResponse.notVerified"),
+    USER_NOT_FOUND("MEA000011", "common.apiResponse.userNotFound" );
+
 
     private final String code;
     private final String message;
