@@ -111,6 +111,10 @@ public class AuthenServiceImpl implements AuthenService {
                 loginRequest.getUsername(), loginRequest.getPassword()));
         User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
                 NhgClientException.supplier(NhgErrorHandler.USERNAME_NOT_FOUND));
+        // Check user da verify email sau khi dang ky chua
+        if (!Constants.ACTIVE.equals(user.getFlagActive())) {
+            throw NhgClientException.ofHandler(NhgErrorHandler.NOT_VERIFIED);
+        }
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
