@@ -20,8 +20,8 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> NhgClientException.ofHandler(NhgErrorHandler.EMAIL_NOT_FOUND));
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> NhgClientException.ofHandler(NhgErrorHandler.USERNAME_NOT_FOUND));
     }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

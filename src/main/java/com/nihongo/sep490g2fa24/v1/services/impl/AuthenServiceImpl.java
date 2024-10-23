@@ -49,10 +49,10 @@ public class AuthenServiceImpl implements AuthenService {
     @Override
     public LoginResponse login(OAuth2AuthenticationToken authentication) {
         OAuth2User oAuth2User = authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
+        String username = oAuth2User.getAttribute("username");
         String name = oAuth2User.getAttribute("name");
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.USERNAME_NOT_FOUND));
 
         String clientId = oAuth2Properties.getClientId();
         String secretKey = oAuth2Properties.getSecretKey();
@@ -73,9 +73,14 @@ public class AuthenServiceImpl implements AuthenService {
 
     @Override
     public LoginResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest) {
-        if (userRepository.existsByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername())) {
+        if (userRepository.existsByUsername(registerRequest.getUsername())) {
             throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_EXISTED);
         }
+        // TODO ve sau chi phan quyen cho USER api dang ky
+        if (!Constants.Role.USER.equals(registerRequest.getRole().name())) {
+            throw NhgClientException.ofHandler(NhgErrorHandler.INVALID_ROLE);
+        }
+
         // Khi user dang ki chua xac thuc mail -> flagActive = INACTIVE
         User user =
                 User.builder()
@@ -103,9 +108,9 @@ public class AuthenServiceImpl implements AuthenService {
     public LoginResponse authenticate(LoginRequest loginRequest) {
         // Authenticate the user with email and password
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()));
-        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
-                NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
+                loginRequest.getUsername(), loginRequest.getPassword()));
+        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
+                NhgClientException.supplier(NhgErrorHandler.USERNAME_NOT_FOUND));
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
@@ -126,7 +131,7 @@ public class AuthenServiceImpl implements AuthenService {
         if (jwtService.isTokenValid(theToken.getAccessToken(), theToken.getUser())
                 && Constants.INACTIVE.equals(theToken.getUser().getFlagActive())) {
             theToken.getUser().setFlagActive(Constants.ACTIVE);
-            saveUserToken(theToken.getUser(), theToken.getAccessToken());
+            userRepository.save(theToken.getUser());
         }
         return "Successful";
     }
