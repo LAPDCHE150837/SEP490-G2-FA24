@@ -11,6 +11,7 @@ import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
 import com.nihongo.sep490g2fa24.v1.dtos.tokens.TokenType;
+import com.nihongo.sep490g2fa24.v1.event.PasswordResetEvent;
 import com.nihongo.sep490g2fa24.v1.event.RegistrationCompleteEvent;
 import com.nihongo.sep490g2fa24.v1.model.Token;
 import com.nihongo.sep490g2fa24.v1.model.User;
@@ -18,6 +19,7 @@ import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,7 +76,6 @@ public class AuthenServiceImpl implements AuthenService {
         if (userRepository.existsByEmailOrUsername(registerRequest.getEmail(), registerRequest.getUsername())) {
             throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_EXISTED);
         }
-
         // Khi user dang ki chua xac thuc mail -> flagActive = INACTIVE
         User user =
                 User.builder()
@@ -125,7 +126,7 @@ public class AuthenServiceImpl implements AuthenService {
         if (jwtService.isTokenValid(theToken.getAccessToken(), theToken.getUser())
                 && Constants.INACTIVE.equals(theToken.getUser().getFlagActive())) {
             theToken.getUser().setFlagActive(Constants.ACTIVE);
-            tokenRepository.save(theToken);
+            saveUserToken(theToken.getUser(), theToken.getAccessToken());
         }
         return "Successful";
     }
@@ -149,10 +150,36 @@ public class AuthenServiceImpl implements AuthenService {
         if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
-        }else{
+        } else {
             throw NhgClientException.ofHandler(NhgErrorHandler.INVALID_PASSWORD);
         }
     }
+
+    @Override
+    public LoginResponse forgotPassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest httpServletRequest) {
+        User user = userRepository.findByEmail(changePasswordRequest.getEmail())
+                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
+        //Neu nhu dung email roi -> thu hoi token cua email hien tai
+        revokeAllUserTokens(user);
+        // roi generate new token moi cho user
+        String newToken = jwtService.generateToken(user);
+        publisher.publishEvent(new PasswordResetEvent(user, applicationUrl(httpServletRequest), newToken));
+        return LoginResponse.builder()
+                .token(newToken)
+                .build();
+    }
+
+    @Override
+    public void resetPassword(String token, HttpServletResponse response, ChangePasswordRequest changePasswordRequest) {
+        Token theToken = tokenRepository.findByAccessToken(token)
+                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.TOKEN_INVALID));
+        if (theToken != null) {
+            User user = theToken.getUser();
+            user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+            userRepository.save(user);
+        }
+    }
+
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())

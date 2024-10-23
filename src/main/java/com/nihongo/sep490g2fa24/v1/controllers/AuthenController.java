@@ -1,4 +1,6 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
+
+
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
@@ -21,7 +23,8 @@ public class AuthenController {
     private final AuthenService authenService;
 
     @PostMapping("/register")
-    public BaseApiResponse<LoginResponse> register(@RequestBody RegisterRequest registerRequest, final HttpServletRequest httpServletRequest) {
+    public BaseApiResponse<LoginResponse> register(@RequestBody RegisterRequest registerRequest,
+                                                   final HttpServletRequest httpServletRequest) {
         return BaseApiResponse.succeed(authenService.register(registerRequest, httpServletRequest));
     }
 
@@ -30,8 +33,9 @@ public class AuthenController {
         return BaseApiResponse.succeed(authenService.authenticate(loginRequest));
     }
 
-    @GetMapping("/verifyEmail")
-    public BaseApiResponse<Void> verifyEmail(@RequestParam String token, HttpServletResponse response) throws IOException {
+    @GetMapping("/verify-email")
+    public BaseApiResponse<Void> verifyEmail(@RequestParam String token,
+                                             HttpServletResponse response) throws IOException {
         String successful = authenService.verifyEmail(token);
         if ("Successful".equals(successful)) {
             response.sendRedirect("/verification-success.html");
@@ -42,9 +46,23 @@ public class AuthenController {
         return BaseApiResponse.succeed();
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/change-password")
     public BaseApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         authenService.changePassword(changePasswordRequest);
+        return BaseApiResponse.succeed();
+    }
+
+    @PostMapping("/forgot-password")
+    public BaseApiResponse<LoginResponse> forgotPassword(@RequestBody ChangePasswordRequest changePasswordRequest,
+                                                         final HttpServletRequest httpServletRequest) {
+        return BaseApiResponse.succeed(authenService.forgotPassword(changePasswordRequest, httpServletRequest));
+    }
+
+    @PostMapping("/reset-password")
+    public BaseApiResponse<Void> resetPassword(@RequestParam String token,
+                                               @RequestBody ChangePasswordRequest changePasswordRequest,
+                                               final HttpServletResponse response) {
+        authenService.resetPassword(token, response, changePasswordRequest);
         return BaseApiResponse.succeed();
     }
 
