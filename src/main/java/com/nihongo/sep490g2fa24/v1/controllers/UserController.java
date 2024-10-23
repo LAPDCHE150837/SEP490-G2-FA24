@@ -1,7 +1,6 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.PersonalInfoResponse;
-import com.nihongo.sep490g2fa24.v1.services.AuthenService;
 import com.nihongo.sep490g2fa24.v1.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "v1/users", produces = APPLICATION_JSON_VALUE)
 @Transactional
 public class UserController {
-    private final AuthenService authenService;
     private final UserService userService;
     @GetMapping("/user")
     public String getUser() {
