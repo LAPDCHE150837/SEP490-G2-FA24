@@ -28,7 +28,7 @@ public class Lession {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "vocabulary_id", nullable = false)
-    private com.nihongo.sep490g2fa24.v1.model.Vocabulary vocabulary;
+    private Vocabulary vocabulary;
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -40,6 +40,6 @@ public class Lession {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "kanji_id", nullable = false)
-    private com.nihongo.sep490g2fa24.v1.model.Vocabulary kanji;
+    private Vocabulary kanji;
 
 }
