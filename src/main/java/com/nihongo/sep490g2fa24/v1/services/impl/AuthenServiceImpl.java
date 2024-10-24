@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -154,7 +156,9 @@ public class AuthenServiceImpl implements AuthenService {
 
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-        User user = userRepository.findByEmail(changePasswordRequest.getEmail())
+//        User user = userRepository.findByEmail(changePasswordRequest.getEmail())
+        User user_info = getCurrentCustomer();
+        User user = userRepository.findByEmail(user_info.getEmail())
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
         if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
@@ -172,7 +176,9 @@ public class AuthenServiceImpl implements AuthenService {
         revokeAllUserTokens(user);
         // roi generate new token moi cho user
         String newToken = jwtService.generateToken(user);
-        publisher.publishEvent(new PasswordResetEvent(user, applicationUrl(httpServletRequest), newToken));
+        String resetUrl = "http://localhost:5173/forgotPassword?token=";
+        publisher.publishEvent(new PasswordResetEvent(user, resetUrl, newToken));
+//        publisher.publishEvent(new PasswordResetEvent(user, applicationUrl(httpServletRequest), newToken));
         return LoginResponse.builder()
                 .token(newToken)
                 .build();
@@ -202,5 +208,14 @@ public class AuthenServiceImpl implements AuthenService {
 
     public String applicationUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    }
+    public User getCurrentCustomer() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new RuntimeException("Authentication information not found");
+        }
+
+        return (User) authentication.getPrincipal();
     }
 }
