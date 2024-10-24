@@ -32,7 +32,7 @@ const RegisterPage = () => {
             setSuccess('Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...');
             setTimeout(() => {
                 navigate('/login');
-            }, 3000); // Redirect after 3 seconds
+            }, 2000); // Redirect after 3 seconds
         } catch (err) {
             if (err.response) {
                 setError(err.response.data.message || 'Đăng ký thất bại');

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
+import ForgotPasswordModal from "./ForgotPasswordModal.jsx";
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,7 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-            await login({ email, password });
+            await login({ username, password });
             // Navigate to dashboard on successful login
             navigate('/dashboard');
         } catch (err) {
@@ -65,12 +67,12 @@ const LoginPage = () => {
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                             <input
-                                type="email"
+                                type="text"
                                 id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
                                 placeholder="abc@gmail.com"
                                 required
@@ -99,10 +101,22 @@ const LoginPage = () => {
                         </div>
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
-                                <input type="checkbox" id="remember" className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded" />
-                                <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">Ghi nhớ mật khẩu</label>
+                                <input type="checkbox" id="remember"
+                                       className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"/>
+                                <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">Ghi nhớ mật
+                                    khẩu</label>
                             </div>
-                            <a href="#" className="text-sm text-cyan-600 hover:underline">Quên mật khẩu?</a>
+
+                            <a
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsForgotPasswordOpen(true);
+                                }}
+                                href="#"
+                                className="text-sm text-cyan-600 hover:underline cursor-pointer"
+                            >
+                                Quên mật khẩu?
+                            </a>
                         </div>
                         <button
                             type="submit"
@@ -111,7 +125,7 @@ const LoginPage = () => {
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                                <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                                     Đang xử lý...
                                 </>
                             ) : (
@@ -125,6 +139,10 @@ const LoginPage = () => {
                     </p>
                 </div>
             </div>
+            <ForgotPasswordModal
+                isOpen={isForgotPasswordOpen}
+                onClose={() => setIsForgotPasswordOpen(false)}
+            />
         </div>
     );
 };
