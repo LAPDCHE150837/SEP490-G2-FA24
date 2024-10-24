@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-2">
                     <img src="/api/placeholder/40/40" alt="Riki Logo" className="w-10 h-10"/>
-                    <h1 className="text-xl font-bold text-cyan-400">Minano Nihongo</h1>
+                    <h1 className="text-xl font-bold text-cyan-400">NihonGo! </h1>
                 </div>
                 <button onClick={onClose} className="lg:hidden">
                     <Menu size={24}/>
