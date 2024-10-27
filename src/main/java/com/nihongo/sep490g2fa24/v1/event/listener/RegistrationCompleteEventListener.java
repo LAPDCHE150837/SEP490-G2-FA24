@@ -55,7 +55,7 @@ public class RegistrationCompleteEventListener  implements ApplicationListener<A
         user = event.getUser();
         String resetToken = event.getResetToken();
         authenService.saveUserToken(user, resetToken);
-        String url = event.getApplicationUrl() + "/v1/auth/reset-password?token=" + resetToken;
+        String url = event.getApplicationUrl()  + resetToken;
         try {
             sendResetPasswordEmail(url);
         } catch (MessagingException | UnsupportedEncodingException e) {

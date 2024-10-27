@@ -16,12 +16,10 @@ function App() {
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/landing" element={<LandingPage />} />
             <Route path="/flashCardForStudent" element={<FlashCardForLearner />} />
             <Route path="/flashCardLession" element={<FlashCardLession />} />
             {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
-            <Route path="/register" element={<ForgotPassword />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/reset" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
