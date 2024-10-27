@@ -20,7 +20,7 @@ function App() {
             <Route path="/landing" element={<LandingPage />} />
             <Route path="/flashCardForStudent" element={<FlashCardForLearner />} />
             <Route path="/flashCardLession" element={<FlashCardLession />} />
-            <Route path="/addKanji" element={<AddKanjiByTeacher />} />
+            {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
             <Route path="/register" element={<ForgotPassword />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
