@@ -62,7 +62,7 @@ const Header = ({ onMenuClick }) => (
     </header>
 );
 
-const Flashcard = ({ word, meaning }) => {
+const Flashcard = ({ word, meaning, gif }) => {
     const [isFlipped, setIsFlipped] = useState(false);
 
     return (
@@ -70,14 +70,21 @@ const Flashcard = ({ word, meaning }) => {
             className={`bg-white p-6 rounded-lg shadow-md transition duration-300 ${isFlipped ? 'bg-green-100' : ''}`}
             onClick={() => setIsFlipped(!isFlipped)}
             style={{ cursor: 'pointer', height: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {isFlipped ? <p className="text-xl font-bold">{meaning}</p> : <p className="text-xl font-bold">{word}</p>}
+            {isFlipped ? (
+                <div className="flex flex-col items-center">
+                    <p className="text-xl font-bold mb-2">{meaning}</p>
+                    <img src={gif} alt="Kanji GIF" className="w-24 h-24 object-cover" />
+                </div>
+            ) : (
+                <p className="text-xl font-bold">{word}</p>
+            )}
         </div>
     );
 };
 
 const FlashcardScreen = () => {
     const flashcards = [
-        { word: '猫', meaning: 'Cat' },
+        { word: '猫', meaning: 'Cat', gif: "D:力.gif"},
         { word: '犬', meaning: 'Dog' },
         { word: '車', meaning: 'Car' },
     ];
@@ -87,7 +94,7 @@ const FlashcardScreen = () => {
             <h3 className="text-lg font-semibold mb-4">Flashcards</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {flashcards.map((flashcard, index) => (
-                    <Flashcard key={index} word={flashcard.word} meaning={flashcard.meaning} />
+                    <Flashcard key={index} word={flashcard.word} meaning={flashcard.meaning} gif={flashcard.gif} />
                 ))}
             </div>
         </section>

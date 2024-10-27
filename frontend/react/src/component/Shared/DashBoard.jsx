@@ -74,6 +74,9 @@ const DropdownMenu = ({ children, isOpen, position = "right" }) => (
         </div>
     </div>
 );
+const handleSelectFlashcard = () => {
+    setCurrentScreen('flashcard'); // Khi nhấn vào Flashcard, chuyển sang màn hình khóa học
+};
 
 // Header Component
 const Header = ({ onMenuClick }) => {
