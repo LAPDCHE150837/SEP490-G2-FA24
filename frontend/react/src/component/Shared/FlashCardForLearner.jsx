@@ -90,7 +90,7 @@ const Flashcard = ({ word, meaning, gif }) => {
 
 const FlashcardScreen = () => {
     const flashcards = [
-        { word: '猫', meaning: 'Cat', gif: "D:力.gif"},
+        { word: '猫', meaning: 'Cat' },
         { word: '犬', meaning: 'Dog' },
         { word: '車', meaning: 'Car' },
     ];
