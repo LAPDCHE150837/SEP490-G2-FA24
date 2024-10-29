@@ -23,7 +23,7 @@ function App() {
             {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
             {/*<Route path="" element={} />*/}
             {/*<Route path="" element={} />*/}
-            {/*<Route path="" element={} />*/}
+            <Route path="/alphabet" element={<JapaneseAlphabet />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/reset" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
