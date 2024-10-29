@@ -21,7 +21,9 @@ function App() {
             <Route path="/flashCardForStudent" element={<FlashCardForLearner />} />
             <Route path="/flashCardLession" element={<FlashCardLession />} />
             {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
-            <Route path="/alphabet" element={<JapaneseAlphabet />} />
+            <Route path="" element={} />
+            <Route path="" element={} />
+            <Route path="" element={} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/reset" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
