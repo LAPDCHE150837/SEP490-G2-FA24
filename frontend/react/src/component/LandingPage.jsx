@@ -86,7 +86,7 @@ const LandingPage = () => {
             </main>
 
             <footer className="bg-[#40E0D0] text-white text-center p-8 mt-24">
-                <p className="mb-4">&copy; 2024 NihongoMaster. Tất cả quyền được bảo lưu.</p>
+                <p className="mb-4">&copy; 2024 NihonGo!. Tất cả quyền được bảo lưu.</p>
                 <div className="flex justify-center space-x-4">
                     {['Điều khoản sử dụng', 'Chính sách bảo mật', 'Liên hệ'].map((item) => (
                         <a key={item} href="#" className="hover:text-[#3BC0B0] transition duration-300">{item}</a>
