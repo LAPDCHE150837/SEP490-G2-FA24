@@ -21,8 +21,9 @@ function App() {
             <Route path="/flashCardForStudent" element={<FlashCardForLearner />} />
             <Route path="/flashCardLession" element={<FlashCardLession />} />
             {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
-            {/*<Route path="" element={} />*/}
-            {/*<Route path="" element={} />*/}
+            {/*<Route path="/courses" element={} />*/}
+            {/*<Route path="/my-classes" element={} />*/}
+            {/*<Route path="/notes" element={}>*/}
             <Route path="/alphabet" element={<JapaneseAlphabet />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
