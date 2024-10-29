@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {Search, ChevronDown, Bell, User, Menu, Sidebar} from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import this if using React Router for navigation
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const LessonItem = ({ lesson, components }) => {
@@ -29,9 +30,18 @@ const LessonItem = ({ lesson, components }) => {
 
 const CourseSideBar = ({ courseName }) => {
     const [lessonsOpen, setLessonsOpen] = useState(false);
+    const navigate = useNavigate(); // Initialize navigate for routing
 
     return (
         <div className="course-sidebar bg-gray-900 text-white w-64 p-6">
+            {/* Back to Dashboard Button */}
+            <button
+                onClick={() => navigate('/dashboard')} // Update with your dashboard route
+                className="mb-4 text-sm text-blue-500 hover:underline"
+            >
+                &larr; Back to Dashboard
+            </button>
+
             <h2 className="text-xl font-semibold mb-4">{courseName}</h2>
             <button onClick={() => setLessonsOpen(!lessonsOpen)} className="w-full text-left flex items-center">
                 N5 for Beginner
