@@ -98,16 +98,14 @@ const Flashcard = ({ word, meaning, gif }) => {
     );
 };
 
-const FlashcardScreen = () => {
+const CourseScreen = () => {
     const flashcards = [
-        { word: '猫', meaning: 'Cat' },
-        { word: '犬', meaning: 'Dog' },
-        { word: '車', meaning: 'Car' },
+
     ];
 
     return (
         <section id="flashcard" className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Flashcards</h3>
+            <h3 className="text-lg font-semibold mb-4">N5 beginer</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {flashcards.map((flashcard, index) => (
                     <Flashcard key={index} word={flashcard.word} meaning={flashcard.meaning} gif={flashcard.gif} />
@@ -140,7 +138,7 @@ const Dashboard = () => {
                     <button onClick={handleShowCourse} className="bg-blue-500 text-white p-2 rounded-md mb-4">
                         Go to Course
                     </button>
-                    <FlashcardScreen />
+                    <CourseScreen />
                 </main>
             </div>
         </div>

@@ -10,7 +10,9 @@ import AddKanjiByTeacher from "./component/Shared/AddKanjiByTeacher.jsx"; //
 import ForgotPassword from "./component/Authentication/ForgotPassword.jsx";
 import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
-import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx"; // Assuming you have a Dashboard component
+import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
+import CourseCard from "./component/Course/CourseCard.jsx";
+import Courses from "./component/Shared/Courses.jsx"; // Assuming you have a Dashboard component
 
 function App() {
     return (
@@ -21,9 +23,11 @@ function App() {
             <Route path="/flashCardForStudent" element={<FlashCardForLearner />} />
             <Route path="/flashCardLession" element={<FlashCardLession />} />
             {/*<Route path="/addKanji" element={<AddKanjiByTeacher />} />*/}
-            {/*<Route path="" element={} />*/}
-            {/*<Route path="" element={} />*/}
-            {/*<Route path="" element={} />*/}
+            {/*<Route path="/courses" element={} />*/}
+            {/*<Route path="/my-classes" element={} />*/}
+            {/*<Route path="/notes" element={}>*/}
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/alphabet" element={<JapaneseAlphabet />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/reset" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />

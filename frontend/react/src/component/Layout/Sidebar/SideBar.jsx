@@ -62,7 +62,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         className="w-10 h-10 transition-transform duration-300 group-hover:scale-105"
                     />
                     <h1 className="text-xl font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                        Minano Nihongo
+                        NihonGo!
                     </h1>
                 </Link>
                 <button
