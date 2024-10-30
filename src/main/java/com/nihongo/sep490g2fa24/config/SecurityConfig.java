@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final LogoutHandler logoutHandler;
     private static final String[] WHITE_LIST_URL = {
+            "api/v1/**",
             "v1/auth/**",
             "/verification-success.html",
             "/verification-failed.html"
