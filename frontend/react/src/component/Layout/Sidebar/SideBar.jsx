@@ -29,11 +29,11 @@ const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
 
     const navigationItems = [
+        { icon: '📊', text: 'Khóa học của tôi', path: '/dashboard' },
         { icon: '📊', text: 'Thống kê', path: '/statistics' },
-        { icon: '📚', text: 'Lớp học của tôi', path: '/my-classes' },
         { icon: '🎓', text: 'Khóa học', path: '/courses' },
         { icon: '❤️', text: 'Video yêu thích', path: '/favorite-videos' },
-        { icon: '🗂️', text: 'Flashcard', path: '/flashCardForStudent' },
+        { icon: '🗂️', text: 'Flashcard', path: '/flashcards' },
         { icon: '📝', text: 'Ghi chú của tôi', path: '/notes' },
         { icon: '🔠', text: 'Bảng chữ cái', path: '/alphabet' }
 
@@ -62,7 +62,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         className="w-10 h-10 transition-transform duration-300 group-hover:scale-105"
                     />
                     <h1 className="text-xl font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                        NihonGo!
+                        Minano Nihongo
                     </h1>
                 </Link>
                 <button
