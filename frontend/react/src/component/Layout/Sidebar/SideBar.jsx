@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { icon: '📊', text: 'Thống kê', path: '/statistics' },
         { icon: '🎓', text: 'Khóa học', path: '/courses' },
         { icon: '❤️', text: 'Video yêu thích', path: '/favorite-videos' },
-        { icon: '🗂️', text: 'Flashcard', path: '/flashcards' },
+        { icon: '🗂️', text: 'Flashcard', path: '/flashCardLession' },
         { icon: '📝', text: 'Ghi chú của tôi', path: '/notes' },
         { icon: '🔠', text: 'Bảng chữ cái', path: '/alphabet' }
 

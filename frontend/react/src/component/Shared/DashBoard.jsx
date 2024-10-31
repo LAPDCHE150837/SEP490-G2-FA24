@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import RecentCourse from "../Course/RecentCourse.jsx";
 import CourseCard from "../Course/CourseCard.jsx";
 import { getCourse, addCourse, updateCourse, deleteCourse } from '../../service/Course.js';
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -16,8 +17,13 @@ const Dashboard = () => {
         courseName: '',
         description: ''
     });
-
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
+
+    // Function to navigate to the course page
+    const handleCourseClick = (courseId) => {
+        navigate(`/courses/${courseId}`);
+    };
 
     const { data: courses, isLoading, error } = useQuery({
         queryKey: ['courses'],
@@ -58,7 +64,7 @@ const Dashboard = () => {
         e.preventDefault();
         if (isEditDialogOpen) {
             updateMutation.mutate({
-                courseId: selectedCourse.id,
+                courseId: selectedCourse.courseId,
                 data: formData
             });
         } else {
@@ -131,6 +137,7 @@ const Dashboard = () => {
                             image="/api/placeholder/400/200"
                             date="06-12-2024"
                             progress={0}
+                            onClick={() => handleCourseClick(course.courseId)}
                             onEdit={() => handleEdit(course)}
                             onDelete={() => handleDelete(course)}
                         />
@@ -220,7 +227,7 @@ const Dashboard = () => {
                                 Hủy
                             </button>
                             <button
-                                onClick={() => deleteMutation.mutate(selectedCourse.id)}
+                                onClick={() => deleteMutation.mutate(selectedCourse.courseId)}
                                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                             >
                                 Xóa
