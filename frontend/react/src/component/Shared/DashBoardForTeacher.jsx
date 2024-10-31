@@ -41,21 +41,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                    className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>❤️</span><span>Bài học video yêu thích</span></a>
                 <a href="flashCardLession"
                    className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🗂️</span><span>Flashcard</span></a>
-                <a href="#"
-                   className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📝</span><span>Ghi chú của tôi</span></a>
+
             </nav>
             <div className="pt-6 border-t border-gray-700">
                 <nav className="space-y-4">
-                    <a href="#"
-                       className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🧪</span><span>Kiểm tra năng lực</span></a>
+
                     <a href="#"
                        className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🕒</span><span>Lịch sử làm bài</span></a>
-                    {/*<a href="#"*/}
-                    {/*   className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>💰</span><span>Quy đổi coin</span></a>*/}
-                    {/*<a href="#"*/}
-                    {/*   className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🎫</span><span>Voucher kích hoạt</span></a>*/}
-                    {/*<a href="#"*/}
-                    {/*   className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📅</span><span>Lịch sử thanh toán</span></a>*/}
+
                 </nav>
             </div>
         </div>
