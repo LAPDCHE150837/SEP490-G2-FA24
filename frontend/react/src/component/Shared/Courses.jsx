@@ -69,7 +69,7 @@ const Header = ({ onMenuClick }) => (
             <button onClick={onMenuClick} className="lg:hidden">
                 <Menu size={24} />
             </button>
-            <h2 className="text-xl font-semibold">Trang chủ / <span className="text-cyan-500">Flashcard</span></h2>
+            <h2 className="text-xl font-semibold">Trang chủ / <span className="text-cyan-500">Courses</span></h2>
         </div>
         <div className="flex items-center space-x-4">
             <button className="p-2 hover:bg-gray-100 rounded-full transition duration-150"><Bell size={20} /></button>
@@ -78,26 +78,7 @@ const Header = ({ onMenuClick }) => (
     </header>
 );
 
-const Flashcard = ({ word, meaning, gif }) => {
-    const [isFlipped, setIsFlipped] = useState(false);
 
-    return (
-        <div
-            className={`bg-white p-6 rounded-lg shadow-md transition duration-300 ${isFlipped ? 'bg-green-100' : ''}`}
-            onClick={() => setIsFlipped(!isFlipped)}
-            style={{ cursor: 'pointer', height: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-        >
-            {isFlipped ? (
-                <div className="flex flex-col items-center">
-                    <p className="text-xl font-bold mb-2">{meaning}</p>
-                    <img src={gif} alt="Kanji GIF" className="w-24 h-24 object-cover" />
-                </div>
-            ) : (
-                <p className="text-xl font-bold">{word}</p>
-            )}
-        </div>
-    );
-};
 
 const CourseScreen = () => {
     const flashcards = [
@@ -137,7 +118,7 @@ const Dashboard = () => {
                 <Header onMenuClick={() => setSidebarOpen(true)} />
                 <main className="flex-1 p-6 overflow-y-auto">
                     <button onClick={handleShowCourse} className="bg-blue-500 text-white p-2 rounded-md mb-4">
-                        Go to Course
+                        Course
                     </button>
                     <CourseScreen />
                 </main>
