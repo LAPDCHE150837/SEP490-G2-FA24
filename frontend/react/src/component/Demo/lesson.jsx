@@ -97,7 +97,7 @@ const CourseScreen = () => {
         </section>
     );
 };
-
+//What is this
 const Dashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [showCourseSidebar, setShowCourseSidebar] = useState(false);
