@@ -29,6 +29,8 @@ const LessonItem = ({ lesson, components }) => {
     );
 };
 
+<h1>Is this will appear on screen?</h1>
+
 const CourseSideBar = ({ courseName }) => {
     const [lessonsOpen, setLessonsOpen] = useState(false);
     const navigate = useNavigate(); // Initialize navigate for routing
