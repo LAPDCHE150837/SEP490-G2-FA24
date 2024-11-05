@@ -12,7 +12,7 @@ import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
 import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
 import CourseCard from "./component/Course/CourseCard.jsx";
-import Courses from "./component/Shared/Courses.jsx";
+import Courses from "./component/Demo/Courses.jsx";
 import DashBoardForTeacher from "./component/Shared/DashBoardForTeacher.jsx";
 import Course from "./Course.jsx"; // Assuming you have a Dashboard component
 
