@@ -56,7 +56,7 @@ const CourseSideBar = ({ courseName }) => {
                         <LessonItem
                             key={lesson}
                             lesson={`Lesson ${lesson + 1}`}
-                            components={['Video', 'Grammar', 'Kanji', 'Vocabulary', 'Test']}
+                            components={['Graphic', 'On', 'Kun', 'Name', 'How to write']}
                         />
                     ))}
                 </div>
