@@ -277,7 +277,7 @@ const DashboardPage = () => {
                         </div>
                     </div>
                 </div>
-//Bottom Grid
+
                 {/* Bottom Grid */}
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     {/* Recent Activity */}
@@ -332,7 +332,7 @@ const DashboardPage = () => {
                             </div>
                         </div>
                     </div>
-//Performance Chart
+
                     {/* Performance Chart */}
                     <div className="bg-white rounded-xl">
                         <div className="p-6">
@@ -349,6 +349,5 @@ const DashboardPage = () => {
     );
 
 };
-
 
 export default DashboardPage;
