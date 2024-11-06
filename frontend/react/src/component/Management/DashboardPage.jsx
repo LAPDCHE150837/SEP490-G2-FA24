@@ -332,7 +332,7 @@ const DashboardPage = () => {
                             </div>
                         </div>
                     </div>
-
+//Performance Chart
                     {/* Performance Chart */}
                     <div className="bg-white rounded-xl">
                         <div className="p-6">
