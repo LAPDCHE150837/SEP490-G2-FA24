@@ -71,7 +71,7 @@ const QuizView = () => {
     const handleFinish = () => {
         navigate(`/courses/${courseId}/lessons/${lessonId}/complete`);
     };
-//Show Result
+
     if (showResult) {
         const passThreshold = 0.7; // 70% to pass
         const passed = score.correct / score.total >= passThreshold;
