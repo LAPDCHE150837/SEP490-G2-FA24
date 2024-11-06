@@ -1,3 +1,4 @@
+// LessonDetail.jsx
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Book, GraduationCap, Check, X, Volume2 } from 'lucide-react';
@@ -36,6 +37,7 @@ const LessonDetail = () => {
             <span>{label}</span>
         </button>
     );
+
     const VocabularyContent = () => (
         <div className="space-y-6">
             {lesson.vocabulary.map((vocab, index) => (
