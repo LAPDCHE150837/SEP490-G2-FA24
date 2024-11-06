@@ -33,4 +33,30 @@ const QuizView = () => {
             correctAnswer: 'わたし'
         },
     ];
+
+    const handleAnswerSelect = (answer) => {
+        if (showResult) return;
+        setSelectedAnswer(answer);
+    };
+
+    const handleNext = () => {
+        if (selectedAnswer === null) return;
+
+        const isCorrect = selectedAnswer === quizQuestions[currentQuestionIndex].correctAnswer;
+        const newAnswers = [...answers, {
+            question: currentQuestionIndex,
+            selected: selectedAnswer,
+            correct: isCorrect
+        }];
+        setAnswers(newAnswers);
+
+        if (currentQuestionIndex + 1 < quizQuestions.length) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setSelectedAnswer(null);
+        } else {
+            const correctCount = newAnswers.filter(a => a.correct).length;
+            setScore({ correct: correctCount, total: quizQuestions.length });
+            setShowResult(true);
+        }
+    };
 }
