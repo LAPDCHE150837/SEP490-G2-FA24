@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle, ArrowRight, RotateCcw } from 'lucide-react';
 
+
 const LessonComplete = () => {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
@@ -9,11 +10,9 @@ const LessonComplete = () => {
         const nextLessonId = Number(lessonId) + 1;
         navigate(`/courses/${courseId}/lessons/${nextLessonId}`);
     };
-
     const handleReviewLesson = () => {
         navigate(`/courses/${courseId}/lessons/${lessonId}`);
     };
-
     return (
         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
             <CheckCircle className="w-20 h-20 mx-auto text-green-500 mb-6" />
@@ -21,7 +20,6 @@ const LessonComplete = () => {
             <p className="text-xl text-gray-600 mb-8">
                 Bạn đã hoàn thành bài học thành công!
             </p>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-green-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-green-700">Từ vựng đã học</h3>
@@ -32,7 +30,6 @@ const LessonComplete = () => {
                     <p className="text-2xl font-bold text-blue-600">90%</p>
                 </div>
             </div>
-
             <div className="space-y-4">
                 <button
                     onClick={handleNextLesson}
