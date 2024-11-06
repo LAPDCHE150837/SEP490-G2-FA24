@@ -104,25 +104,25 @@ const LessonList = () => {
                                     </div>
                                 </div>
 
-                                {/* Kanji */}
-                                <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center space-x-2 mb-3">
-                                        <Book className="h-5 w-5 text-red-500" />
-                                        <h4 className="font-semibold">Kanji</h4>
-                                    </div>
-                                    <p className="text-gray-600">{lesson.kanji.length} chữ Kanji</p>
-                                    <div className="mt-2 space-y-1">
-                                        {lesson.kanji.slice(0, 2).map((kanji, i) => (
-                                            <div key={i} className="text-sm text-gray-600">
-                                                {kanji.character} ({kanji.reading})
-                                            </div>
-                                        ))}
-                                        {lesson.kanji.length > 2 && (
-                                            <div className="text-sm text-blue-500">+ more</div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                            {/*    /!* Kanji *!/*/}
+                            {/*    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">*/}
+                            {/*        <div className="flex items-center space-x-2 mb-3">*/}
+                            {/*            <Book className="h-5 w-5 text-red-500" />*/}
+                            {/*            <h4 className="font-semibold">Kanji</h4>*/}
+                            {/*        </div>*/}
+                            {/*        <p className="text-gray-600">{lesson.kanji.length} chữ Kanji</p>*/}
+                            {/*        <div className="mt-2 space-y-1">*/}
+                            {/*            {lesson.kanji.slice(0, 2).map((kanji, i) => (*/}
+                            {/*                <div key={i} className="text-sm text-gray-600">*/}
+                            {/*                    {kanji.character} ({kanji.reading})*/}
+                            {/*                </div>*/}
+                            {/*            ))}*/}
+                            {/*            {lesson.kanji.length > 2 && (*/}
+                            {/*                <div className="text-sm text-blue-500">+ more</div>*/}
+                            {/*            )}*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
 
                             {/* Progress Bar */}
                             <div className="mt-4">
