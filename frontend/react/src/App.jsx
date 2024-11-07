@@ -15,7 +15,11 @@ import CourseCard from "./component/Course/CourseCard.jsx";
 import Courses from "./component/Demo/Courses.jsx";
 import Alphabets from "./component/Demo/Alphabets.jsx";
 import DashBoardForTeacher from "./component/Shared/DashBoardForTeacher.jsx";
-import Course from "./Course.jsx"; // Assuming you have a Dashboard component
+import Course from "./Course.jsx";
+import LessonList from "./component/Lesson/LessonList.jsx";
+import LessonDetail from "./component/Lesson/LessonDetail.jsx";
+import QuizView from "./component/Quiz/Quizview.jsx";
+import LessonComplete from "./component/Lesson/LessonComplete.jsx"; // Assuming you have a Dashboard component
 
 function App() {
     return (
@@ -33,7 +37,13 @@ function App() {
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/reset" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
-            <Route path="/" element={<Navigate to="/landing" replace />} />
+                <Route path="/courses/:courseId/lessons" element={<LessonList />} />
+                <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail />} />
+                <Route path="courses/:courseId/lessons/:lessonId/quiz" element={<QuizView  />} />
+                <Route path="courses/:courseId/lessons/:lessonId/complete" element={<LessonComplete   />} />
+
+
+                <Route path="/" element={<Navigate to="/landing" replace />} />
         </Routes>
 
     );
