@@ -4,9 +4,9 @@ import LoginPage from "./component/Authentication/Login.jsx";
 import Dashboard from "./component/Shared/DashBoard.jsx";
 import RegisterPage from "./component/Authentication/Register.jsx";
 import LandingPage from "./component/LandingPage.jsx";
-import FlashCardForLearner from "./component/Shared/FlashCardForLearner.jsx";
-import FlashCardLession from "./component/Shared/FlashCardLession.jsx";
-import AddKanjiByTeacher from "./component/Shared/AddKanjiByTeacher.jsx"; //
+import FlashCardForLearner from "./component/Demo/FlashCardForLearner.jsx";
+import FlashCardLession from "./component/Demo/FlashCardLession.jsx";
+import AddKanjiByTeacher from "./component/Demo/AddKanjiByTeacher.jsx"; //
 import ForgotPassword from "./component/Authentication/ForgotPassword.jsx";
 import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
@@ -14,7 +14,7 @@ import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
 import CourseCard from "./component/Course/CourseCard.jsx";
 import Courses from "./component/Demo/Courses.jsx";
 import Alphabets from "./component/Demo/Alphabets.jsx";
-import DashBoardForTeacher from "./component/Shared/DashBoardForTeacher.jsx";
+import DashBoardForTeacher from "./component/Demo/DashBoardForTeacher.jsx";
 import Course from "./Course.jsx";
 import LessonDetail from "./component/Lesson/LessonDetail.jsx";
 import LessonList from "./component/Lesson/LessonList.jsx";
