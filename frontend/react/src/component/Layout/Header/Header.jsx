@@ -62,7 +62,7 @@ const Header = ({ onMenuClick }) => {
                         <User size={20}/>
                     </button>
                     <DropdownMenu isOpen={userMenuOpen}>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
+                        <a href="/userProfile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
                         <a href="/reset" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đổi mật khẩu</a>
 
                     </DropdownMenu>
