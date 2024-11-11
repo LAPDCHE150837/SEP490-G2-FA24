@@ -101,4 +101,32 @@ export const MOCK_COURSES = [
             },
         ],
     },
+    {
+        id: 3,
+        title: "Khóa học N3 - Trung cấp",
+        type: "Upper Intermediate - N3",
+        image: "/api/placeholder/400/200",
+        date: "2024-03-01",
+        progress: 0,
+        lessons: [
+            {
+                id: 1,
+                title: "Bài 2: Kỹ năng nhận diện",
+                description: "Học cách thuyết trình bằng tiếng Nhật",
+                progress: 0,
+                vocabulary: [
+                    { word: "発表", reading: "はっぴょう", meaning: "Thuyết trình" },
+                    { word: "準備", reading: "じゅんび", meaning: "Chuẩn bị" },
+                ],
+                grammar: [
+                    { pattern: "〜によって", meaning: "Bởi vì, do ~" },
+                    { pattern: "〜というわけです", meaning: "Vì vậy, do đó ~" },
+                ],
+                kanji: [
+                    { character: "発", reading: "はつ", meaning: "Phát ra" },
+                    { character: "表", reading: "ひょう", meaning: "Biểu hiện" },
+                ],
+            },
+        ],
+    },
 ];
