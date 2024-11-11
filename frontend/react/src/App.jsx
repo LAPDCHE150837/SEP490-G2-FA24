@@ -19,7 +19,8 @@ import Course from "./Course.jsx";
 import LessonDetail from "./component/Lesson/LessonDetail.jsx";
 import LessonList from "./component/Lesson/LessonList.jsx";
 import QuizView from "./component/Quiz/Quizview.jsx";
-import LessonComplete from "./component/Lesson/LessonComplete.jsx"; // Assuming you have a Dashboard component
+import LessonComplete from "./component/Lesson/LessonComplete.jsx";
+import UserProfile from "./component/Demo/UserProfile.jsx"; // Assuming you have a Dashboard component
 
 function App() {
     return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/course" element={<Course/>}/>
             <Route path="/alphabets" element={<Alphabets/>}/>
             <Route path="/alphabet" element={<JapaneseAlphabet/>}/>
+            <Route path="/userProfile" element={<UserProfile/>}/>
             <Route path="/forgotPassword" element={<ForgotPassword/>}/>
             <Route path="/courses/:courseId/lessons" element={<LessonList/>}/>
             <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>}/>
