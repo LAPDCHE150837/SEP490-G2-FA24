@@ -34,4 +34,11 @@ public class AdminController {
         courseService.deleteCourseById(courseId);
         return BaseApiResponse.succeed();
     }
+    @PutMapping("/{courseId}")
+    public BaseApiResponse<Void> updateCourse(
+            @PathVariable("courseId") String courseId,
+            @RequestBody CourseDTO courseDTO) {
+        courseService.updateCourseById(courseId, courseDTO);
+        return BaseApiResponse.succeed();
+    }
 }
