@@ -7,6 +7,7 @@ import com.nihongo.sep490g2fa24.v1.dtos.course.CourseDTO;
 import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,21 +20,24 @@ public class CourseService {
     private final CourseDTOMapper courseDTOMapper;
 
     public void addCourse(CourseDTO courseDTO) {
-        Course course = new Course();
-        course.setCourseName(courseDTO.getCourseName());
-        course.setDescription(courseDTO.getDescription());
-        course.setFlagActive(courseDTO.getFlagActive());
-        course.setProcess("In progress");
-        courseRepository.save(course);
+        boolean courseCodeExist = courseRepository.existsByCourseCode(courseDTO.getCourseCode());
+        if (courseCodeExist) {
+            throw new NhgClientException(NhgErrorHandler.COURSE_ALREADY_EXISTED);
+        } else {
+            Course course = new Course();
+            BeanUtils.copyProperties(courseDTO, course);
+            courseRepository.save(course);
+        }
+
     }
 
     public void updateCourseById(String courseId, CourseDTO courseDTO) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.COURSE_NOT_FOUND));
-        course.setFlagActive(courseDTO.getFlagActive());
-        course.setCourseName(courseDTO.getCourseName());
-        course.setDescription(courseDTO.getDescription());
-        course.setProcess("In progress");
+        if (courseRepository.existsByCourseCode(courseDTO.getCourseCode())) {
+            throw new NhgClientException(NhgErrorHandler.COURSE_ALREADY_EXISTED);
+        }
+        BeanUtils.copyProperties(courseDTO, course);
         courseRepository.save(course);
     }
 
@@ -56,3 +60,4 @@ public class CourseService {
         return courseDTOMapper.apply(course);
     }
 }
+
