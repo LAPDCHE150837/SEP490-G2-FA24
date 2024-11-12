@@ -16,7 +16,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "v1/users", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api/v1/users", produces = APPLICATION_JSON_VALUE)
 @Transactional
 public class UserController {
     private final UserService userService;
