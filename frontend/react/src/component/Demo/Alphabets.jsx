@@ -56,7 +56,7 @@ const StrokeAnimationModal = ({character, isVisible, onClose}) => {
     );
 };
 
-
+/*alphabet contribute*/
 const JapaneseAlphabet = () => {
     const [isDark, setIsDark] = useState(false);
     const [activeTab, setActiveTab] = useState('hiragana');
