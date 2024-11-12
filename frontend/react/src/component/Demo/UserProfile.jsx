@@ -10,6 +10,7 @@ const UserProfile = () => {
         email: 'tranduongw@gmail.com',
         phone: '0917741973',
         address: 'Hoàng Liệt, Hoàng Mai, Hà Nội',
+        courses: ['Khóa học N5 - Bắt đầu với tiếng Nhật', 'Khóa học N4 - Nâng cao cơ bản', 'Khóa học N3 - Trung cấp'], // Danh sách các khóa học
     });
     const navigate = useNavigate();
 
@@ -30,6 +31,13 @@ const UserProfile = () => {
 
     const handleBack = () => {
         navigate('/dashboard'); // Điều hướng về dashboard khi nhấn nút quay lại
+    };
+
+    // Hàm mở màn hình đổi mật khẩu
+    const handleChangePassword = () => {
+        alert('Mở màn hình đổi mật khẩu');
+        // Bạn có thể điều hướng đến màn hình đổi mật khẩu tại đây
+        navigate('/reset');
     };
 
     return (
@@ -114,6 +122,28 @@ const UserProfile = () => {
                             >
                                 {isEdit ? 'Save Changes' : 'Edit Profile'}
                             </button>
+                        </div>
+
+                        {/* Nút đổi mật khẩu */}
+                        <div className="mt-6 text-center">
+                            <button
+                                onClick={handleChangePassword}
+                                className="bg-blue-500 text-white p-2 rounded-md"
+                            >
+                                Change Password
+                            </button>
+                        </div>
+
+                        {/* Danh sách các khóa học */}
+                        <div className="mt-6">
+                            <h4 className="font-semibold text-lg">My Courses</h4>
+                            <ul className="list-disc pl-5 mt-2">
+                                {userData.courses.map((course, index) => (
+                                    <li key={index} className="text-gray-700">
+                                        {course}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </main>
