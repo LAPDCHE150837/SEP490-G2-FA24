@@ -106,7 +106,7 @@ const Dashboard = () => {
         setShowCourseSidebar(true);  // Show course sidebar
         setSidebarOpen(false);       // Hide the default sidebar
     };
-
+<h1>I'm coding, please don't use this page</h1>
     return (
         <div className="flex bg-gray-100 min-h-screen">
             {/* Sidebar rendering based on `showCourseSidebar` state */}
