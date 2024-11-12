@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findAllByFlagActiveTrue();
-
+    boolean existsByCourseCode(String courseCode);
 }

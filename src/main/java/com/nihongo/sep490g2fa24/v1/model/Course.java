@@ -40,4 +40,5 @@ public class Course {
     @NotNull
     @Column(name = "course_code", nullable = false, length = 100)
     private String courseCode;
+
 }

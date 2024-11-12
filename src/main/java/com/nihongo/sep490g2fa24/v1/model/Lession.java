@@ -42,4 +42,9 @@ public class Lession {
     @JoinColumn(name = "kanji_id", nullable = false)
     private Vocabulary kanji;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 }
