@@ -97,7 +97,7 @@ const CourseScreen = () => {
         </section>
     );
 };
-//What is this
+//update dashboard eventually
 const Dashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [showCourseSidebar, setShowCourseSidebar] = useState(false);
@@ -106,7 +106,6 @@ const Dashboard = () => {
         setShowCourseSidebar(true);  // Show course sidebar
         setSidebarOpen(false);       // Hide the default sidebar
     };
-<h1>I'm coding, please don't use this page</h1>
     return (
         <div className="flex bg-gray-100 min-h-screen">
             {/* Sidebar rendering based on `showCourseSidebar` state */}
@@ -127,5 +126,4 @@ const Dashboard = () => {
         </div>
     );
 };
-
 export default Dashboard;
