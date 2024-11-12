@@ -62,6 +62,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     );
 }
 
+/*Header for page*/
 const Header = ({ onMenuClick }) => (
     <header className="bg-white shadow-sm p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
