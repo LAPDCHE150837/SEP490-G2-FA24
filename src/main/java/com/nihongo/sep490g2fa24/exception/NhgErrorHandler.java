@@ -18,7 +18,8 @@ public enum NhgErrorHandler implements INhgErrorHandler{
     EMAIL_NOT_FOUND("MEA000009", "common.apiResponse.emailNotFound"),
     NOT_VERIFIED("MEA000010", "common.apiResponse.notVerified"),
     USER_NOT_FOUND("MEA000011", "common.apiResponse.userNotFound" ),
-    COURSE_NOT_FOUND("MEA000012", "common.apiResponse.courseNotFound"),;
+    COURSE_NOT_FOUND("MEA000012", "common.apiResponse.courseNotFound"),
+    COURSE_ALREADY_EXISTED("MEA000013", "common.apiResponse.courseAlreadyExisted" ),;
     private final String code;
     private final String message;
 
