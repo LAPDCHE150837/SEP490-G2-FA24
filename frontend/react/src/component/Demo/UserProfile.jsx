@@ -32,6 +32,7 @@ const UserProfile = () => {
         navigate('/dashboard'); // Điều hướng về dashboard khi nhấn nút quay lại
     };
 
+    //Xu ly data tren sidebar
     return (
         <div className="flex bg-gray-100 min-h-screen">
             {/* Sidebar */}
