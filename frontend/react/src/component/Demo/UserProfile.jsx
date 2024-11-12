@@ -25,7 +25,7 @@ const UserProfile = () => {
     // Hàm xử lý nút Save Changes
     const handleSaveChanges = () => {
         setIsEdit(false); // Đóng chế độ chỉnh sửa sau khi lưu
-        console.log('Thông tin đã được cập nhật', userData); // In ra thông tin đã thay đổi
+        console.log('Updated data', userData); // In ra thông tin đã thay đổi
     };
     /*This is how you comment in reactjs*/
     const handleBack = () => {
