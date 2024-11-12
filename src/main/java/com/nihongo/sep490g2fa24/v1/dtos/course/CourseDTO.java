@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDTO {
+    @NotNull
     private String id;
     private String courseName;
     private String flagActive;
