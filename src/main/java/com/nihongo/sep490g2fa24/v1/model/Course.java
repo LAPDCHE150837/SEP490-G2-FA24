@@ -1,6 +1,5 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,4 +36,8 @@ public class Course {
     @Column(name = "process", length = 100)
     private String process;
 
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "course_code", nullable = false, length = 100)
+    private String courseCode;
 }

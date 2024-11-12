@@ -8,26 +8,27 @@ import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CourseService {
 
-    private final CourseRepository courseRepository ;
-    private final CourseDTOMapper courseDTOMapper ;
+    private final CourseRepository courseRepository;
+    private final CourseDTOMapper courseDTOMapper;
 
     public void addCourse(CourseDTO courseDTO) {
-        Course course = new Course() ;
+        Course course = new Course();
         course.setCourseName(courseDTO.getCourseName());
         course.setDescription(courseDTO.getDescription());
         course.setFlagActive(courseDTO.getFlagActive());
         course.setProcess("In progress");
-        courseRepository.save(course) ;
+        courseRepository.save(course);
     }
 
     public void updateCourseById(String courseId, CourseDTO courseDTO) {
-        Course course =  courseRepository.findById(courseId)
+        Course course = courseRepository.findById(courseId)
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.COURSE_NOT_FOUND));
         course.setFlagActive(courseDTO.getFlagActive());
         course.setCourseName(courseDTO.getCourseName());
@@ -41,6 +42,17 @@ public class CourseService {
     }
 
     public List<CourseDTO> getAllCourse() {
-        return courseRepository.findAllByFlagActiveTrue().stream().map(courseDTOMapper).toList()  ;
+        return courseRepository.findAllByFlagActiveTrue().stream().map(courseDTOMapper).toList();
+    }
+
+    public List<CourseDTO> findAll() {
+        return courseRepository.findAll().stream()
+                .map(courseDTOMapper).toList();
+    }
+
+    public CourseDTO findById(String id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.COURSE_NOT_FOUND));
+        return courseDTOMapper.apply(course);
     }
 }
