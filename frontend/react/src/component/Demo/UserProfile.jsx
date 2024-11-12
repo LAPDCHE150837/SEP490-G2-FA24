@@ -32,7 +32,6 @@ const UserProfile = () => {
         navigate('/dashboard'); // Điều hướng về dashboard khi nhấn nút quay lại
     };
 
-    //Xu ly data tren sidebar
     return (
         <div className="flex bg-gray-100 min-h-screen">
             {/* Sidebar */}
@@ -63,7 +62,7 @@ const UserProfile = () => {
                     </div>
                 </header>
 
-                {/* Get data of user profile */}
+                {/* Nội dung User Profile */}
                 <main className="flex-1 p-6 overflow-y-auto">
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
                         <div className="flex justify-center mb-4">
