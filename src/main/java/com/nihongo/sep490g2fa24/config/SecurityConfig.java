@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
 
                     auth.requestMatchers(WHITE_LIST_URL).permitAll();
-                    auth.requestMatchers(GET, "v1/users/**").hasAnyRole(Role.ADMIN.name());
+//                    auth.requestMatchers(GET, "v1/users/**").hasAnyRole(Role.ADMIN.name());
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
