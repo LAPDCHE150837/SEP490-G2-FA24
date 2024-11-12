@@ -63,7 +63,7 @@ const UserProfile = () => {
                     </div>
                 </header>
 
-                {/*To hell and back */}
+                {/* Get data of user profile */}
                 <main className="flex-1 p-6 overflow-y-auto">
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
                         <div className="flex justify-center mb-4">
