@@ -16,7 +16,8 @@ public class CourseDTOMapper  implements Function<Course, CourseDTO> {
                 course.getCourseName(),
                 course.getFlagActive(),
                 course.getDescription(),
-                course.getProcess()
+                course.getProcess(),
+                course.getCourseCode()
         );
     }
 }
