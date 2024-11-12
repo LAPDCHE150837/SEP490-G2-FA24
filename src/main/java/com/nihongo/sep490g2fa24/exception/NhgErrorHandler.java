@@ -9,7 +9,6 @@ public enum NhgErrorHandler implements INhgErrorHandler{
     UNAUTHORIZED("Unauthorized", "common.apiResponse.unauthorized"),
     LOGIN_ERROR("MEI009023", "Login error" ),
     USERNAME_NOT_FOUND("MEA000002", "common.apiResponse.usernameNotFound" ),
-    INVALID_CREDENTIALS("MEA000003", "common.apiResponse.invalidCredentials" ),
     TOKEN_INVALID("MEA000003", "common.apiResponse.tokenInvalid" ),
     USER_IS_EXISTED("MEA000004", "common.apiResponse.userIsExisted" ),
     SEND_MAIL_ERROR("MEA000005", "common.apiResponse.sendMailError"),
@@ -18,9 +17,8 @@ public enum NhgErrorHandler implements INhgErrorHandler{
     INVALID_ROLE("MEA000008","common.apiResponse.invalidRole" ),
     EMAIL_NOT_FOUND("MEA000009", "common.apiResponse.emailNotFound"),
     NOT_VERIFIED("MEA000010", "common.apiResponse.notVerified"),
-    USER_NOT_FOUND("MEA000011", "common.apiResponse.userNotFound" );
-
-
+    USER_NOT_FOUND("MEA000011", "common.apiResponse.userNotFound" ),
+    COURSE_NOT_FOUND("MEA000012", "common.apiResponse.courseNotFound"),;
     private final String code;
     private final String message;
 
