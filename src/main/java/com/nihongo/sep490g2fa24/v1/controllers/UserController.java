@@ -22,10 +22,10 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class UserController {
     private final UserService userService;
     private final CourseService courseService;
-    @GetMapping("/course/find-all")
-    BaseApiResponse<List<CourseDTO>> getAllCourses() {
-        return BaseApiResponse.succeed(courseService.getAllCourse());
-    }
+//    @GetMapping("/course/find-all")
+//    BaseApiResponse<List<CourseDTO>> getAllCourses() {
+//        return BaseApiResponse.succeed(courseService.getAllCourse());
+//    }
     @GetMapping("/{id}")
     public BaseApiResponse<PersonalInfoResponse> getUser(@PathVariable String id) {
         return BaseApiResponse.succeed(userService.getUser(id));
