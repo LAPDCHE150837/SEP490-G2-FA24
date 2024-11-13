@@ -1,6 +1,9 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
+import com.nihongo.sep490g2fa24.dtoMapper.CourseMapper;
+import com.nihongo.sep490g2fa24.v1.dtos.course.CourseListDTO;
 import com.nihongo.sep490g2fa24.v1.model.Course;
+import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.services.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
 public class CourseController {
 
     private final CourseService courseService;
-    private final LessonService lessonService;
+//    private final LessonService lessonService;
 
     @GetMapping
     public BaseApiResponse<List<CourseListDTO>> getAllCourses() {

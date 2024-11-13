@@ -13,7 +13,7 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final LessonRepository lessonRepository;
+//    private final LessonRepository lessonRepository;
 
     @Transactional(readOnly = true)
     public List<Course> getAllCourses() {
