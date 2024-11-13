@@ -5,18 +5,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
-@Component
-public class CourseDTOMapper  implements Function<Course, CourseDTOMapper> {
-
-//    @Override
-//    public CourseDTO apply(Course course) {
-//        return new CourseDTO(
-//                course.getId(),
-//                course.getCourseName(),
-//                course.getFlagActive(),
-//                course.getDescription(),
-//                course.getProcess(),
-//                course.getCourseCode()
-//        );
-//    }
-}
+//public class CourseDTOMapper  implements Function<Course, CourseDTOMapper> {
+//
+////    @Override
+////    public CourseDTO apply(Course course) {
+////        return new CourseDTO(
+////                course.getId(),
+////                course.getCourseName(),
+////                course.getFlagActive(),
+////                course.getDescription(),
+////                course.getProcess(),
+////                course.getCourseCode()
+////        );
+////    }
+//}
