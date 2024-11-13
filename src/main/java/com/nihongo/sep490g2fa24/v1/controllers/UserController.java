@@ -1,6 +1,5 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
-import com.nihongo.sep490g2fa24.v1.dtos.course.CourseDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.PersonalInfoResponse;
 import com.nihongo.sep490g2fa24.v1.services.CourseService;
 import com.nihongo.sep490g2fa24.v1.services.UserService;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -32,6 +30,6 @@ public class UserController {
     public BaseApiResponse<PersonalInfoResponse> getUser(@PathVariable String id) {
         return BaseApiResponse.succeed(userService.getUser(id));
     }
-    //TODO viet api lession vao day
+
 
 }

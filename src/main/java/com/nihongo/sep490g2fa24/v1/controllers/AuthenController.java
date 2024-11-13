@@ -28,6 +28,7 @@ public class AuthenController {
         return BaseApiResponse.succeed(authenService.register(registerRequest, httpServletRequest));
     }
 
+
     @PostMapping("/authenticate")
     public BaseApiResponse<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
         return BaseApiResponse.succeed(authenService.authenticate(loginRequest));
@@ -46,11 +47,13 @@ public class AuthenController {
         return BaseApiResponse.succeed();
     }
 
+
     @PostMapping("/change-password")
     public BaseApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         authenService.changePassword(changePasswordRequest);
         return BaseApiResponse.succeed();
     }
+
 
     @PostMapping("/forgot-password")
     public BaseApiResponse<LoginResponse> forgotPassword(@RequestBody ChangePasswordRequest changePasswordRequest,
