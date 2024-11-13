@@ -134,7 +134,7 @@ const LessonDetail = () => {
                     <span>Quay lại danh sách bài học</span>
                 </button>
                 <button
-                    onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}/quiz`)}
+                    onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}/test`)}
                     className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
                 >
                     Kiểm tra
