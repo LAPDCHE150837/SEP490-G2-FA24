@@ -1,14 +1,10 @@
 package com.nihongo.sep490g2fa24.v1.services;
 
-import com.nihongo.sep490g2fa24.dtoMapper.CourseDTOMapper;
-import com.nihongo.sep490g2fa24.exception.NhgClientException;
-import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
-import com.nihongo.sep490g2fa24.v1.dtos.course.CourseDTO;
 import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,47 +13,52 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final CourseDTOMapper courseDTOMapper;
+//    private final LessonRepository lessonRepository;
 
-    public void addCourse(CourseDTO courseDTO) {
-        boolean courseCodeExist = courseRepository.existsByCourseCode(courseDTO.getCourseCode());
-        if (courseCodeExist) {
-            throw new NhgClientException(NhgErrorHandler.COURSE_ALREADY_EXISTED);
-        } else {
-            Course course = new Course();
-            BeanUtils.copyProperties(courseDTO, course);
-            courseRepository.save(course);
+    @Transactional(readOnly = true)
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+
+    public Course getCourseById(String id) {
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Course> getCoursesByLevel(String level) {
+        return courseRepository.findByLevelOrderByCreatedAtDesc(level);
+    }
+
+
+
+    @Transactional
+    public Course createCourse(Course course) {
+        if (courseRepository.existsByTitleAndStatus(course.getTitle(), true)) {
+            throw new RuntimeException("Course with this title already exists");
         }
-
+        return courseRepository.save(course);
     }
 
-    public void updateCourseById(String courseId, CourseDTO courseDTO) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.COURSE_NOT_FOUND));
-        if (courseRepository.existsByCourseCode(courseDTO.getCourseCode())) {
-            throw new NhgClientException(NhgErrorHandler.COURSE_ALREADY_EXISTED);
-        }
-        BeanUtils.copyProperties(courseDTO, course);
-        courseRepository.save(course);
-    }
-
-    public void deleteCourseById(String courseId) {
-        courseRepository.deleteById(courseId);
-    }
-
-    public List<CourseDTO> getAllCourse() {
-        return courseRepository.findAllByFlagActiveTrue().stream().map(courseDTOMapper).toList();
-    }
-
-    public List<CourseDTO> findAll() {
-        return courseRepository.findAll().stream()
-                .map(courseDTOMapper).toList();
-    }
-
-    public CourseDTO findById(String id) {
+    @Transactional
+    public Course updateCourse(String id, Course courseDetails) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(NhgClientException.supplier(NhgErrorHandler.COURSE_NOT_FOUND));
-        return courseDTOMapper.apply(course);
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        course.setTitle(courseDetails.getTitle());
+        course.setDescription(courseDetails.getDescription());
+        course.setLevel(courseDetails.getLevel());
+        course.setImageUrl(courseDetails.getImageUrl());
+
+        return courseRepository.save(course);
+    }
+
+    @Transactional
+    public void deleteCourse(String id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        course.setStatus(false);
+        courseRepository.save(course);
     }
 }
 

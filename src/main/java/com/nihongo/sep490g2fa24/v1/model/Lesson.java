@@ -1,22 +1,23 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
 import jakarta.persistence.*;
-
-import lombok.*;
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "courses")
-@AllArgsConstructor
-@NoArgsConstructor
-public class Course {
-
+@Table(name = "lession", schema = "nihongo")
+public class Lesson {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -25,20 +26,18 @@ public class Course {
     )
     private String id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "level")
-    private String level; // N5, N4, N3, etc.
-
-    @Column(name = "image_url")
-    private String imageUrl;
-
-    @Column(name = "total_lessons")
-    private Integer totalLessons = 0;
+    @Column(name = "order_index", nullable = false)
+    private Integer orderIndex;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -49,8 +48,14 @@ public class Course {
     @Column(name = "status")
     private Boolean status = true;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Lesson> lessons = new ArrayList<>();
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    private List<Vocabulary> vocabularies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    private List<Grammar> grammars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    private List<Kanji> kanjis = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

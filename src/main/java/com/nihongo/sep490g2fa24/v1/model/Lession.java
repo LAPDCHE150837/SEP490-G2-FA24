@@ -2,18 +2,21 @@ package com.nihongo.sep490g2fa24.v1.model;
 
 
 import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Getter
-@Setter
+
+@Data
 @Entity
-@Table(name = "lession", schema = "nihongo")
+@Table(name = "lessons")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lession {
+
     @Id
     @Size(max = 36)
     @Column(name = "id", nullable = false, length = 36)
