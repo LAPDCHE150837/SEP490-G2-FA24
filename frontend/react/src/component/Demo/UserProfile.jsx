@@ -3,18 +3,17 @@ import { User, Bell, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
-    const [isEdit, setIsEdit] = useState(false); // Quản lý trạng thái chỉnh sửa
+    const [isEdit, setIsEdit] = useState(false);
     const [userData, setUserData] = useState({
         avatarUrl: 'https://via.placeholder.com/150',
         username: 'xuanduong',
         email: 'tranduongw@gmail.com',
         phone: '0917741973',
         address: 'Hoàng Liệt, Hoàng Mai, Hà Nội',
-        courses: ['Khóa học N5 - Bắt đầu với tiếng Nhật', 'Khóa học N4 - Nâng cao cơ bản', 'Khóa học N3 - Trung cấp'], // Danh sách các khóa học
+        courses: ['Khóa học N5 - Bắt đầu với tiếng Nhật', 'Khóa học N4 - Nâng cao cơ bản', 'Khóa học N3 - Trung cấp'],
     });
     const navigate = useNavigate();
 
-    // Hàm cập nhật thông tin người dùng khi chỉnh sửa
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUserData((prevData) => ({
@@ -23,26 +22,22 @@ const UserProfile = () => {
         }));
     };
 
-    // Hàm xử lý nút Save Changes
     const handleSaveChanges = () => {
-        setIsEdit(false); // Đóng chế độ chỉnh sửa sau khi lưu
-        console.log('Thông tin đã được cập nhật', userData); // In ra thông tin đã thay đổi
+        setIsEdit(false);
+        console.log('Thông tin đã được cập nhật', userData);
     };
 
     const handleBack = () => {
-        navigate('/dashboard'); // Điều hướng về dashboard khi nhấn nút quay lại
+        navigate('/dashboard');
     };
 
-    // Hàm mở màn hình đổi mật khẩu
     const handleChangePassword = () => {
         alert('Mở màn hình đổi mật khẩu');
-        // Bạn có thể điều hướng đến màn hình đổi mật khẩu tại đây
         navigate('/reset');
     };
 
     return (
         <div className="flex bg-gray-100 min-h-screen">
-            {/* Sidebar */}
             <div className="course-sidebar bg-gray-900 text-white w-64 p-6">
                 <button
                     onClick={handleBack}
@@ -52,7 +47,6 @@ const UserProfile = () => {
                 </button>
             </div>
             <div className="flex-1 flex flex-col">
-                {/* Header */}
                 <header className="bg-white shadow-sm p-4 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
                         <button className="lg:hidden">
@@ -70,7 +64,6 @@ const UserProfile = () => {
                     </div>
                 </header>
 
-                {/* Nội dung User Profile */}
                 <main className="flex-1 p-6 overflow-y-auto">
                     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
                         <div className="flex justify-center mb-4">
@@ -86,7 +79,7 @@ const UserProfile = () => {
 
                         <div className="mt-6 space-y-4">
                             <div>
-                                <strong>Phone: </strong>
+                                <strong>Số điện thoại: </strong>
                                 {isEdit ? (
                                     <input
                                         type="text"
@@ -100,7 +93,7 @@ const UserProfile = () => {
                                 )}
                             </div>
                             <div>
-                                <strong>Address: </strong>
+                                <strong>Địa chỉ: </strong>
                                 {isEdit ? (
                                     <input
                                         type="text"
@@ -115,28 +108,8 @@ const UserProfile = () => {
                             </div>
                         </div>
 
-                        <div className="mt-6 text-center">
-                            <button
-                                onClick={isEdit ? handleSaveChanges : () => setIsEdit(true)}
-                                className="bg-green-500 text-white p-2 rounded-md"
-                            >
-                                {isEdit ? 'Save Changes' : 'Edit Profile'}
-                            </button>
-                        </div>
-
-                        {/* Nút đổi mật khẩu */}
-                        <div className="mt-6 text-center">
-                            <button
-                                onClick={handleChangePassword}
-                                className="bg-blue-500 text-white p-2 rounded-md"
-                            >
-                                Change Password
-                            </button>
-                        </div>
-
-                        {/* Danh sách các khóa học */}
                         <div className="mt-6">
-                            <h4 className="font-semibold text-lg">My Courses</h4>
+                            <h4 className="font-semibold text-lg">Khoá học của tôi</h4>
                             <ul className="list-disc pl-5 mt-2">
                                 {userData.courses.map((course, index) => (
                                     <li key={index} className="text-gray-700">
@@ -144,6 +117,22 @@ const UserProfile = () => {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+
+                        {/* Nút chỉnh sửa và đổi mật khẩu */}
+                        <div className="mt-6 flex justify-center space-x-4">
+                            <button
+                                onClick={isEdit ? handleSaveChanges : () => setIsEdit(true)}
+                                className="bg-green-500 text-white py-3 px-6 rounded-md text-lg"
+                            >
+                                {isEdit ? 'Lưu thay đổi' : 'Chỉnh sửa thông tin'}
+                            </button>
+                            <button
+                                onClick={handleChangePassword}
+                                className="bg-blue-500 text-white py-3 px-6 rounded-md text-lg"
+                            >
+                                Đổi mật khẩu
+                            </button>
                         </div>
                     </div>
                 </main>
