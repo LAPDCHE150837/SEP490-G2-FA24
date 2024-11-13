@@ -1,42 +1,64 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
+@Data
 @Entity
-@Table(name = "vocabulary", schema = "nihongo")
+@Table(name = "vocabulary")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Vocabulary {
+
     @Id
-    @Size(max = 36)
-    @Column(name = "id", nullable = false, length = 36)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private String id;
 
-    @Size(max = 100)
-    @Column(name = "meaning", length = 100)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id", nullable = false)
+    private Lesson lesson;
+
+    @Column(name = "word", length = 50, nullable = false)
+    private String word;
+
+    @Column(name = "reading", length = 50, nullable = false)
+    private String reading;
+
+    @Column(name = "meaning", nullable = false)
     private String meaning;
 
-    @Size(max = 100)
-    @Column(name = "kanji", length = 100)
-    private String kanji;
-
-    @Size(max = 100)
-    @Column(name = "example", length = 100)
+    @Column(name = "example", columnDefinition = "TEXT")
     private String example;
 
-    @Size(max = 100)
-    @Column(name = "vietnamese_example", length = 100)
-    private String vietnameseExample;
+    @Column(name = "example_reading", columnDefinition = "TEXT")
+    private String exampleReading;
 
-    @Size(max = 100)
-    @Column(name = "phonology", length = 100)
-    private String phonology;
+    @Column(name = "example_meaning", columnDefinition = "TEXT")
+    private String exampleMeaning;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
