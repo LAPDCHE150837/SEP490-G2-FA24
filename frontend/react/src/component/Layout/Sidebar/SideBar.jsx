@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { icon: BarChart3, text: 'Thống kê', path: '/statistics' },
         { icon: Award, text: 'Thành tựu', path: '/achievements' },
         { icon: Brain, text: 'Ôn tập', path: '/review' },
-        { icon: AlignJustify, text: 'Flashcard', path: '/flashcards' },
+        { icon: AlignJustify, text: 'Thẻ ghi nhớ', path: '/flashcards' },
         { icon: Book, text: 'Bảng chữ cái', path: '/alphabet' },
     ];
 
@@ -78,7 +78,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             <h1 className="text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
                                  NihonGo!
                             </h1>
-                            <p className="text-xs text-gray-500">Japanese Learning</p>
+                            <p className="text-xs text-gray-500">Cùng học tiếng nhật</p>
                         </div>
                     </Link>
                     <button
