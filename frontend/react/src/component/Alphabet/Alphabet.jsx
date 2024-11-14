@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Moon, Sun, X, Info, Play, Volume2, Mic, Square, Award, AlertCircle } from 'lucide-react';
-import { DashboardLayout } from "../Layout/DashBoardLayout.jsx";
+import {DashboardLayout} from "../Layout/DashBoardLayout.jsx";
 import RecordingModal from "../Record/RecordingModal.jsx";
 
 const StrokeAnimationModal = ({character, isVisible, onClose, playAudio}) => {
