@@ -1,4 +1,3 @@
-// LessonDetail.jsx
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Book, GraduationCap, Check, X, Volume2 } from 'lucide-react';
@@ -8,9 +7,36 @@ const LessonDetail = () => {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('vocabulary');
+    const [isPlaying, setIsPlaying] = useState(false);
 
     const course = MOCK_COURSES.find(c => c.id === Number(courseId));
     const lesson = course?.lessons.find(l => l.id === Number(lessonId));
+
+    const playAudio = (text, isJapanese = true) => {
+        if (isPlaying) return; // Prevent multiple playbacks
+
+        setIsPlaying(true);
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        if (isJapanese) {
+            utterance.lang = 'ja-JP';
+        }
+
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        utterance.onend = () => {
+            setIsPlaying(false);
+        };
+
+        utterance.onerror = () => {
+            setIsPlaying(false);
+        };
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+    };
 
     if (!lesson) {
         return (
@@ -45,9 +71,30 @@ const LessonDetail = () => {
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center space-x-4">
                             <span className="text-2xl font-bold">{vocab.word}</span>
-                            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                <Volume2 className="text-blue-500" size={20} />
-                            </button>
+                            <div className="space-x-2">
+                                <button
+                                    onClick={() => playAudio(vocab.word)}
+                                    disabled={isPlaying}
+                                    className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                    title="Play word"
+                                >
+                                    <Volume2 className="text-blue-500" size={20} />
+                                </button>
+                                <button
+                                    onClick={() => playAudio(vocab.reading)}
+                                    disabled={isPlaying}
+                                    className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                    title="Play reading"
+                                >
+                                </button>
+                                <button
+                                    onClick={() => playAudio(vocab.meaning, false)}
+                                    disabled={isPlaying}
+                                    className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                    title="Play meaning"
+                                >
+                                </button>
+                            </div>
                         </div>
                         <div className="flex space-x-2">
                             <button className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
@@ -74,6 +121,13 @@ const LessonDetail = () => {
                     <div className="mb-4">
                         <h3 className="text-xl font-bold text-blue-600 mb-2">
                             {gram.pattern}
+                            <button
+                                onClick={() => playAudio(gram.pattern)}
+                                disabled={isPlaying}
+                                className={`ml-2 p-2 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                            >
+                                <Volume2 className="text-blue-500" size={20} />
+                            </button>
                         </h3>
                         <p className="text-gray-600">{gram.meaning}</p>
                     </div>
@@ -81,7 +135,15 @@ const LessonDetail = () => {
                         <h4 className="font-semibold mb-2">Example Sentences:</h4>
                         <ul className="space-y-2">
                             <li className="text-gray-600">
-                                私は学生です。(Watashi wa gakusei desu.)
+                                私は学生です。
+                                <button
+                                    onClick={() => playAudio("私は学生です")}
+                                    disabled={isPlaying}
+                                    className={`ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                >
+                                    <Volume2 className="text-blue-500" size={16} />
+                                </button>
+                                <p className="text-sm text-gray-500">(Watashi wa gakusei desu.)</p>
                                 <p className="text-sm text-gray-500">Tôi là học sinh.</p>
                             </li>
                         </ul>
@@ -98,15 +160,40 @@ const LessonDetail = () => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="flex items-center justify-center">
                             <span className="text-6xl font-bold">{kanji.character}</span>
+                            <button
+                                onClick={() => playAudio(kanji.character)}
+                                disabled={isPlaying}
+                                className={`ml-2 p-2 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                            >
+                                <Volume2 className="text-blue-500" size={20} />
+                            </button>
                         </div>
                         <div className="md:col-span-3 space-y-4">
                             <div>
                                 <h4 className="font-semibold text-gray-700">Reading:</h4>
-                                <p className="text-gray-600">{kanji.reading}</p>
+                                <p className="text-gray-600">
+                                    {kanji.reading}
+                                    <button
+                                        onClick={() => playAudio(kanji.reading)}
+                                        disabled={isPlaying}
+                                        className={`ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                    >
+                                        <Volume2 className="text-green-500" size={16} />
+                                    </button>
+                                </p>
                             </div>
                             <div>
                                 <h4 className="font-semibold text-gray-700">Meaning:</h4>
-                                <p className="text-gray-600">{kanji.meaning}</p>
+                                <p className="text-gray-600">
+                                    {kanji.meaning}
+                                    <button
+                                        onClick={() => playAudio(kanji.meaning, false)}
+                                        disabled={isPlaying}
+                                        className={`ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
+                                    >
+                                        <Volume2 className="text-purple-500" size={16} />
+                                    </button>
+                                </p>
                             </div>
                             <div>
                                 <h4 className="font-semibold text-gray-700">Stroke Order:</h4>

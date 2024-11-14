@@ -24,7 +24,7 @@ const LoginPage = () => {
         try {
             await login({ username, password });
             // Navigate to dashboard on successful login
-            navigate('/dashboard');
+            navigate('/course');
         } catch (err) {
             if (err.response) {
                 setError(err.response.data.message || 'Tài khoàn hoặc mật khẩu không đúng');

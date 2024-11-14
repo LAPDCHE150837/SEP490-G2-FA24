@@ -32,7 +32,7 @@ const Header = ({ onMenuClick }) => {
                 <button onClick={onMenuClick} className="lg:hidden">
                     <Menu size={24} />
                 </button>
-                <h2 className="text-xl font-semibold">Trang chủ / <span className="text-cyan-500">Khóa học của tôi</span></h2>
+                <h2 className="text-xl font-semibold">  <span className="text-cyan-500">Chào mừng đã đến với FPT Nihongo</span></h2>
             </div>
             <div className="flex items-center space-x-4">
                 <div className="relative">
@@ -62,7 +62,7 @@ const Header = ({ onMenuClick }) => {
                         <User size={20}/>
                     </button>
                     <DropdownMenu isOpen={userMenuOpen}>
-                        <a href="/userProfile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
+                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
                         <a href="/reset" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đổi mật khẩu</a>
 
                     </DropdownMenu>
