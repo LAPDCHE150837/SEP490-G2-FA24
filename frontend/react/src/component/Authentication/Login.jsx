@@ -67,14 +67,14 @@ const LoginPage = () => {
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Tài khoản</label>
                             <input
                                 type="text"
                                 id="email"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
-                                placeholder="abc@gmail.com"
+                                placeholder="abc"
                                 required
                             />
                         </div>
@@ -100,12 +100,6 @@ const LoginPage = () => {
                             </div>
                         </div>
                         <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center">
-                                <input type="checkbox" id="remember"
-                                       className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"/>
-                                <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">Ghi nhớ mật
-                                    khẩu</label>
-                            </div>
 
                             <a
                                 onClick={(e) => {
@@ -125,7 +119,7 @@ const LoginPage = () => {
                         >
                             {isLoading ? (
                                 <>
-                                <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                                    <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                                     Đang xử lý...
                                 </>
                             ) : (
@@ -144,7 +138,10 @@ const LoginPage = () => {
                 onClose={() => setIsForgotPasswordOpen(false)}
             />
         </div>
+
     );
+
+
 };
 
 export default LoginPage;
