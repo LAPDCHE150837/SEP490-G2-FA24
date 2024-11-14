@@ -11,7 +11,7 @@ const Course = () => {
                     borderRadius='lg'
                 />
                 <Stack mt='6' spacing='3'>
-                    <Heading size='md'>Khóa học Minano Nihongo sơ cấp 1</Heading>
+                    <Heading size='md'>Khóa học Minna no Nihongo sơ cấp 1</Heading>
                     <Text>
                         Khóa học cho người mới bắt đầu học tiếng nhật, gồm 25 bài sơ cấp trình độ tương đương N5
                     </Text>
