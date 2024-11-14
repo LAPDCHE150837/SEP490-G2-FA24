@@ -32,7 +32,7 @@ const Header = ({ onMenuClick }) => {
                 <button onClick={onMenuClick} className="lg:hidden">
                     <Menu size={24} />
                 </button>
-                <h2 className="text-xl font-semibold">  <span className="text-cyan-500">Chào mừng đã đến với FPT Nihongo</span></h2>
+                <h2 className="text-xl font-semibold">  <span className="text-cyan-500">Chào mừng đã đến với FPT NihonGo!</span></h2>
             </div>
             <div className="flex items-center space-x-4">
                 <div className="relative">
