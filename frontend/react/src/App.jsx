@@ -21,14 +21,14 @@ import LessonList from "./component/Lesson/LessonList.jsx";
 import QuizView from "./component/Quiz/Quizview.jsx";
 import LessonComplete from "./component/Lesson/LessonComplete.jsx";
 import UserProfile from "./component/Demo/UserProfile.jsx";
-import StudyStats from "./component/StudyStats/StudyStats.jsx";
-import Achievements from "./component/Achievement/Achievements.jsx";
-import SmartReview from "./component/Review/SmartReview.jsx";
-import ReviewSession from "./component/Review/ReviewSession.jsx";
-import TestExam from "./component/Test/TestExam.jsx";
-import TestResults from "./component/Test/TestResults.jsx";
-import {DashboardLayout} from "./component/Layout/DashBoardLayout.jsx";
-import Record from "./component/Record/RecordingModal .jsx";
+// import StudyStats from "./component/StudyStats/StudyStats.jsx";
+// import Achievements from "./component/Achievement/Achievements.jsx";
+// import SmartReview from "./component/Review/SmartReview.jsx";
+// import ReviewSession from "./component/Review/ReviewSession.jsx";
+// import TestExam from "./component/Test/TestExam.jsx";
+// import TestResults from "./component/Test/TestResults.jsx";
+// import {DashboardLayout} from "./component/Layout/DashBoardLayout.jsx";
+// import Record from "./component/Record/RecordingModal .jsx";
 
 function App() {
     return (
