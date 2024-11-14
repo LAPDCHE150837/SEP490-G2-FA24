@@ -76,7 +76,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         </div>
                         <div>
                             <h1 className="text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                                Minano Nihongo
+                                 NihonGo!
                             </h1>
                             <p className="text-xs text-gray-500">Japanese Learning</p>
                         </div>
