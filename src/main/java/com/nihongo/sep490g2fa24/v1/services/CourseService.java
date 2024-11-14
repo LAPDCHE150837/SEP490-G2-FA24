@@ -2,6 +2,7 @@ package com.nihongo.sep490g2fa24.v1.services;
 
 import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
+import com.nihongo.sep490g2fa24.v1.repositories.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
-//    private final LessonRepository lessonRepository;
+    private final LessonRepository lessonRepository;
 
     @Transactional(readOnly = true)
     public List<Course> getAllCourses() {

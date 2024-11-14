@@ -20,7 +20,15 @@ import LessonDetail from "./component/Lesson/LessonDetail.jsx";
 import LessonList from "./component/Lesson/LessonList.jsx";
 import QuizView from "./component/Quiz/Quizview.jsx";
 import LessonComplete from "./component/Lesson/LessonComplete.jsx";
-import UserProfile from "./component/Demo/UserProfile.jsx"; // Assuming you have a Dashboard component
+import UserProfile from "./component/Demo/UserProfile.jsx";
+import StudyStats from "./component/StudyStats/StudyStats.jsx";
+import Achievements from "./component/Achievement/Achievements.jsx";
+import SmartReview from "./component/Review/SmartReview.jsx";
+import ReviewSession from "./component/Review/ReviewSession.jsx";
+import TestExam from "./component/Test/TestExam.jsx";
+import TestResults from "./component/Test/TestResults.jsx";
+import {DashboardLayout} from "./component/Layout/DashBoardLayout.jsx";
+import Record from "./component/Record/RecordingModal .jsx";
 
 function App() {
     return (
@@ -28,21 +36,33 @@ function App() {
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/landing" element={<LandingPage/>}/>
+                <Route path="/forgotPassword" element={<ForgotPassword/>}/>
             <Route path="/flashCardForStudent" element={<FlashCardForLearner/>}/>
             <Route path="/flashCardLession" element={<FlashCardLession/>}/>
             <Route path="/DBTeacher" element={<DashBoardForTeacher/>}/>
             <Route path="/courses" element={<Courses/>}/>
             <Route path="/course" element={<Course/>}/>
             <Route path="/alphabets" element={<Alphabets/>}/>
-            <Route path="/alphabet" element={<JapaneseAlphabet/>}/>
             <Route path="/userProfile" element={<UserProfile/>}/>
-            <Route path="/forgotPassword" element={<ForgotPassword/>}/>
-            <Route path="/courses/:courseId/lessons" element={<LessonList/>}/>
-            <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>}/>
-            <Route path="courses/:courseId/lessons/:lessonId/quiz" element={<QuizView/>}/>
-            <Route path="courses/:courseId/lessons/:lessonId/complete" element={<LessonComplete/>}/>
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
-            <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
+                <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
+                <Route element={<DashboardLayout/>}>
+                        <Route path="/course" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
+                        <Route path="/alphabet" element={<JapaneseAlphabet/>}/>
+                        <Route path="/courses/:courseId/lessons" element={<LessonList/>}/>
+                        <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>}/>
+                        <Route path="courses/:courseId/lessons/:lessonId/quiz" element={<QuizView/>}/>
+                        <Route path="courses/:courseId/lessons/:lessonId/complete" element={<LessonComplete/>}/>
+                        <Route path="/flashcards" element={<FlashcardSetList/>}/>
+                        <Route path="/flashcards/:setId/study" element={<FlashcardStudy/>}/>
+                        <Route path="/flashcards/:setId/edit" element={<FlashcardEditor/>}/>
+                        <Route path="/statistics" element={<StudyStats/>}/>
+                        <Route path="/achievements" element={<Achievements/>}/>
+                        <Route path="/review" element={<SmartReview/>}/>
+                        <Route path="/review/session" element={<ReviewSession/>}/>
+                        <Route path="/courses/:courseId/lessons/:lessonId/test" element={<TestExam/>}/>
+                        <Route path="/courses/:courseId/lessons/:lessonId/test/result" element={<TestResults/>}/>
+                </Route>
+
             <Route path="/" element={<Navigate to="/landing" replace/>}/>
 
         </Routes>
