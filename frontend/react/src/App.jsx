@@ -23,6 +23,7 @@ import ReviewSession from "./component/Review/ReviewSession.jsx";
 import TestExam from "./component/Test/TestExam.jsx";
 import TestResults from "./component/Test/TestResults.jsx";
 import Record from "./component/Record/RecordingModal .jsx";
+import UserProfile from "./component/Demo/UserProfile.jsx";
 
 
 function App() {
@@ -32,9 +33,10 @@ function App() {
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/forgotPassword" element={<ForgotPassword/>}/>
+            <Route path="/userProfile" element={<UserProfile/>}/>
             <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
             <Route element={<DashboardLayout/>}>
-                <Route path="/course" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
+                <Route path="/course" element={<Dashboard/>}/>
                 <Route path="/alphabet" element={<JapaneseAlphabet/>}/>
                 <Route path="/courses/:courseId/lessons" element={<LessonList/>}/>
                 <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>}/>
