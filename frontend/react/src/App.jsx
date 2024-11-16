@@ -24,6 +24,7 @@ import TestExam from "./component/Test/TestExam.jsx";
 import TestResults from "./component/Test/TestResults.jsx";
 import Record from "./component/Record/RecordingModal .jsx";
 import UserProfile from "./component/Demo/UserProfile.jsx";
+import Quiz from "./component/Demo/Quiz.jsx";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Routes>
             <Route path="/landing" element={<LandingPage/>}/>
             <Route path="/login" element={<LoginPage/>}/>
+            {/*<Route path="/quizz" element={<Quiz/>}/>*/}
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/forgotPassword" element={<ForgotPassword/>}/>
             <Route path="/userProfile" element={<UserProfile/>}/>
