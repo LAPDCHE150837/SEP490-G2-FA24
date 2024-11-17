@@ -41,7 +41,7 @@ const CourseProgress = ({ courseId, modules }) => {
                         width: `${progressPercentage}%`,
                         height: '20px',
                         backgroundColor: '#4caf50',
-                        borderRadius: '8px',
+                        borderRadius: '9px',
                     }}
                 ></div>
             </div>
