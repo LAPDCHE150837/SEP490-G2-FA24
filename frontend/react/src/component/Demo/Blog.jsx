@@ -69,6 +69,7 @@ const BlogManager = () => {
                 )}
             </div>
 
+
             <h3>Blog Posts</h3>
             <ul>
                 {posts.map((post) => (
