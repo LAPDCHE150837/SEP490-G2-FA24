@@ -6,10 +6,10 @@ const UserProfile = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [userData, setUserData] = useState({
         avatarUrl: 'https://via.placeholder.com/150',
-        username: '',
-        email: '',
-        phone: '',
-        address: '',
+        username: 'xuanduong',
+        email: 'tranduongw@gmail.com',
+        phone: '0917741973',
+        address: 'hà nội',
         courses: [''],
     });
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ const UserProfile = () => {
     };
 
     const handleBack = () => {
-        navigate('/dashboard');
+        navigate('/course');
     };
 
     const handleChangePassword = () => {
