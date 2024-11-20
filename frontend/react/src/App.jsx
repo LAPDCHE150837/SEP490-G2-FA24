@@ -22,8 +22,9 @@ import SmartReview from "./component/Review/SmartReview.jsx";
 import ReviewSession from "./component/Review/ReviewSession.jsx";
 import TestExam from "./component/Test/TestExam.jsx";
 import TestResults from "./component/Test/TestResults.jsx";
+import Record from "./component/Record/RecordingModal .jsx";
 import UserProfile from "./component/Demo/UserProfile.jsx";
-// import Quiz from "./component/Demo/Quiz.jsx";
+import Quiz from "./component/Demo/Quiz.jsx";
 
 
 function App() {
