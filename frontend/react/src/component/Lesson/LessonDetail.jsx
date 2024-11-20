@@ -183,7 +183,7 @@ const LessonDetail = () => {
                                 </p>
                             </div>
                             <div>
-                                <h4 className="font-semibold text-gray-700">Meaning:</h4>
+                                <h4 className="font-semibold text-gray-700">Nghĩa:</h4>
                                 <p className="text-gray-600">
                                     {kanji.meaning}
                                     <button

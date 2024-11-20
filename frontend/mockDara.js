@@ -33,7 +33,7 @@ export const MOCK_COURSES = [
                         {
                             id: 1,
                             type: "vocabulary",
-                            question: "わたし means ___.",
+                            question: "わたし nghĩa là ___.",
                             options: ["Tôi", "Bạn", "Anh ấy", "Cô ấy"],
                             correctAnswer: "Tôi",
                             translation: "わたし có nghĩa là gì?",
@@ -51,7 +51,7 @@ export const MOCK_COURSES = [
                         {
                             id: 3,
                             type: "kanji",
-                            question: "What is the reading of 私?",
+                            question: "Đâu là các đọc đúng của 私?",
                             options: ["わたし", "あなた", "かれ", "かのじょ"],
                             correctAnswer: "わたし",
                             translation: "Cách đọc của 私 là gì?",
@@ -60,16 +60,16 @@ export const MOCK_COURSES = [
                         {
                             id: 4,
                             type: "vocabulary",
-                            question: "はじめまして is used when ___.",
-                            options: ["Meeting someone for the first time", "Saying goodbye", "Asking for directions", "Ordering food"],
-                            correctAnswer: "Meeting someone for the first time",
+                            question: "はじめまして được dùng khi ___.",
+                            options: ["Khi gặp ai đó lần đầu tiên", "Khi chào tạm biệt", "Khi đặt câu hỏi", "Khi đặt đồ ăn"],
+                            correctAnswer: "Khi gặp ai đó lần đầu tiên",
                             translation: "はじめまして được sử dụng khi nào?",
                             explanation: "はじめまして được sử dụng khi gặp ai đó lần đầu tiên"
                         },
                         {
                             id: 5,
                             type: "grammar",
-                            question: "Choose the correct introduction: _____",
+                            question: "Hãy chọn cấu trúc đúng cho việc giới thiệu : _____",
                             options: ["わたしは田中です", "田中はわたしです", "です田中はわたし", "わたしです田中は"],
                             correctAnswer: "わたしは田中です",
                             translation: "Chọn cách giới thiệu đúng",
@@ -78,7 +78,7 @@ export const MOCK_COURSES = [
                         {
                             id: 6,
                             type: "vocabulary",
-                            question: "あなた means ___.",
+                            question: "あなた có nghĩa là ___.",
                             options: ["Bạn", "Tôi", "Họ", "Chúng tôi"],
                             correctAnswer: "Bạn",
                             translation: "あなた có nghĩa là gì?",
@@ -87,7 +87,7 @@ export const MOCK_COURSES = [
                         {
                             id: 7,
                             type: "grammar",
-                            question: "Choose the correct sentence: _____ と申します。",
+                            question: "Hãy chọn câu đúng: _____ と申します。",
                             options: ["たなか", "たなかは", "たなかを", "たなかに"],
                             correctAnswer: "たなか",
                             translation: "Chọn câu đúng: ___ と申します。",
@@ -96,7 +96,7 @@ export const MOCK_COURSES = [
                         {
                             id: 8,
                             type: "vocabulary",
-                            question: "What does どうぞよろしく mean?",
+                            question: "Câu どうぞよろしく có nghĩa là gì",
                             options: ["Rất vui được gặp", "Tạm biệt", "Xin lỗi", "Cảm ơn"],
                             correctAnswer: "Rất vui được gặp",
                             translation: "どうぞよろしく có nghĩa là gì?",
@@ -105,7 +105,7 @@ export const MOCK_COURSES = [
                         {
                             id: 9,
                             type: "kanji",
-                            question: "The kanji 名 means ___.",
+                            question: "Từ kanji 名 có nghĩa là ___.",
                             options: ["Tên", "Người", "Học", "Nói"],
                             correctAnswer: "Tên",
                             translation: "Kanji 名 có nghĩa là gì?",
@@ -114,7 +114,7 @@ export const MOCK_COURSES = [
                         {
                             id: 10,
                             type: "grammar",
-                            question: "Complete: お_____は田中です。",
+                            question: "Chọn 1 từ để hoàn thành câu sau: お_____は田中です。",
                             options: ["なまえ", "ひと", "かいわ", "ともだち"],
                             correctAnswer: "なまえ",
                             translation: "Hoàn thành: Tên là Tanaka.",
@@ -148,7 +148,7 @@ export const MOCK_COURSES = [
                         {
                             id: 1,
                             type: "vocabulary",
-                            question: "わたし means ___.",
+                            question: "わたし có nghĩa là ___.",
                             options: ["Tôi", "Bạn", "Anh ấy", "Cô ấy"],
                             correctAnswer: "Tôi",
                             translation: "わたし có nghĩa là gì?",
@@ -274,7 +274,7 @@ export const MOCK_COURSES = [
                         {
                             id: 1,
                             type: "vocabulary",
-                            question: "わたし means ___.",
+                            question: "わたし có nghĩa là ___. ___.",
                             options: ["Tôi", "Bạn", "Anh ấy", "Cô ấy"],
                             correctAnswer: "Tôi",
                             translation: "わたし có nghĩa là gì?",
@@ -292,7 +292,7 @@ export const MOCK_COURSES = [
                         {
                             id: 3,
                             type: "kanji",
-                            question: "What is the reading of 私?",
+                            question: "Đâu là các đọc đúng của 私?",
                             options: ["わたし", "あなた", "かれ", "かのじょ"],
                             correctAnswer: "わたし",
                             translation: "Cách đọc của 私 là gì?",
@@ -301,16 +301,16 @@ export const MOCK_COURSES = [
                         {
                             id: 4,
                             type: "vocabulary",
-                            question: "はじめまして is used when ___.",
-                            options: ["Meeting someone for the first time", "Saying goodbye", "Asking for directions", "Ordering food"],
-                            correctAnswer: "Meeting someone for the first time",
+                            question: "はじめまして được dùng khi ___.",
+                            options: ["Khi gặp ai đó lần đầu tiên", "Khi nói chào tạm biệt", "Khi nhờ giúp đỡ", "Khi đặt đồ ăn"],
+                            correctAnswer: "Khi gặp ai đó lần đầu tiên",
                             translation: "はじめまして được sử dụng khi nào?",
                             explanation: "はじめまして được sử dụng khi gặp ai đó lần đầu tiên"
                         },
                         {
                             id: 5,
                             type: "grammar",
-                            question: "Choose the correct introduction: _____",
+                            question: "Hãy chọn cấu trúc đúng cho việc giới thiệu : _____",
                             options: ["わたしは田中です", "田中はわたしです", "です田中はわたし", "わたしです田中は"],
                             correctAnswer: "わたしは田中です",
                             translation: "Chọn cách giới thiệu đúng",
@@ -319,7 +319,7 @@ export const MOCK_COURSES = [
                         {
                             id: 6,
                             type: "vocabulary",
-                            question: "あなた means ___.",
+                            question: "あなた nghĩa là ___.",
                             options: ["Bạn", "Tôi", "Họ", "Chúng tôi"],
                             correctAnswer: "Bạn",
                             translation: "あなた có nghĩa là gì?",
@@ -328,7 +328,7 @@ export const MOCK_COURSES = [
                         {
                             id: 7,
                             type: "grammar",
-                            question: "Choose the correct sentence: _____ と申します。",
+                            question: "Hãy chọn câu đúng: _____ と申します。",
                             options: ["たなか", "たなかは", "たなかを", "たなかに"],
                             correctAnswer: "たなか",
                             translation: "Chọn câu đúng: ___ と申します。",
@@ -337,7 +337,7 @@ export const MOCK_COURSES = [
                         {
                             id: 8,
                             type: "vocabulary",
-                            question: "What does どうぞよろしく mean?",
+                            question: "Câu どうぞよろしく có nghĩa là gì?",
                             options: ["Rất vui được gặp", "Tạm biệt", "Xin lỗi", "Cảm ơn"],
                             correctAnswer: "Rất vui được gặp",
                             translation: "どうぞよろしく có nghĩa là gì?",
@@ -346,7 +346,7 @@ export const MOCK_COURSES = [
                         {
                             id: 9,
                             type: "kanji",
-                            question: "The kanji 名 means ___.",
+                            question: "Từ kanji 名 có nghĩa là ___.",
                             options: ["Tên", "Người", "Học", "Nói"],
                             correctAnswer: "Tên",
                             translation: "Kanji 名 có nghĩa là gì?",
@@ -355,7 +355,7 @@ export const MOCK_COURSES = [
                         {
                             id: 10,
                             type: "grammar",
-                            question: "Complete: お_____は田中です。",
+                            question: "Hoàn thành câu: お_____は田中です。",
                             options: ["なまえ", "ひと", "かいわ", "ともだち"],
                             correctAnswer: "なまえ",
                             translation: "Hoàn thành: Tên là Tanaka.",
@@ -389,7 +389,7 @@ export const MOCK_COURSES = [
                         {
                             id: 1,
                             type: "vocabulary",
-                            question: "わたし means ___.",
+                            question: "わたし có nghĩa là ___. ___.",
                             options: ["Tôi", "Bạn", "Anh ấy", "Cô ấy"],
                             correctAnswer: "Tôi",
                             translation: "わたし có nghĩa là gì?",
@@ -407,7 +407,7 @@ export const MOCK_COURSES = [
                         {
                             id: 3,
                             type: "kanji",
-                            question: "What is the reading of 私?",
+                            question: "Đâu là các đọc đúng của 私?",
                             options: ["わたし", "あなた", "かれ", "かのじょ"],
                             correctAnswer: "わたし",
                             translation: "Cách đọc của 私 là gì?",
@@ -416,16 +416,16 @@ export const MOCK_COURSES = [
                         {
                             id: 4,
                             type: "vocabulary",
-                            question: "はじめまして is used when ___.",
-                            options: ["Meeting someone for the first time", "Saying goodbye", "Asking for directions", "Ordering food"],
-                            correctAnswer: "Meeting someone for the first time",
+                            question: "はじめまして được dùng khi ___.",
+                            options: ["Khi gặp ai đó lần đầu tiên", "Khi nói chào tạm biệt", "Khi nhờ giúp đỡ", "Khi đặt đồ ăn"],
+                            correctAnswer: "Khi gặp ai đó lần đầu tiên",
                             translation: "はじめまして được sử dụng khi nào?",
                             explanation: "はじめまして được sử dụng khi gặp ai đó lần đầu tiên"
                         },
                         {
                             id: 5,
                             type: "grammar",
-                            question: "Choose the correct introduction: _____",
+                            question: "Hãy chọn cấu trúc đúng cho việc giới thiệu : _____",
                             options: ["わたしは田中です", "田中はわたしです", "です田中はわたし", "わたしです田中は"],
                             correctAnswer: "わたしは田中です",
                             translation: "Chọn cách giới thiệu đúng",
@@ -434,7 +434,7 @@ export const MOCK_COURSES = [
                         {
                             id: 6,
                             type: "vocabulary",
-                            question: "あなた means ___.",
+                            question: "あなた nghĩa là ___.",
                             options: ["Bạn", "Tôi", "Họ", "Chúng tôi"],
                             correctAnswer: "Bạn",
                             translation: "あなた có nghĩa là gì?",
@@ -443,7 +443,7 @@ export const MOCK_COURSES = [
                         {
                             id: 7,
                             type: "grammar",
-                            question: "Choose the correct sentence: _____ と申します。",
+                            question: "Hãy chọn câu đúng để hoàn thành câu sau: _____ と申します。",
                             options: ["たなか", "たなかは", "たなかを", "たなかに"],
                             correctAnswer: "たなか",
                             translation: "Chọn câu đúng: ___ と申します。",
@@ -452,7 +452,7 @@ export const MOCK_COURSES = [
                         {
                             id: 8,
                             type: "vocabulary",
-                            question: "What does どうぞよろしく mean?",
+                            question: "Câu どうぞよろしく có nghĩa là gì ?",
                             options: ["Rất vui được gặp", "Tạm biệt", "Xin lỗi", "Cảm ơn"],
                             correctAnswer: "Rất vui được gặp",
                             translation: "どうぞよろしく có nghĩa là gì?",
@@ -461,7 +461,7 @@ export const MOCK_COURSES = [
                         {
                             id: 9,
                             type: "kanji",
-                            question: "The kanji 名 means ___.",
+                            question: "Từ kanji 名 có nghĩa là gì ___.",
                             options: ["Tên", "Người", "Học", "Nói"],
                             correctAnswer: "Tên",
                             translation: "Kanji 名 có nghĩa là gì?",
@@ -470,7 +470,7 @@ export const MOCK_COURSES = [
                         {
                             id: 10,
                             type: "grammar",
-                            question: "Complete: お_____は田中です。",
+                            question: "Hoàn thành câu sau: お_____は田中です。",
                             options: ["なまえ", "ひと", "かいわ", "ともだち"],
                             correctAnswer: "なまえ",
                             translation: "Hoàn thành: Tên là Tanaka.",
