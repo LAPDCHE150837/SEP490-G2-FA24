@@ -57,10 +57,12 @@ class TestQuestionServiceDiffblueTest {
         course.setCreatedAt(LocalDate.of(1970, 1, 1).atStartOfDay());
         course.setDescription("The characteristics of someone or something");
         course.setId("42");
+
         course.setImageUrl("https://example.org/example");
         course.setLevel("Level");
         course.setStatus(true);
         course.setTitle("Dr");
+
         course.setTotalLessons(1);
         course.setUpdatedAt(LocalDate.of(1970, 1, 1).atStartOfDay());
 
