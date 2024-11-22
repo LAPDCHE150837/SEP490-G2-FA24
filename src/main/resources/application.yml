@@ -3,7 +3,7 @@ cors:
   allowed-methods: "*"
 spring:
   application:
-    name: NihonGo-Admin
+    name: NihonGO! Learning System
   main:
     allow-bean-definition-overriding: true
   datasource:
