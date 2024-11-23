@@ -1,6 +1,5 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
-
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
@@ -66,13 +65,13 @@ public class AuthenController {
                                                @RequestBody ChangePasswordRequest changePasswordRequest,
                                                final HttpServletResponse response) {
         authenService.resetPassword(token, response, changePasswordRequest);
-        return BaseApiResponse.succeed();
+         return BaseApiResponse.succeed();
     }
 
     //Oauth2
     // TODO dang fix bug
     @PostMapping("/token")
     public BaseApiResponse<LoginResponse> getAccessToken(OAuth2AuthenticationToken authentication) {
-        return BaseApiResponse.succeed(authenService.login(authentication));
+         return BaseApiResponse.succeed(authenService.login(authentication));
     }
 }
