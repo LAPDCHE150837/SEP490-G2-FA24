@@ -23,6 +23,7 @@ public class TestService {
         return testRepository.findAll().stream()
                 .map(testMapper::toDTO)
                 .collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)
@@ -31,6 +32,7 @@ public class TestService {
                 .map(testMapper::toDTO)
                 .orElseThrow(() -> new RuntimeException("Test not found"));
     }
+
 
     @Transactional
     public Test createTest(Test test) {
