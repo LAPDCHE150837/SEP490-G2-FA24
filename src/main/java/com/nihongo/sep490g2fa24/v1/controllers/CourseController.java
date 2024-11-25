@@ -7,14 +7,13 @@ import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.services.CourseService;
 import com.nihongo.sep490g2fa24.v1.services.impl.LessonService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/course")
+@RequestMapping("/api/v1/courses")
 @RequiredArgsConstructor
 public class CourseController {
 
@@ -68,10 +67,10 @@ public class CourseController {
 
 
     @PutMapping("/{courseId}/lessons/reorder")
-    public ResponseEntity<Void> reorderLessons(
+    public BaseApiResponse<Void> reorderLessons(
             @PathVariable String courseId,
             @RequestBody List<String> lessonIds) {
         lessonService.reorderLessons(courseId, lessonIds);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }
