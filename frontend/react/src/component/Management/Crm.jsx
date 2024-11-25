@@ -8,7 +8,7 @@ import {
     Plus, Filter, MoreHorizontal, ArrowRight, X
 } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
-import logo from "../../assets/japan.jpg";
+import logo from "../../assets/japan.png";
 
 // Layout Component
 const CRMLayout = ({ children }) => {

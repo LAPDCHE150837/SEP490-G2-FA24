@@ -4,7 +4,7 @@ import LoginPage from "./component/Authentication/Login.jsx";
 import Dashboard from "./component/Shared/DashBoard.jsx";
 import RegisterPage from "./component/Authentication/Register.jsx";
 import LandingPage from "./component/LandingPage.jsx";
-import ProtectedRoute from "./component/Shared/ProtectedRoute.jsx";
+import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
 import ForgotPassword from "./component/Authentication/ForgotPassword.jsx";
 import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
