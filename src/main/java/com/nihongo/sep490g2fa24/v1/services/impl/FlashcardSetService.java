@@ -3,11 +3,14 @@ package com.nihongo.sep490g2fa24.v1.services.impl;
 import com.nihongo.sep490g2fa24.dtoMapper.FlashcardSetMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.FlashcardSetDTO;
 import com.nihongo.sep490g2fa24.v1.model.FlashcardSet;
+import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.FlashcardSetRepository;
+import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 public class FlashcardSetService {
     private final FlashcardSetRepository setRepository;
     private final FlashcardSetMapper setMapper;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<FlashcardSetDTO> getAllSets() {
@@ -32,25 +36,30 @@ public class FlashcardSetService {
     }
 
     @Transactional
-    public FlashcardSet createSet(FlashcardSet set) {
+    public FlashcardSet createSet(FlashcardSet set, String req) {
+
+        User user = userRepository.findByUsername(req).orElseThrow(() -> new RuntimeException("User not found")); ;
+        set.setUser(user);
+
         return setRepository.save(set);
     }
 
     @Transactional
     public FlashcardSet updateSet(String id, FlashcardSet set) {
+
         FlashcardSet existingSet = setRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flashcard set not found"));
 
         existingSet.setTitle(set.getTitle());
         existingSet.setDescription(set.getDescription());
         existingSet.setCategory(set.getCategory());
-        existingSet.setTotalCards(set.getTotalCards());
-
+        existingSet.setUpdatedAt(LocalDateTime.now());
         return setRepository.save(existingSet);
     }
 
     @Transactional
     public void deleteSet(String id) {
+
         setRepository.deleteById(id);
     }
 }

@@ -3,8 +3,9 @@ package com.nihongo.sep490g2fa24.v1.controllers;
 import com.nihongo.sep490g2fa24.v1.dtos.course.FlashcardSetDTO;
 import com.nihongo.sep490g2fa24.v1.model.FlashcardSet;
 import com.nihongo.sep490g2fa24.v1.services.impl.FlashcardSetService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,28 +17,29 @@ public class FlashcardSetController {
     private final FlashcardSetService setService;
 
     @GetMapping
-    public ResponseEntity<List<FlashcardSetDTO>> getAllSets() {
-        return ResponseEntity.ok(setService.getAllSets());
+    public BaseApiResponse<List<FlashcardSetDTO>> getAllSets() {
+        return BaseApiResponse.succeed(setService.getAllSets());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FlashcardSetDTO> getSetById(@PathVariable String id) {
-        return ResponseEntity.ok(setService.getSetById(id));
+    public BaseApiResponse<FlashcardSetDTO> getSetById(@PathVariable String id) {
+        return BaseApiResponse.succeed(setService.getSetById(id));
     }
 
     @PostMapping
-    public ResponseEntity<FlashcardSet> createSet(@RequestBody FlashcardSet set) {
-        return ResponseEntity.ok(setService.createSet(set));
+    @PreAuthorize("hasRole('ROLE_ADMIN')  ")
+    public BaseApiResponse<FlashcardSet> createSet(@RequestBody FlashcardSet set, HttpServletRequest req) {
+        return BaseApiResponse.succeed(setService.createSet(set,req.getRemoteUser()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FlashcardSet> updateSet(@PathVariable String id, @RequestBody FlashcardSet set) {
-        return ResponseEntity.ok(setService.updateSet(id, set));
+    public BaseApiResponse<FlashcardSet> updateSet(@PathVariable String id, @RequestBody FlashcardSet set) {
+        return BaseApiResponse.succeed(setService.updateSet(id, set));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSet(@PathVariable String id) {
+    public BaseApiResponse<Void> deleteSet(@PathVariable String id) {
         setService.deleteSet(id);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }
