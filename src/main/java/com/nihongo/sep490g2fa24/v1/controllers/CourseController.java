@@ -74,3 +74,4 @@ public class CourseController {
         return BaseApiResponse.succeed();
     }
 }
+

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LessonService {
+
     private final LessonRepository lessonRepository;
     private final CourseRepository courseRepository;
     private final LessonMapper lessonMapper;
@@ -51,11 +52,14 @@ public class LessonService {
     }
 
     @Transactional
-    public Lesson updateLesson(String id, LessonListDTO lessonDTO) {
+    public Lesson updateLesson(String id, Lesson Lesson) {
         Lesson existingLesson = getLessonById(id);
 
-        existingLesson.setTitle(lessonDTO.getTitle());
-        existingLesson.setDescription(lessonDTO.getDescription());
+        existingLesson.setCourse(Lesson.getCourse());
+        existingLesson.setTitle(Lesson.getTitle());
+        existingLesson.setDescription(Lesson.getDescription());
+        existingLesson.setStatus(Lesson.getStatus());
+        existingLesson.setOrderIndex(Lesson.getOrderIndex());
 
         return lessonRepository.save(existingLesson);
     }
@@ -65,9 +69,7 @@ public class LessonService {
         Lesson lesson = getLessonById(id);
         Course course = lesson.getCourse();
 
-        // Soft delete
-        lesson.setStatus(false);
-        lessonRepository.save(lesson);
+
 
         // Update course total lessons
         course.setTotalLessons(course.getTotalLessons() - 1);
@@ -81,6 +83,7 @@ public class LessonService {
             remainingLesson.setOrderIndex(remainingLesson.getOrderIndex() - 1);
             lessonRepository.save(remainingLesson);
         });
+        lessonRepository.delete(lesson);
     }
 
     @Transactional
