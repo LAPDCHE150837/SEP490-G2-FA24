@@ -27,11 +27,15 @@ import LessonPage from "./component/Management/Lesson/LessonPage.jsx";
 import GrammarPage from "./component/Management/Grammar/GrammarPage.jsx";
 import LessonDetailTabs from "./component/Management/Lesson/LessonPage.jsx";
 import FlashcardCRUD from "./component/FlashCard/FlashcardCRUD.jsx";
+import AddUser from "./component/Demo/AddUser.jsx";
+import ListUser from "./component/Demo/ListUser.jsx";
 
 
 function App() {
     return (
         <Routes>
+            <Route path="/listUser" element={<ListUser/>}/>
+            <Route path="/addUser" element={<AddUser/>}/>
             <Route path="/course_crud" element={<CoursePage/>}/>
             <Route path="/lesson_crud" element={<LessonPage/>}/>
             <Route path="/grammar_crud" element={<GrammarPage/>}/>
