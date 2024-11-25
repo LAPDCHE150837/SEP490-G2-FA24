@@ -21,7 +21,7 @@ const CRMLayout = ({ children }) => {
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
         { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud' },
         { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud'},
-        { name: 'Quản lí người dùng', icon: Users, path: '/user' },
+        { name: 'Quản lí người dùng', icon: Users, path: '/listUser' },
     ];
 
     const filteredNavigation = navigation.filter(
