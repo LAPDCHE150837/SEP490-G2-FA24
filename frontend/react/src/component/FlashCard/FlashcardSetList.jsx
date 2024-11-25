@@ -1,45 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, BookOpen, Clock, Target, MoreVertical, Edit, Trash, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import {DashboardLayout} from "../Layout/DashBoardLayout.jsx";
-
+import axios from "axios";
+const getAuthConfig = () => ({
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    },
+});
 const FlashcardSetList = () => {
     const navigate = useNavigate();
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null);
+    const [flashcardSets, setFlashcardSets] = useState([]);
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        category: '',
+        totalCards: 0
+    });
 
-    const flashcardSets = [
-        {
-            id: 1,
-            title: "N5 Basic Vocabulary",
-            cardCount: 50,
-            lastStudied: "2024-03-10",
-            masteryLevel: 75
-        },
-        {
-            id: 2,
-            title: "Common Kanji N5",
-            cardCount: 30,
-            lastStudied: "2024-03-09",
-            masteryLevel: 60
+    const [errors, setErrors] = useState({
+        title: '',
+        description: '',
+        category: ''
+    });
+
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {
+            title: '',
+            description: '',
+            category: ''
+        };
+
+        if (!formData.title.trim()) {
+            newErrors.title = 'Vui lòng nhập tên bộ thẻ';
+            isValid = false;
         }
-    ];
 
-    const handleActionClick = (e, setId) => {
-        e.stopPropagation(); // Prevent card click event
-        setActiveMenu(activeMenu === setId ? null : setId);
+        if (!formData.description.trim()) {
+            newErrors.description = 'Vui lòng nhập mô tả';
+            isValid = false;
+        }
+
+        if (!formData.category.trim()) {
+            newErrors.category = 'Vui lòng nhập danh mục';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
     };
 
-    const handleEdit = (e, setId) => {
-        e.stopPropagation(); // Prevent card click event
-        navigate(`/flashcards/${setId}/edit`);
+    const handleCreateSet = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        try {
+            await api.post('/flashcard-sets', formData);
+            setShowCreateModal(false);
+            fetchFlashcardSets();
+            setFormData({ title: '', description: '', category: '', totalCards: 0 });
+            setErrors({ title: '', description: '', category: '' });
+        } catch (error) {
+            console.error('Error creating flashcard set:', error);
+        }
+    };
+
+    const api = axios.create({
+        baseURL: 'http://localhost:8080/api/v1',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    useEffect(() => {
+        fetchFlashcardSets();
+    }, []);
+
+    const fetchFlashcardSets = async () => {
+        try {
+            const { data } = await api.get('/flashcard-sets');
+            setFlashcardSets(data.data);
+        } catch (error) {
+            console.error('Error fetching flashcard sets:', error);
+        }
+    };
+
+
+    const handleDelete = async (e, setId) => {
+        e.stopPropagation();
+        if (window.confirm('Bạn có chắc chắn muốn xóa bộ thẻ này?')) {
+            try {
+                await api.delete(`/flashcard-sets/${setId}`);
+                fetchFlashcardSets();
+            } catch (error) {
+                console.error('Error deleting flashcard set:', error);
+            }
+        }
         setActiveMenu(null);
     };
 
-    const handleDelete = (e, setId) => {
-        e.stopPropagation(); // Prevent card click event
-        // Implement delete confirmation modal
-        console.log('Delete set:', setId);
+    const handleEdit = (e, setId) => {
+        e.stopPropagation();
+        navigate(`/flashcards/${setId}/edit`);
         setActiveMenu(null);
     };
 
@@ -47,6 +112,17 @@ const FlashcardSetList = () => {
         e.stopPropagation();
         navigate(`/flashcards/${setId}/study`);
         setActiveMenu(null);
+    };
+// Format date to "DD/MM/YYYY"
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    };
+
+// Format date to "HH:mm DD/MM/YYYY"
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${formatDate(date)}`;
     };
 
     return (
@@ -68,67 +144,63 @@ const FlashcardSetList = () => {
                 {flashcardSets.map((set) => (
                     <div
                         key={set.id}
-                        className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
+                        className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6"
                     >
-                        {/* Action Menu Button */}
-                        <div className="absolute top-4 right-4">
-                            <button
-                                onClick={(e) => handleActionClick(e, set.id)}
-                                className="p-1 hover:bg-gray-100 rounded-full"
-                            >
-                                <MoreVertical size={20} className="text-gray-500" />
-                            </button>
-
-                            {/* Action Menu Dropdown */}
-                            {activeMenu === set.id && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
-                                    <button
-                                        onClick={(e) => handleStudy(e, set.id)}
-                                        className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center space-x-2"
-                                    >
-                                        <Play size={16} />
-                                        <span>Học ngay</span>
-                                    </button>
-                                    <button
-                                        onClick={(e) => handleEdit(e, set.id)}
-                                        className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center space-x-2"
-                                    >
-                                        <Edit size={16} />
-                                        <span>Chỉnh sửa</span>
-                                    </button>
-                                    <button
-                                        onClick={(e) => handleDelete(e, set.id)}
-                                        className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center space-x-2 text-red-600"
-                                    >
-                                        <Trash size={16} />
-                                        <span>Xóa</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Card Content */}
-                        <h3 className="text-lg font-semibold mb-4 pr-8">{set.title}</h3>
+                        <h3 className="text-lg font-semibold mb-4">{set.title}</h3>
                         <div className="space-y-3">
                             <div className="flex items-center text-gray-600">
-                                <BookOpen size={18} className="mr-2" />
-                                <span>{set.cardCount} thẻ</span>
+                                <BookOpen size={18} className="mr-2"/>
+                                <span>{set.totalCards} thẻ</span>
                             </div>
                             <div className="flex items-center text-gray-600">
-                                <Clock size={18} className="mr-2" />
-                                <span>Học lần cuối: {set.lastStudied}</span>
+                                <Clock size={18} className="mr-2"/>
+                                <span>Danh mục: {set.category}</span>
                             </div>
                             <div className="flex items-center text-gray-600">
-                                <Target size={18} className="mr-2" />
-                                <span>Độ thành thạo: {set.masteryLevel}%</span>
+                                <Target size={18} className="mr-2"/>
+                                <span>{set.description}</span>
                             </div>
-                        </div>
-                        <div className="mt-4">
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                    className="bg-green-500 rounded-full h-2"
-                                    style={{ width: `${set.masteryLevel}%` }}
-                                />
+                            <div className="flex items-center text-gray-600">
+                                <Clock size={18} className="mr-2"/>
+                                <span>Thời gian tạo {formatDateTime(set.createdAt)}</span>
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                                <Clock size={18} className="mr-2"/>
+                                <span>Lần cuối cập nhật {formatDateTime(set.updatedAt)}</span>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex space-x-2 mt-4">
+                                <button
+                                    onClick={() => navigate(`/flashcards/${set.id}/cards`)}
+                                    className="flex items-center space-x-1 px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                >
+                                    <BookOpen size={20}/>
+                                    <span>Xem thẻ</span>
+                                </button>
+                                {set.totalCards !== 0 ? (
+                                    <button
+                                        onClick={(e) => handleStudy(e, set.id)}
+                                        className="flex items-center space-x-1 px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                    >
+                                        <Play size={16}/>
+                                        <span>Học</span>
+                                    </button>
+                                ) : ""}
+                                <button
+                                    onClick={(e) => handleEdit(e, set.id)}
+                                    className="flex items-center space-x-1 px-3 py-1.5 bg-gray-500 text-white rounded hover:bg-gray-600"
+                                >
+                                    <Edit size={16}/>
+                                    <span>Sửa</span>
+                                </button>
+                                <button
+                                    onClick={(e) => handleDelete(e, set.id)}
+                                    className="flex items-center space-x-1 px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600"
+                                >
+                                    <Trash size={16}/>
+                                    <span>Xóa</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -140,31 +212,63 @@ const FlashcardSetList = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <h3 className="text-xl font-semibold mb-4">Tạo bộ thẻ mới</h3>
-                        <form className="space-y-4">
+                        <form onSubmit={handleCreateSet} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Tên bộ thẻ
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full border rounded-lg px-3 py-2"
+                                    value={formData.title}
+                                    onChange={(e) => {
+                                        setFormData({...formData, title: e.target.value});
+                                        if (errors.title) setErrors({...errors, title: ''});
+                                    }}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.title ? 'border-red-500' : ''}`}
                                     placeholder="Nhập tên bộ thẻ..."
                                 />
+                                {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Mô tả
                                 </label>
                                 <textarea
-                                    className="w-full border rounded-lg px-3 py-2"
+                                    value={formData.description}
+                                    onChange={(e) => {
+                                        setFormData({...formData, description: e.target.value});
+                                        if (errors.description) setErrors({...errors, description: ''});
+                                    }}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.description ? 'border-red-500' : ''}`}
                                     rows="3"
                                     placeholder="Nhập mô tả..."
                                 />
+                                {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Danh mục
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.category}
+                                    onChange={(e) => {
+                                        setFormData({...formData, category: e.target.value});
+                                        if (errors.category) setErrors({...errors, category: ''});
+                                    }}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.category ? 'border-red-500' : ''}`}
+                                    placeholder="Nhập danh mục..."
+                                />
+                                {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
                             </div>
                             <div className="flex justify-end space-x-3">
                                 <button
                                     type="button"
-                                    onClick={() => setShowCreateModal(false)}
+                                    onClick={() => {
+                                        setShowCreateModal(false);
+                                        setErrors({ title: '', description: '', category: '' });
+                                        setFormData({ title: '', description: '', category: '', totalCards: 0 });
+                                    }}
                                     className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                                 >
                                     Hủy
@@ -181,7 +285,6 @@ const FlashcardSetList = () => {
                 </div>
             )}
         </div>
-
     );
 };
 

@@ -20,10 +20,7 @@ public class FlashcardDTO {
     private String backReading;
     private String backMeaning;
     private String backExample;
-    private Integer reviewCount;
-    private LocalDate nextReview;
-    private Float easeFactor;
-    private Integer interval;
+    private String backExampleReading;
     private Date createdAt;
     private Date updatedAt;
 }
