@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class LessonController {
+
     private final LessonService lessonService;
     private final LessonMapper lessonMapper;
 
@@ -46,5 +47,16 @@ public class LessonController {
     @PostMapping
     public BaseApiResponse<Lesson> createLesson(@RequestBody Lesson lesson) {
         return BaseApiResponse.succeed(lessonService.createLesson(lesson));
+    }
+
+    @PutMapping("/{id}")
+    public BaseApiResponse<Lesson> updateLesson(@PathVariable String id, @RequestBody Lesson lesson) {
+        return BaseApiResponse.succeed(lessonService.updateLesson(id, lesson));
+    }
+
+    @DeleteMapping("/{id}")
+    public BaseApiResponse<Void> deleteLesson(@PathVariable String id) {
+        lessonService.deleteLesson(id);
+        return BaseApiResponse.succeed();
     }
 }
