@@ -3,7 +3,6 @@ package com.nihongo.sep490g2fa24.dtoMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.UserDTO;
 import com.nihongo.sep490g2fa24.v1.model.User;
 import org.springframework.stereotype.Component;
-
 import java.util.function.Function;
 
 @Component
@@ -19,5 +18,6 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getRole(),
                 user.getFlagActive()
         );
+
     }
 }
