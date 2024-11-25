@@ -1,23 +1,22 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name = "lession", schema = "nihongo")
+@Table(name = "lessons")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Lesson {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -67,5 +66,4 @@ public class Lesson {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
 }
