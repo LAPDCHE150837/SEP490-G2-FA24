@@ -16,30 +16,30 @@ public class QuestionOptionController {
     private final QuestionOptionService optionService;
 
     @GetMapping
-    public ResponseEntity<List<QuestionOptionDTO>> getAllOptions() {
-        return ResponseEntity.ok(optionService.getAllOptions());
+    public BaseApiResponse<List<QuestionOptionDTO>> getAllOptions() {
+        return BaseApiResponse.succeed(optionService.getAllOptions());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionOptionDTO> getOptionById(@PathVariable String id) {
-        return ResponseEntity.ok(optionService.getOptionById(id));
+    public BaseApiResponse<QuestionOptionDTO> getOptionById(@PathVariable String id) {
+        return BaseApiResponse.succeed(optionService.getOptionById(id));
     }
 
     @PostMapping
-    public ResponseEntity<QuestionOption> createOption(@RequestBody QuestionOption option) {
-        return ResponseEntity.ok(optionService.createOption(option));
+    public BaseApiResponse<QuestionOption> createOption(@RequestBody QuestionOption option) {
+        return BaseApiResponse.succeed(optionService.createOption(option));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionOption> updateOption(
+    public BaseApiResponse<QuestionOption> updateOption(
             @PathVariable String id,
             @RequestBody QuestionOption option) {
-        return ResponseEntity.ok(optionService.updateOption(id, option));
+        return BaseApiResponse.succeed(optionService.updateOption(id, option));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOption(@PathVariable String id) {
+    public BaseApiResponse<Void> deleteOption(@PathVariable String id) {
         optionService.deleteOption(id);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }
