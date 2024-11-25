@@ -4,7 +4,6 @@ import com.nihongo.sep490g2fa24.v1.dtos.course.VocabularyDTO;
 import com.nihongo.sep490g2fa24.v1.model.Vocabulary;
 import com.nihongo.sep490g2fa24.v1.services.impl.VocabularyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,28 +14,28 @@ public class VocabularyController {
     private final VocabularyService vocabularyService;
 
     @GetMapping
-    public ResponseEntity<List<VocabularyDTO>> getAllVocabularies() {
-        return ResponseEntity.ok(vocabularyService.getAllVocabularies());
+    public BaseApiResponse<List<VocabularyDTO>> getAllVocabularies() {
+        return BaseApiResponse.succeed(vocabularyService.getAllVocabularies());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VocabularyDTO> getVocabularyById(@PathVariable String id) {
-        return ResponseEntity.ok(vocabularyService.getVocabularyById(id));
+    public BaseApiResponse<VocabularyDTO> getVocabularyById(@PathVariable String id) {
+        return BaseApiResponse.succeed(vocabularyService.getVocabularyById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Vocabulary> createVocabulary(@RequestBody Vocabulary vocabulary) {
-        return ResponseEntity.ok(vocabularyService.createVocabulary(vocabulary));
+    public BaseApiResponse<Vocabulary> createVocabulary(@RequestBody Vocabulary vocabulary) {
+        return BaseApiResponse.succeed(vocabularyService.createVocabulary(vocabulary));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable String id, @RequestBody Vocabulary vocabulary) {
-        return ResponseEntity.ok(vocabularyService.updateVocabulary(id, vocabulary));
+    public BaseApiResponse<Vocabulary> updateVocabulary(@PathVariable String id, @RequestBody Vocabulary vocabulary) {
+        return BaseApiResponse.succeed(vocabularyService.updateVocabulary(id, vocabulary));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVocabulary(@PathVariable String id) {
+    public BaseApiResponse<Void> deleteVocabulary(@PathVariable String id) {
         vocabularyService.deleteVocabulary(id);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }
