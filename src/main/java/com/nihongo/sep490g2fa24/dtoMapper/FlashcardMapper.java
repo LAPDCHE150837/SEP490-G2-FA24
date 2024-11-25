@@ -21,10 +21,7 @@ public class FlashcardMapper {
                 .backReading(card.getBackReading())
                 .backMeaning(card.getBackMeaning())
                 .backExample(card.getBackExample())
-                .reviewCount(card.getReviewCount())
-                .nextReview(card.getNextReview())
-                .easeFactor(card.getEaseFactor())
-                .interval(card.getInterval())
+                .backExampleReading(card.getBackExampleReading())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())
                 .build();
@@ -40,10 +37,7 @@ public class FlashcardMapper {
                 .backReading(dto.getBackReading())
                 .backMeaning(dto.getBackMeaning())
                 .backExample(dto.getBackExample())
-                .reviewCount(dto.getReviewCount())
-                .nextReview(dto.getNextReview())
-                .easeFactor(dto.getEaseFactor())
-                .interval(dto.getInterval())
+                .backExampleReading(dto.getBackExampleReading())
                 .build();
     }
 
@@ -55,10 +49,7 @@ public class FlashcardMapper {
         card.setBackReading(dto.getBackReading());
         card.setBackMeaning(dto.getBackMeaning());
         card.setBackExample(dto.getBackExample());
-        card.setReviewCount(dto.getReviewCount());
-        card.setNextReview(dto.getNextReview());
-        card.setEaseFactor(dto.getEaseFactor());
-        card.setInterval(dto.getInterval());
+        card.setBackExampleReading(dto.getBackExampleReading());
     }
 }
 
