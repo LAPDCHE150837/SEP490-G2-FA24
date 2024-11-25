@@ -17,28 +17,28 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping
-    public ResponseEntity<List<TestDTO>> getAllTests() {
-        return ResponseEntity.ok(testService.getAllTests());
+    public BaseApiResponse<List<TestDTO>> getAllTests() {
+        return BaseApiResponse.succeed(testService.getAllTests());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestDTO> getTestById(@PathVariable String id) {
-        return ResponseEntity.ok(testService.getTestById(id));
+    public BaseApiResponse<TestDTO> getTestById(@PathVariable String id) {
+        return BaseApiResponse.succeed(testService.getTestById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Test> createTest(@RequestBody Test test) {
-        return ResponseEntity.ok(testService.createTest(test));
+    public BaseApiResponse<Test> createTest(@RequestBody Test test) {
+        return BaseApiResponse.succeed(testService.createTest(test));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Test> updateTest(@PathVariable String id, @RequestBody Test test) {
-        return ResponseEntity.ok(testService.updateTest(id, test));
+    public BaseApiResponse<Test> updateTest(@PathVariable String id, @RequestBody Test test) {
+        return BaseApiResponse.succeed(testService.updateTest(id, test));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTest(@PathVariable String id) {
+    public BaseApiResponse<Void> deleteTest(@PathVariable String id) {
         testService.deleteTest(id);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }

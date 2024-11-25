@@ -17,30 +17,30 @@ public class TestQuestionController {
     private final TestQuestionService questionService;
 
     @GetMapping
-    public ResponseEntity<List<TestQuestionDTO>> getAllQuestions() {
-        return ResponseEntity.ok(questionService.getAllQuestions());
+    public BaseApiResponse<List<TestQuestionDTO>> getAllQuestions() {
+        return BaseApiResponse.succeed(questionService.getAllQuestions());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestQuestionDTO> getQuestionById(@PathVariable String id) {
-        return ResponseEntity.ok(questionService.getQuestionById(id));
+    public BaseApiResponse<TestQuestionDTO> getQuestionById(@PathVariable String id) {
+        return BaseApiResponse.succeed(questionService.getQuestionById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TestQuestion> createQuestion(@RequestBody TestQuestion question) {
-        return ResponseEntity.ok(questionService.createQuestion(question));
+    public BaseApiResponse<TestQuestion> createQuestion(@RequestBody TestQuestion question) {
+        return BaseApiResponse.succeed(questionService.createQuestion(question));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TestQuestion> updateQuestion(
+    public BaseApiResponse<TestQuestion> updateQuestion(
             @PathVariable String id,
             @RequestBody TestQuestion question) {
-        return ResponseEntity.ok(questionService.updateQuestion(id, question));
+        return BaseApiResponse.succeed(questionService.updateQuestion(id, question));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQuestion(@PathVariable String id) {
+    public BaseApiResponse<Void> deleteQuestion(@PathVariable String id) {
         questionService.deleteQuestion(id);
-        return ResponseEntity.ok().build();
+        return BaseApiResponse.succeed();
     }
 }
