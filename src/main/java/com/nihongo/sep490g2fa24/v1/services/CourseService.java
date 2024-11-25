@@ -2,19 +2,18 @@ package com.nihongo.sep490g2fa24.v1.services;
 
 import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
-import com.nihongo.sep490g2fa24.v1.repositories.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class CourseService {
 
     private final CourseRepository courseRepository;
-    private final LessonRepository lessonRepository;
 
     @Transactional(readOnly = true)
     public List<Course> getAllCourses() {
@@ -50,7 +49,10 @@ public class CourseService {
         course.setDescription(courseDetails.getDescription());
         course.setLevel(courseDetails.getLevel());
         course.setImageUrl(courseDetails.getImageUrl());
-
+        course.setTotalLessons(courseDetails.getTotalLessons());
+        course.setStatus(courseDetails.getStatus());
+        course.setCreatedAt(courseDetails.getCreatedAt());
+        course.setUpdatedAt(courseDetails.getUpdatedAt());
         return courseRepository.save(course);
     }
 
@@ -59,7 +61,7 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         course.setStatus(false);
-        courseRepository.save(course);
+        courseRepository.delete(course);
     }
 }
 
