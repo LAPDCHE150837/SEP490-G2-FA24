@@ -8,7 +8,7 @@ import {
     Plus, Filter, MoreHorizontal, ArrowRight, X
 } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
-import logo from "../../assets/japan.png";
+import logo from "../../assets/japan.jpg";
 
 // Layout Component
 const CRMLayout = ({ children }) => {
@@ -21,7 +21,9 @@ const CRMLayout = ({ children }) => {
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
         { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud' },
         { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud'},
-        { name: 'Quản lí người dùng', icon: Users, path: '/listUser' },
+        { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test'},
+        { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question'},
+        { name: 'Quản lí người dùng', icon: Users, path: '/test' },
     ];
 
     const filteredNavigation = navigation.filter(
