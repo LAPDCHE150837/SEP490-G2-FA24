@@ -4,7 +4,7 @@ import LoginPage from "./component/Authentication/Login.jsx";
 import Dashboard from "./component/Shared/DashBoard.jsx";
 import RegisterPage from "./component/Authentication/Register.jsx";
 import LandingPage from "./component/LandingPage.jsx";
-import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
+import ProtectedRoute from "./component/Shared/ProtectedRoute.jsx";
 import ForgotPassword from "./component/Authentication/ForgotPassword.jsx";
 import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
@@ -27,15 +27,13 @@ import LessonPage from "./component/Management/Lesson/LessonPage.jsx";
 import GrammarPage from "./component/Management/Grammar/GrammarPage.jsx";
 import LessonDetailTabs from "./component/Management/Lesson/LessonPage.jsx";
 import FlashcardCRUD from "./component/FlashCard/FlashcardCRUD.jsx";
-import AddUser from "./component/Demo/AddUser.jsx";
-import ListUser from "./component/Demo/ListUser.jsx";
+import TestList from "./component/Management/Test/TestList.jsx";
+import QuestionList from "./component/Management/Question/QuestionList.jsx";
 
 
 function App() {
     return (
         <Routes>
-            <Route path="/listUser" element={<ListUser/>}/>
-            <Route path="/addUser" element={<AddUser/>}/>
             <Route path="/course_crud" element={<CoursePage/>}/>
             <Route path="/lesson_crud" element={<LessonPage/>}/>
             <Route path="/grammar_crud" element={<GrammarPage/>}/>
@@ -43,6 +41,8 @@ function App() {
             <Route path="/login" element={<LoginPage/>}/>
             <Route path="/register" element={<RegisterPage/>}/>
             <Route path="/forgotPassword" element={<ForgotPassword/>}/>
+            <Route path="/test" element={<TestList/>}/>
+            <Route path="/question" element={<QuestionList/>}/>
             <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
             <Route element={<DashboardLayout/>}>
                 <Route path="/flashcards/:setId/cards" element={<FlashcardCRUD/>}/>
