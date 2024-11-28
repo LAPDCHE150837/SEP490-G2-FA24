@@ -3,6 +3,7 @@ package com.nihongo.sep490g2fa24.v1.services.impl;
 import com.nihongo.sep490g2fa24.dtoMapper.QuestionOptionMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.QuestionOptionDTO;
 import com.nihongo.sep490g2fa24.v1.model.QuestionOption;
+import com.nihongo.sep490g2fa24.v1.model.TestQuestion;
 import com.nihongo.sep490g2fa24.v1.repositories.QuestionOptionRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.TestQuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,11 @@ public class QuestionOptionService {
 
     @Transactional
     public QuestionOption createOption(QuestionOption option) {
+        // Find and set the actual Question entity
+        TestQuestion question = questionRepository.findById(option.getQuestion().getId())
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+        option.setQuestion(question);
+
         return optionRepository.save(option);
     }
 
