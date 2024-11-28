@@ -49,7 +49,7 @@ const BlogManager = () => {
 
     return (
         <div>
-            <h2>Blog Manager</h2>
+            <h2>Blog Managers</h2>
             <div>
                 <input
                     type="text"
