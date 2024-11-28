@@ -47,4 +47,8 @@ public class TestQuestion {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<QuestionOption> options;
+    public void addOption(QuestionOption option) {
+        options.add(option);
+        option.setQuestion(this);
+    }
 }

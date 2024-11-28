@@ -30,7 +30,7 @@ public class Test {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "duration", nullable = true)
     private Integer duration;
 
     @Column(name = "pass_score", nullable = false)
