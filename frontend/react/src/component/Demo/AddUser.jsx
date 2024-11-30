@@ -5,13 +5,13 @@ import { Box, Button, TextField, Grid, Typography, Paper, MenuItem, Select, Inpu
 const AddUser = () => {
     const navigate = useNavigate();
     const [userForm, setUserForm] = useState({
-        name: "",
-        username: "",
-        password: "",
-        email: "",
-        role: "",
-        dob: "",
-        address: "",
+        name: "Trần Xuân Dương",
+        username: "duong123",
+        password: "1234",
+        email: "tranduongw@gmail.com",
+        role: "USER",
+        dob: "27/02/2002",
+        address: "Hà Nội",
     });
 
     const handleInputChange = (e) => {
