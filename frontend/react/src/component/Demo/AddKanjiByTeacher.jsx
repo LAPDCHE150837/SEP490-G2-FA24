@@ -31,11 +31,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                 </div>
             </div>
             <nav className="space-y-4">
-                <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📊</span><span>Thống kê</span></a>
-                <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📚</span><span>Lớp học của tôi</span></a>
+                <a href="statistics" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📊</span><span>Thống kê</span></a>
+                <a href="dashboard" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📚</span><span>Lớp học của tôi</span></a>
                 <a href="dashboard" className="flex items-center space-x-2 text-cyan-400 font-semibold"><span>🎓</span><span>Khóa học của tôi</span></a>
                 <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>❤️</span><span>Bài học video yêu thích</span></a>
-                <a href="flashCardLession" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🗂️</span><span>Flashcard</span></a>
+                <a href="flashcards" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>🗂️</span><span>Flashcard</span></a>
                 <a href="#" className="flex items-center space-x-2 text-gray-300 hover:text-white transition duration-150"><span>📝</span><span>Ghi chú của tôi</span></a>
             </nav>
             <div className="pt-6 border-t border-gray-700">
