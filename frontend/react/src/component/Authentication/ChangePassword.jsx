@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, ChevronDown, Bell, User, Menu, Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext.jsx";
 
+
 // Sidebar Component
 const Sidebar = ({ isOpen, onClose }) => {
     const { customer } = useAuth();
@@ -30,6 +31,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </div>
                 </div>
             </div>
+
             <nav className="space-y-4">
                 <NavItem icon="📊" text="Thống kê" />
                 <NavItem icon="📚" text="Lớp học của tôi" />
@@ -48,7 +50,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     );
 };
 
-// NavItem Component
+
 const NavItem = ({ icon, text, active }) => (
     <a
         href="#"
