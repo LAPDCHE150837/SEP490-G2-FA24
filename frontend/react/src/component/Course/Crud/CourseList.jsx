@@ -1,9 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CourseCard from "../CourseCard.jsx";
-import {MOCK_COURSES} from "../../../../../mockDara.js";
+import axios from 'axios';
+import {getCourse} from "../../../service/Course.js";
+
+// API
 
 export const CourseList = () => {
-    const [courses] = useState(MOCK_COURSES);
+    const [courses, setCourses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getCourse();
+                setCourses(response.data.data);
+
+            } catch (err) {
+                setError(err.response?.data?.message || 'Failed to fetch courses');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                    <p className="mt-4 text-gray-600">Loading courses...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-8 bg-red-50 rounded-lg">
+                <h3 className="text-red-600 font-medium">Error loading courses</h3>
+                <p className="text-red-500">{error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -20,10 +62,13 @@ export const CourseList = () => {
                         key={course.id}
                         id={course.id}
                         title={course.title}
-                        type={course.type}
-                        image={course.image}
-                        date={course.date}
-                        progress={course.progress}
+                        type={course.level}
+                        image={course.imageUrl}
+                        date={course.createdAt}
+                        description={course.description}
+                        status={course.status}
+                        totalLessons={course.totalLessons}
+                        progress={0} // Add progress when available from API
                     />
                 ))}
 
