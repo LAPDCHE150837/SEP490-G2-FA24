@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Data
@@ -36,10 +37,10 @@ public class TestResult {
     private Integer timeTaken;
 
     @Column(name = "completed_at")
-    private Date completedAt;
+    private LocalDateTime completedAt;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "testResult", cascade = CascadeType.ALL)
     private List<UserAnswer> userAnswers;

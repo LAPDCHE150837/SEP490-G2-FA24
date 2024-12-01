@@ -22,6 +22,7 @@ public class TestController {
     }
 
     @GetMapping("/{id}")
+
     public BaseApiResponse<TestDTO> getTestById(@PathVariable String id) {
         return BaseApiResponse.succeed(testService.getTestById(id));
     }
