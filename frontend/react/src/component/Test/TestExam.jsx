@@ -1,21 +1,112 @@
-import React, { useState } from 'react';
-import { Clock, Flag, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Clock, Flag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {MOCK_COURSES} from "../../../../mockDara.js";
 
 const TestExam = () => {
     const navigate = useNavigate();
-    const { courseId, lessonId } = useParams();
+    const { courseId, lessonId, testId } = useParams();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [markedQuestions, setMarkedQuestions] = useState(new Set());
-    const [remainingTime, setRemainingTime] = useState(30 * 60); // 30 minutes in seconds
+    const [examData, setExamData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [remainingTime, setRemainingTime] = useState(null);
+    const getAuthConfig = () => ({
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+            'Content-Type': 'application/json'
+        }
+    });
 
-    // Get test data from mock courses
-    const examData = MOCK_COURSES
-        .find(course => course.id === Number(courseId))
-        ?.lessons.find(lesson => lesson.id === Number(lessonId))
-        ?.test;
+    const formatTime = (seconds) => {
+        if (seconds === null) return "--:--";
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
+    useEffect(() => {
+        const fetchTest = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/tests/${testId}`, getAuthConfig());
+                if (!response.ok) {
+                    throw new Error('Failed to fetch test data');
+                }
+                const result = await response.json();
+                if (result.code === 'MSG000000') {
+                    setExamData({
+                        ...result.data,
+                        totalQuestions: result.data.questions.length
+                    });
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (err) {
+                setError(err.message);
+                if (err.status === 401) {
+                    navigate('/login');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTest();
+    }, [testId, navigate]);
+
+
+    useEffect(() => {
+        if (examData?.duration) {
+            setRemainingTime(examData.duration * 60);
+        }
+    }, [examData?.duration]);
+
+    useEffect(() => {
+        if (!remainingTime) return;
+
+        const timer = setInterval(() => {
+            setRemainingTime((prev) => {
+                if (prev <= 0) {
+                    clearInterval(timer);
+                    handleSubmit();
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [remainingTime]);
+
+
+    useEffect(() => {
+        if (remainingTime === 300) {
+            alert("Còn 5 phút nữa là hết giờ!");
+        } else if (remainingTime === 60) {
+            alert("Còn 1 phút nữa là hết giờ!");
+        }
+    }, [remainingTime]);
+
+
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen text-red-500">
+                Error: {error}
+            </div>
+        );
+    }
+
+    if (!examData) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                Không có bài kiểm tra nào cho bài học này
+            </div>
+        );
+    }
 
     const handleSelectAnswer = (questionId, answer) => {
         setSelectedAnswers(prev => ({
@@ -36,10 +127,70 @@ const TestExam = () => {
         });
     };
 
-    const handleSubmit = () => {
-        navigate(`/courses/${courseId}/lessons/${lessonId}/test/result`, {
-            state: { answers: selectedAnswers }
-        });
+    const handleSubmit = async () => {
+        const timeTaken = examData.duration * 60 - remainingTime;
+        const questions = examData.questions;
+        const correctAnswers = questions.reduce((count, question) => {
+            if (!selectedAnswers[question.id]) return count;
+            const correctOption = question.options?.find(opt => opt.isCorrect)?.optionText;
+            return selectedAnswers[question.id] === correctOption ? count + 1 : count;
+        }, 0);
+        const score = Math.round((correctAnswers / questions.length) * 100);
+
+        try {
+            // First, save the test result
+            const resultResponse = await fetch('http://localhost:8080/api/v1/test-results', {
+                method: 'POST',
+                ...getAuthConfig(),
+                body: JSON.stringify({
+                    test: { id: testId },
+                    score: score,
+                    timeTaken: Math.round(timeTaken)
+                })
+            });
+
+            if (!resultResponse.ok) {
+                throw new Error('Failed to save test results');
+            }
+
+
+
+            // Then save each user answer
+            for (const question of questions) {
+                if (!selectedAnswers[question.id]) continue; // Skip unanswered questions
+
+                const selectedOptionText = selectedAnswers[question.id];
+                const selectedOption = question.options.find(opt => opt.optionText === selectedOptionText);
+
+                if (!selectedOption) continue;
+
+                const userAnswer = {
+                    testResult: { id: "c839ee20-655a-4173-ab23-d2cd3b5ed6fe" },
+                    question: { id: question.id },
+                    selectedOption: { id: selectedOption.id },
+                    isCorrect: selectedOption.isCorrect
+                };
+
+                await fetch('http://localhost:8080/api/v1/user-answers', {
+                    method: 'POST',
+                    ...getAuthConfig(),
+                    body: JSON.stringify(userAnswer)
+                });
+            }
+
+
+            // Navigate to results page
+            navigate(`/courses/${courseId}/lessons/${lessonId}/test/${testId}/result`, {
+                state: {
+                    answers: selectedAnswers,
+                    timeTaken: timeTaken
+                }
+            });
+        } catch (error) {
+            alert('Failed to save test results. Please try again.');
+            console.error('Error saving test results:', error);
+        }
+
     };
 
     const currentQuestionData = examData.questions[currentQuestion];
@@ -48,21 +199,33 @@ const TestExam = () => {
         <div className="min-h-screen bg-gray-50">
             {/* Header */}
             <div className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-xl font-bold">{examData.title}</h1>
-                        {/* Timer */}
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2 text-gray-600">
-                                <Clock className="h-5 w-5" />
-                                <span>{Math.floor(remainingTime / 60)}:{(remainingTime % 60).toString().padStart(2, '0')}</span>
+                <div className="bg-white border-b">
+                    <div className="max-w-7xl mx-auto px-4 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                                <button
+                                    onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}/test`)}
+                                    className="flex items-center text-gray-600 hover:text-gray-900"
+                                >
+                                    <ChevronLeft className="h-5 w-5"/>
+                                    <span>Quay lại danh sách</span>
+                                </button>
+                                <h1 className="text-xl font-bold">{examData?.title}</h1>
                             </div>
-                            <button
-                                onClick={handleSubmit}
-                                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                            >
-                                Nộp bài
-                            </button>
+                            <div className="flex items-center space-x-4">
+                                <div className="flex items-center space-x-2 text-gray-600">
+                                    <Clock className="h-5 w-5"/>
+                                    <span className={`${remainingTime < 300 ? 'text-red-500 font-bold' : ''}`}>
+                                    {formatTime(remainingTime)}
+                                </span>
+                                </div>
+                                <button
+                                    onClick={handleSubmit}
+                                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                >
+                                    Nộp bài
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +247,7 @@ const TestExam = () => {
                                     : 'bg-gray-100 text-gray-600'
                             }`}
                         >
-                            <Flag className="h-4 w-4" />
+                            <Flag className="h-4 w-4"/>
                             <span>Đánh dấu</span>
                         </button>
                     </div>
@@ -92,24 +255,24 @@ const TestExam = () => {
                     {/* Question Content */}
                     <div className="space-y-6">
                         <div>
-                            <div className="text-sm text-blue-600 mb-2">{currentQuestionData.type === 'vocabulary' ? 'Từ vựng' : 'Ngữ pháp'}</div>
-                            <h2 className="text-lg font-medium mb-2">{currentQuestionData.question}</h2>
-                            <p className="text-gray-600 text-sm">{currentQuestionData.translation}</p>
+                            <div className="text-sm text-blue-600 mb-2">{currentQuestionData.questionType}</div>
+                            <h2 className="text-lg font-medium mb-2">{currentQuestionData.questionText}</h2>
+                            <p className="text-gray-600 text-sm">{currentQuestionData.questionTranslation}</p>
                         </div>
 
                         {/* Answer Options */}
                         <div className="space-y-3">
-                            {currentQuestionData.options.map((option, index) => (
+                            {currentQuestionData.options.map((option) => (
                                 <button
-                                    key={index}
-                                    onClick={() => handleSelectAnswer(currentQuestionData.id, option)}
+                                    key={option.id}
+                                    onClick={() => handleSelectAnswer(currentQuestionData.id, option.optionText)}
                                     className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                                        selectedAnswers[currentQuestionData.id] === option
+                                        selectedAnswers[currentQuestionData.id] === option.optionText
                                             ? 'border-blue-500 bg-blue-50'
                                             : 'border-gray-200 hover:border-gray-300'
                                     }`}
                                 >
-                                    {option}
+                                    {option.optionText}
                                 </button>
                             ))}
                         </div>
@@ -145,13 +308,13 @@ const TestExam = () => {
                                 key={q.id}
                                 onClick={() => setCurrentQuestion(index)}
                                 className={`
-                  w-10 h-10 rounded-lg flex items-center justify-center text-sm
-                  ${currentQuestion === index ? 'ring-2 ring-blue-500' : ''}
-                  ${selectedAnswers[q.id]
+                                    w-10 h-10 rounded-lg flex items-center justify-center text-sm
+                                    ${currentQuestion === index ? 'ring-2 ring-blue-500' : ''}
+                                    ${selectedAnswers[q.id]
                                     ? 'bg-blue-500 text-white'
                                     : 'bg-gray-100 text-gray-600'}
-                  ${markedQuestions.has(q.id) ? 'ring-2 ring-yellow-400' : ''}
-                `}
+                                    ${markedQuestions.has(q.id) ? 'ring-2 ring-yellow-400' : ''}
+                                `}
                             >
                                 {index + 1}
                             </button>
