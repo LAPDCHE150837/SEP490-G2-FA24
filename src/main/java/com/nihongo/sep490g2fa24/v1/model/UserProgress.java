@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -30,18 +32,12 @@ public class UserProgress {
     @Column(name = "completed")
     private Boolean completed = false;
 
-    @Column(name = "score")
-    private Integer score = 0;
-
-    @Column(name = "study_time")
-    private Integer studyTime = 0;
-
     @Column(name = "last_studied_at")
-    private Date lastStudiedAt;
+    private LocalDateTime lastStudiedAt;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 }
