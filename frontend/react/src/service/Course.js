@@ -9,7 +9,18 @@ const getAuthConfig = () => ({
 export const getCourse = async () => {
     try {
         return await axios.get(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/course`,
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/courses`,
+            getAuthConfig()
+        );
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const getCourseById = async (id) => {
+    try {
+        return await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/courses/${id}`,
             getAuthConfig()
         );
     } catch (e) {
