@@ -81,14 +81,18 @@ class TestResultServiceTest {
     @Test
     @DisplayName("Test getTestResultById() - Valid Case")
     void testGetTestResultById() {
+
         // Arrange
+
         when(testResultRepository.findById("42")).thenReturn(Optional.of(mockTestResult));
         when(testResultMapper.toDTO(mockTestResult)).thenReturn(mockTestResultDTO);
 
         // Act
+
         TestResultDTO result = testResultService.getTestResultById("42");
 
         // Assert
+
         assertNotNull(result);
         assertEquals("42", result.getId());
         verify(testResultRepository).findById("42");
@@ -97,10 +101,13 @@ class TestResultServiceTest {
     @Test
     @DisplayName("Test getTestResultById() - Not Found")
     void testGetTestResultById_NotFound() {
+
         // Arrange
+
         when(testResultRepository.findById("42")).thenReturn(Optional.empty());
 
         // Act & Assert
+
         RuntimeException exception = assertThrows(RuntimeException.class, () -> testResultService.getTestResultById("42"));
         assertEquals("Test Result not found", exception.getMessage());
         verify(testResultRepository).findById("42");
@@ -109,16 +116,20 @@ class TestResultServiceTest {
     @Test
     @DisplayName("Test getTestResultsByUserId() - Valid Case")
     void testGetTestResultsByUserId() {
+
         // Arrange
+
         List<TestResult> testResults = new ArrayList<>();
         testResults.add(mockTestResult);
         when(testResultRepository.findByUserId("42")).thenReturn(testResults);
         when(testResultMapper.toDTO(mockTestResult)).thenReturn(mockTestResultDTO);
 
         // Act
+
         List<TestResultDTO> result = testResultService.getTestResultsByUserId("42");
 
         // Assert
+
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(testResultRepository).findByUserId("42");
@@ -148,7 +159,10 @@ class TestResultServiceTest {
     @Test
     @DisplayName("Test updateTestResult() - Valid Case")
     void testUpdateTestResult() {
+
+
         // Arrange
+
         when(testResultRepository.findById("42")).thenReturn(Optional.of(mockTestResult));
         when(testResultRepository.save(mockTestResult)).thenReturn(mockTestResult);
 
@@ -157,9 +171,11 @@ class TestResultServiceTest {
         updatedTestResult.setTimeTaken(50);
 
         // Act
+
         TestResult result = testResultService.updateTestResult("42", updatedTestResult);
 
         // Assert
+
         assertNotNull(result);
         assertEquals(100, result.getScore());
         assertEquals(50, result.getTimeTaken());
@@ -171,9 +187,11 @@ class TestResultServiceTest {
     @DisplayName("Test deleteTestResult() - Valid Case")
     void testDeleteTestResult() {
         // Act
+
         testResultService.deleteTestResult("42");
 
         // Assert
+
         verify(testResultRepository).deleteById("42");
     }
 }
