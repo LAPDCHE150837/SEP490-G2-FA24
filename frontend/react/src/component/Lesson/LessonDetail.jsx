@@ -5,6 +5,7 @@ import {getLesson, getLessonById} from "../../service/Lesson.js";
 import axios from "axios";
 
 const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
+    const { courseId } = useParams();
     const [allLessons, setAllLessons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,7 +16,7 @@ const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
     useEffect(() => {
         const fetchLessons = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/v1/lessons');
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch lessons');
                 }

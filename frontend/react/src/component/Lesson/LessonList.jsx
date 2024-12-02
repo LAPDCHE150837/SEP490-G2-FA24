@@ -3,6 +3,7 @@ import { Book, GraduationCap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {getLesson} from "../../service/Lesson.js";
 import {getCourseById} from "../../service/Course.js";
+import axios from "axios";
 
 const LessonHeader = ({ course }) => (
     <div className="bg-white rounded-lg shadow-md p-6 mb-4">
@@ -90,7 +91,7 @@ const LessonList = () => {
     useEffect(() => {
         const fetchLessons = async () => {
             try {
-                const response = await getLesson();
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}`)
                 setLessons(response.data.data);
 
             } catch (err) {

@@ -4,7 +4,7 @@ import LoginPage from "./component/Authentication/Login.jsx";
 import Dashboard from "./component/Shared/DashBoard.jsx";
 import RegisterPage from "./component/Authentication/Register.jsx";
 import LandingPage from "./component/LandingPage.jsx";
-import ProtectedRoute from "./component/Shared/ProtectRoute.jsx";
+import ProtectedRoute from "./component/Shared/ProtectedRoute.jsx";
 import ForgotPassword from "./component/Authentication/ForgotPassword.jsx";
 import ChangePassword from "./component/Authentication/ChangePassword.jsx";
 import JapaneseAlphabet from "./component/Alphabet/Alphabet.jsx";
@@ -25,9 +25,12 @@ import {DashboardLayout} from "./component/Layout/DashBoardLayout.jsx";
 import CoursePage from "./component/Management/Course/CoursePage.jsx";
 import LessonPage from "./component/Management/Lesson/LessonPage.jsx";
 import GrammarPage from "./component/Management/Grammar/GrammarPage.jsx";
+import LessonDetailTabs from "./component/Management/Lesson/LessonPage.jsx";
 import FlashcardCRUD from "./component/FlashCard/FlashcardCRUD.jsx";
 import TestList from "./component/Management/Test/TestList.jsx";
 import QuestionList from "./component/Management/Question/QuestionList.jsx";
+import TestListUser from "./component/Test/TestList.jsx";
+
 
 function App() {
     return (
@@ -57,8 +60,9 @@ function App() {
                 <Route path="/achievements" element={<Achievements/>}/>
                 <Route path="/review" element={<SmartReview/>}/>
                 <Route path="/review/session" element={<ReviewSession/>}/>
-                <Route path="/courses/:courseId/lessons/:lessonId/test" element={<TestExam/>}/>
-                <Route path="/courses/:courseId/lessons/:lessonId/test/result" element={<TestResults/>}/>
+                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId" element={<TestExam />} />
+                <Route path="/courses/:courseId/lessons/:lessonId/test" element={<TestListUser/>}/>
+                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId/result" element={<TestResults />} />
             </Route>
             <Route path="/" element={<Navigate to="/landing" replace/>}/>
         </Routes>
