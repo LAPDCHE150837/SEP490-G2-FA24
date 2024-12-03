@@ -29,9 +29,10 @@ public class TestResultController {
         return ResponseEntity.ok(testResultService.getTestResultById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TestResultDTO>> getTestResultsByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(testResultService.getTestResultsByUserId(userId));
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<TestResultDTO>> getTestResultsByUserId(HttpServletRequest req) {
+        return ResponseEntity.ok(testResultService.getTestResultsByUserId(req.getRemoteUser()));
     }
 
     @PostMapping
