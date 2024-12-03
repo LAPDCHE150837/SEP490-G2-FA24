@@ -40,16 +40,11 @@ const Sidebar = ({ isOpen, onClose }) => {
     const navigationItems = [
         { icon: BookOpen, text: 'Khóa học', path: '/course' },
         { icon: BarChart3, text: 'Thống kê', path: '/statistics' },
-        { icon: Award, text: 'Thành tựu', path: '/achievements' },
-        { icon: Brain, text: 'Ôn tập', path: '/review' },
-        { icon: AlignJustify, text: 'Thẻ ghi nhớ', path: '/flashcards' },
+        { icon: History, text: 'Lịch sử làm bài', path: '/history' },
+        { icon: AlignJustify, text: 'Flashcard', path: '/flashcards' },
         { icon: Book, text: 'Bảng chữ cái', path: '/alphabet' },
     ];
 
-    const bottomNavItems = [
-        { icon: GraduationCap, text: 'Kiểm tra năng lực', path: '/assessment' },
-        { icon: History, text: 'Lịch sử làm bài', path: '/history' }
-    ];
 
     return (
         <div
@@ -76,9 +71,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                         </div>
                         <div>
                             <h1 className="text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                                 NihonGo!
+                                Minano Nihongo
                             </h1>
-                            <p className="text-xs text-gray-500">Cùng học tiếng nhật</p>
+                            <p className="text-xs text-gray-500">Japanese Learning</p>
                         </div>
                     </Link>
                     <button
@@ -103,14 +98,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <div>
                             <p className="font-semibold text-white">{customer?.username || 'User'}</p>
                             <div className="flex items-center space-x-2 mt-0.5">
-                                <div className="flex items-center">
-                                    <span className="text-yellow-500 mr-1">●</span>
-                                    <span className="text-sm text-gray-400">120</span>
-                                </div>
-                                <div className="w-px h-3 bg-gray-700"></div>
-                                <div className="px-1.5 py-0.5 text-xs font-medium text-green-400 bg-green-400/10 rounded">
-                                    N4
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -125,16 +113,10 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                 {/* Bottom Navigation */}
                 <div className="pt-6 border-t border-gray-800/50">
-                    <nav className="space-y-1">
-                        {bottomNavItems.map((item, index) => (
-                            <NavItem key={index} {...item} />
-                        ))}
-                    </nav>
-
                     {/* Version */}
                     <div className="mt-6 px-3 py-3 rounded-lg bg-gray-800/30">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500">Version</span>
+                            <span className="text-xs text-gray-500">Phiên bản</span>
                             <span className="text-xs font-medium text-cyan-400">1.0.0</span>
                         </div>
                     </div>
