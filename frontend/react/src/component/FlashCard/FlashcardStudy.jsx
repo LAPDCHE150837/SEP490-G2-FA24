@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Shuffle, RotateCcw, ArrowLeft, ArrowRight, Star, Volume2, BookOpen, Medal, Brain } from 'lucide-react';
+import {
+    Shuffle,
+    RotateCcw,
+    ArrowLeft,
+    ArrowRight,
+    Star,
+    Volume2,
+    BookOpen,
+    Medal,
+    Brain,
+    ChevronLeft
+} from 'lucide-react';
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const FlashcardStudy = () => {
     const { setId } = useParams();
@@ -12,6 +23,7 @@ const FlashcardStudy = () => {
     const [confidence, setConfidence] = useState({});
     const [showHint, setShowHint] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
+    const navigate = useNavigate();
 
     const api = axios.create({
         baseURL: 'http://localhost:8080/api/v1',
@@ -87,10 +99,17 @@ const FlashcardStudy = () => {
     return (
         <div className="max-w-4xl mx-auto p-6 min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
             {/* Progress Bar */}
+            <button
+                onClick={() => navigate(`/flashcards`)}
+                className="flex items-center text-gray-600 hover:text-gray-900"
+            >
+                <ChevronLeft className="h-5 w-5"/>
+                <span>Quay lại</span>
+            </button>
             <div className="w-full h-2 bg-gray-200 rounded-full mb-4">
                 <div
                     className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                    style={{ width: `${calculateProgress()}%` }}
+                    style={{width: `${calculateProgress()}%`}}
                 />
 
             </div>
@@ -108,7 +127,8 @@ const FlashcardStudy = () => {
                     className={`relative w-full aspect-video rounded-xl transition-all duration-500 transform-style-3d cursor-pointer ${flipped ? 'rotate-y-180' : ''}`}
                 >
                     {/* Front of card */}
-                    <div className={`absolute w-full h-full bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg p-8 backface-hidden ${flipped ? 'opacity-0' : 'opacity-100'}`}>
+                    <div
+                        className={`absolute w-full h-full bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg p-8 backface-hidden ${flipped ? 'opacity-0' : 'opacity-100'}`}>
                         <div className="text-center">
                             <div className="text-6xl mb-4">
                                 {cards[currentIndex].front.text}
@@ -126,7 +146,8 @@ const FlashcardStudy = () => {
                     </div>
 
                     {/* Back of card */}
-                    <div className={`absolute w-full h-full bg-gradient-to-br from-white to-purple-50 rounded-xl shadow-lg p-8 backface-hidden rotate-y-180 ${flipped ? 'opacity-100' : 'opacity-0'}`}>
+                    <div
+                        className={`absolute w-full h-full bg-gradient-to-br from-white to-purple-50 rounded-xl shadow-lg p-8 backface-hidden rotate-y-180 ${flipped ? 'opacity-100' : 'opacity-0'}`}>
                         <div className="text-center">
                             <div className="text-3xl mb-2 text-blue-600">
                                 {cards[currentIndex].back.reading}
@@ -137,7 +158,7 @@ const FlashcardStudy = () => {
                                     }}
                                     className="ml-2 text-gray-400 hover:text-gray-600"
                                 >
-                                    <Volume2 size={20} />
+                                    <Volume2 size={20}/>
                                 </button>
                             </div>
                             <div className="text-xl mb-4">
@@ -152,7 +173,7 @@ const FlashcardStudy = () => {
                                     }}
                                     className="ml-2 text-gray-400 hover:text-gray-600"
                                 >
-                                    <Volume2 size={20} />
+                                    <Volume2 size={20}/>
                                 </button>
                             </div>
                             <div className="text-sm text-gray-500">
@@ -169,21 +190,21 @@ const FlashcardStudy = () => {
                     onClick={handleShuffle}
                     className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-purple-100 text-purple-600 hover:bg-purple-200"
                 >
-                    <Shuffle size={20} />
+                    <Shuffle size={20}/>
                     <span>Trộn thẻ</span>
                 </button>
                 <button
                     onClick={() => playAudio(cards[currentIndex].back.reading)}
                     className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-green-100 text-green-600 hover:bg-green-200"
                 >
-                    <Volume2 size={20} />
+                    <Volume2 size={20}/>
                     <span>Audio</span>
                 </button>
                 <button
                     onClick={handlePrevious}
                     className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
                 >
-                    <ArrowLeft size={20} />
+                    <ArrowLeft size={20}/>
                     <span>Trước</span>
                 </button>
                 <button
@@ -191,7 +212,7 @@ const FlashcardStudy = () => {
                     className="flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
                 >
                     <span>Sau</span>
-                    <ArrowRight size={20} />
+                    <ArrowRight size={20}/>
                 </button>
             </div>
         </div>

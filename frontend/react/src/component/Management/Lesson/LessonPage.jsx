@@ -162,7 +162,6 @@ const LessonPage = () => {
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Tên bài học</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Khóa học</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Mô tả</th>
-                            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Thứ tự</th>
                             <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Trạng thái</th>
                             <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">Thao tác</th>
                         </tr>
@@ -192,9 +191,7 @@ const LessonPage = () => {
                                     <td className="px-6 py-4 text-sm text-gray-500">
                                         {lesson.description}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        {lesson.orderIndex}
-                                    </td>
+
                                     <td className="px-6 py-4 text-sm">
                     <span className={`px-2 py-1 rounded-full ${
                         lesson.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

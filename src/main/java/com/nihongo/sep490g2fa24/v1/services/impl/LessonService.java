@@ -59,7 +59,6 @@ public class LessonService {
         existingLesson.setTitle(Lesson.getTitle());
         existingLesson.setDescription(Lesson.getDescription());
         existingLesson.setStatus(Lesson.getStatus());
-        existingLesson.setOrderIndex(Lesson.getOrderIndex());
 
         return lessonRepository.save(existingLesson);
     }

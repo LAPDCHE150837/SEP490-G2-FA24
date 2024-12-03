@@ -35,7 +35,7 @@ public class Lesson {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "order_index", nullable = false)
+    @Column(name = "order_index", nullable = true)
     private Integer orderIndex;
 
     @Column(name = "created_at")

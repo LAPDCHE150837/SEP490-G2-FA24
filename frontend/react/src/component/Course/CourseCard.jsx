@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, ChevronRight, GraduationCap  } from 'lucide-react';
 
-const CourseCard = ({ id, title, type,level, image, date, progress, students = 128, totalLessons = 12 }) => {
+const CourseCard = ({ id, title, type, image, level, description, students = 128, totalLessons = 12 }) => {
     const navigate = useNavigate();
 
     const handleStudyClick = () => {
@@ -58,14 +58,14 @@ const CourseCard = ({ id, title, type,level, image, date, progress, students = 1
                         <div className="flex items-center justify-center text-green-500 mb-1">
                             <Users size={20} />
                         </div>
-                        <div className="text-sm text-gray-500">Học viên</div>
-                        <div className="font-semibold text-gray-700">{students}</div>
+                        <div className="text-sm text-gray-500">Trình độ</div>
+                        <div className="font-semibold text-gray-700">{type}</div>
                     </div>
                     <div className="text-center">
                         <div className="flex items-center justify-center text-purple-500 mb-1">
                             <Clock size={20} />
                         </div>
-                        <div className="text-sm text-gray-500">Thời gian</div>
+                        <div className="text-sm text-gray-500">Lộ trình</div>
                         <div className="font-semibold text-gray-700">2 tháng</div>
                     </div>
                 </div>

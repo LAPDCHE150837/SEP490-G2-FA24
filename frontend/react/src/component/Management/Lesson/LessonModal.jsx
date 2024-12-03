@@ -84,10 +84,7 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                                     <label className="block text-sm font-medium text-gray-700">Mô tả</label>
                                     <p className="mt-1">{lessonData.description}</p>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Thứ tự</label>
-                                    <p className="mt-1">{lessonData.orderIndex}</p>
-                                </div>
+
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
                                     <p className="mt-1">{lessonData.status ? 'Hoạt động' : 'Không hoạt động'}</p>
@@ -155,18 +152,7 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                                     )}
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Thứ tự
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formData.orderIndex}
-                                        onChange={(e) => setFormData({ ...formData, orderIndex: parseInt(e.target.value) || 1 })}
-                                        min="1"
-                                        className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
-                                    />
-                                </div>
+
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">
