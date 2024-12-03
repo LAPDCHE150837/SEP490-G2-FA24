@@ -164,8 +164,7 @@ export const CreateQuestionModal = ({ onClose, onSuccess }) => {
                         >
                             <option value="voca">Từ vựng</option>
                             <option value="grammar">Ngữ pháp</option>
-                            <option value="reading">Đọc hiểu</option>
-                            <option value="listening">Nghe hiểu</option>
+                            <option value="kanji">Hán tự</option>
                         </select>
                     </div>
 
