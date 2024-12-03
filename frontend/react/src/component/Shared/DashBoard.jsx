@@ -34,10 +34,7 @@ const Dashboard = () => {
 
 
         <section>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
-                <h3 className="text-lg font-semibold">Khóa học của tôi</h3>
 
-            </div>
 
             <CourseList  />
         </section>
