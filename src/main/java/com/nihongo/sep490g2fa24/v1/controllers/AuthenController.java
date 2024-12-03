@@ -1,5 +1,6 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
+import com.nihongo.sep490g2fa24.v1.dtos.course.UserDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -20,6 +22,12 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "v1/auth", produces = APPLICATION_JSON_VALUE)
 public class AuthenController {
     private final AuthenService authenService;
+
+    @GetMapping("/user")
+    public List<UserDTO> getAllUser() throws IOException {
+
+        return authenService.getAll();
+    }
 
     @PostMapping("/register")
     public BaseApiResponse<LoginResponse> register(@RequestBody RegisterRequest registerRequest,
@@ -32,6 +40,8 @@ public class AuthenController {
     public BaseApiResponse<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
         return BaseApiResponse.succeed(authenService.authenticate(loginRequest));
     }
+
+
 
     @GetMapping("/verify-email")
     public BaseApiResponse<Void> verifyEmail(@RequestParam String token,
@@ -65,13 +75,13 @@ public class AuthenController {
                                                @RequestBody ChangePasswordRequest changePasswordRequest,
                                                final HttpServletResponse response) {
         authenService.resetPassword(token, response, changePasswordRequest);
-         return BaseApiResponse.succeed();
+        return BaseApiResponse.succeed();
     }
 
     //Oauth2
     // TODO dang fix bug
     @PostMapping("/token")
     public BaseApiResponse<LoginResponse> getAccessToken(OAuth2AuthenticationToken authentication) {
-         return BaseApiResponse.succeed(authenService.login(authentication));
+        return BaseApiResponse.succeed(authenService.login(authentication));
     }
 }
