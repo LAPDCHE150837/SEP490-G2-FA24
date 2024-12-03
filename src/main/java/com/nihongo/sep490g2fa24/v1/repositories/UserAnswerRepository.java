@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface UserAnswerRepository extends JpaRepository<UserAnswer, String> {
     List<UserAnswer> findByTestResultId(String testResultId);
+
 }
