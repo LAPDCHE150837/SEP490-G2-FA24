@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 import java.util.List;
 
-public interface AuthenService{
+public interface AuthenService {
     LoginResponse login(OAuth2AuthenticationToken authentication);
 
     LoginResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest);
