@@ -17,8 +17,8 @@ public class FlashcardSetController {
     private final FlashcardSetService setService;
 
     @GetMapping
-    public BaseApiResponse<List<FlashcardSetDTO>> getAllSets() {
-        return BaseApiResponse.succeed(setService.getAllSets());
+    public BaseApiResponse<List<FlashcardSetDTO>> getAllSets(HttpServletRequest req) {
+        return BaseApiResponse.succeed(setService.getAllSets(req.getRemoteUser()));
     }
 
     @GetMapping("/{id}")

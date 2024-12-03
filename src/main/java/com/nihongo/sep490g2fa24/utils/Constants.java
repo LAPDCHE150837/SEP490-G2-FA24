@@ -13,6 +13,7 @@ public class Constants {
     public static final class Role {
         public static final String USER = "USER";
         public static final String ADMIN = "ADMIN";
-        public static final String MANAGER = "MANAGER";
+        public static final String CONTENT = "CONTENT";
+        public static final String STUDENT = "STUDENT";
     }
 }

@@ -22,8 +22,9 @@ public class FlashcardSetService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<FlashcardSetDTO> getAllSets() {
-        return setRepository.findAll().stream()
+    public List<FlashcardSetDTO> getAllSets(String user) {
+        User user1 = userRepository.findByUsername(user).orElseThrow(); ;
+        return setRepository.findByUserId(user1.getId()).stream()
                 .map(setMapper::toDTO)
                 .collect(Collectors.toList());
     }
