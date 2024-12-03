@@ -23,7 +23,7 @@ const DropdownMenu = ({ children, isOpen, position = "right" }) => (
 
 // Header Component
 const Header = ({ onMenuClick }) => {
-    const { logOut } = useAuth();
+    const { customer,logOut } = useAuth();
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const navigate = useNavigate();
@@ -37,22 +37,6 @@ const Header = ({ onMenuClick }) => {
                 <h2 className="text-xl font-semibold">  <span className="text-cyan-500">Chào mừng đã đến với FPT Nihongo</span></h2>
             </div>
             <div className="flex items-center space-x-4">
-                <div className="relative">
-
-                    <button
-                        className="p-2 hover:bg-gray-100 rounded-full transition duration-150"
-                        onClick={() => {
-                            setNotificationOpen(!notificationOpen);
-                            setUserMenuOpen(false);
-                        }}
-                    >
-                        <Bell size={20}/>
-                    </button>
-                    <DropdownMenu isOpen={notificationOpen}>
-                        <div className="px-4 py-2 text-sm text-gray-700 border-b">Thông báo</div>
-                        <div className="px-4 py-2 text-sm text-gray-500">Không có thông báo mới</div>
-                    </DropdownMenu>
-                </div>
 
                 <div className="relative">
                     <button
@@ -65,18 +49,29 @@ const Header = ({ onMenuClick }) => {
                         <User size={20}/>
                     </button>
                     <DropdownMenu isOpen={userMenuOpen}>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
                         <a href="/reset" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đổi mật
                             khẩu</a>
 
                     </DropdownMenu>
                 </div>
+                {customer.roles[0] === "ROLE_ADMIN" && (
+                    <button onClick={() => navigate('/course_crud')}
+                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
+                        DashBoard
+                    </button>
+                )}
+                {customer.roles[0] === "ROLE_TEACHER" && (
+                    <button onClick={() => navigate('/test')}
+                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
+                        DashBoard
+                    </button>
+                )}
+                <button onClick={() => {
 
-                <button onClick={() => navigate('/course_crud')}
-                        className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
-                    DashBoard
-                </button>
-                <button onClick={logOut}
+                    navigate("/login")
+                    logOut()
+                }
+                }
                         className="p-2 hover:bg-gray-100 rounded-full text-red-600 transition duration-150">
                     Đăng xuất
                 </button>
