@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Link, useLocation, useNavigate} from 'react-router-dom';
 import {
     Building2, Menu, Users, DollarSign, Search,
     BarChart2, MessageSquare, Calendar, Settings,
     Home, UserPlus, FileText, Bell, ChevronDown,
     Layout, Package, CheckCircle, Phone, Mail,
-    Plus, Filter, MoreHorizontal, ArrowRight, X
+    Plus, Filter, MoreHorizontal, ArrowRight, X, ArrowLeft
 } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
-import logo from "../../assets/japan.png";
+import logo from "../../assets/japan.jpg";
 
 // Layout Component
 const CRMLayout = ({ children }) => {
@@ -16,18 +16,20 @@ const CRMLayout = ({ children }) => {
     const location = useLocation();
     const { logOut } = useAuth();
     const { customer } = useAuth();
+    const navigate = useNavigate();
 
     const navigation = [
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
-        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud' },
-        { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud'},
-        { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test'},
-        { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question'},
-        { name: 'Quản lí người dùng', icon: Users, path: '/test' },
+        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_ADMIN'] },
+        { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud',roles: ['ROLE_ADMIN']},
+        { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test',roles: ['ROLE_TEACHER']},
+        { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question',roles: ['ROLE_TEACHER']},
+        { name: 'Quản lí người dùng', icon: Users, path: '/user', roles: ['ROLE_ADMIN']},
+        // { name: 'Blog', icon: Users, path: '/user', roles: ['ROLE_CONTENT']},
     ];
 
     const filteredNavigation = navigation.filter(
-        (item) => !item.roles || item.roles.includes(customer?.role)
+        (item) => !item.roles || item.roles.includes(customer?.roles[0])
     );
 
     return (
@@ -39,7 +41,7 @@ const CRMLayout = ({ children }) => {
                 {/* Logo */}
                 <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4">
                     {!collapsedSidebar && (
-                        <Link to="/home" className="flex items-center">
+                        <Link to="/course" className="flex items-center">
                             <img src={logo} className="h-11 w-11 text-indigo-600" alt="Logo"/>
                             <span className="ml-2 font-bold text-xl">Quản lý</span>
                         </Link>
@@ -96,7 +98,12 @@ const CRMLayout = ({ children }) => {
             <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Top Bar */}
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-
+                    <div className="flex items-center space-x-4">
+                        <button onClick={() => navigate(`/course`)}
+                                className="text-gray-600 hover:text-gray-800">
+                            <ArrowLeft size={24}/>
+                        </button>
+                    </div>
                     <div className="flex items-end space-x-4">
                         <button
                             onClick={logOut}
@@ -115,4 +122,4 @@ const CRMLayout = ({ children }) => {
     );
 };
 
-export  default  CRMLayout;
+export default CRMLayout;

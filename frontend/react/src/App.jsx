@@ -16,7 +16,6 @@ import FlashcardSetList from "./component/FlashCard/FlashcardSetList.jsx";
 import FlashcardStudy from "./component/FlashCard/FlashcardStudy.jsx";
 import FlashcardEditor from "./component/FlashCard/FlashcardEditor.jsx";
 import StudyStats from "./component/StudyStats/StudyStats.jsx";
-import Achievements from "./component/Achievement/Achievements.jsx";
 import SmartReview from "./component/Review/SmartReview.jsx";
 import ReviewSession from "./component/Review/ReviewSession.jsx";
 import TestExam from "./component/Test/TestExam.jsx";
@@ -25,44 +24,48 @@ import {DashboardLayout} from "./component/Layout/DashBoardLayout.jsx";
 import CoursePage from "./component/Management/Course/CoursePage.jsx";
 import LessonPage from "./component/Management/Lesson/LessonPage.jsx";
 import GrammarPage from "./component/Management/Grammar/GrammarPage.jsx";
-import LessonDetailTabs from "./component/Management/Lesson/LessonPage.jsx";
 import FlashcardCRUD from "./component/FlashCard/FlashcardCRUD.jsx";
 import TestList from "./component/Management/Test/TestList.jsx";
 import QuestionList from "./component/Management/Question/QuestionList.jsx";
 import TestListUser from "./component/Test/TestList.jsx";
+import TestHistory from "./component/History/TestHistory.jsx";
+import User from "./component/Management/User/User.jsx";
+import {AuthRoute} from "./context/AuthRoute.jsx";
 
 
 function App() {
     return (
         <Routes>
-            <Route path="/course_crud" element={<CoursePage/>}/>
-            <Route path="/lesson_crud" element={<LessonPage/>}/>
-            <Route path="/grammar_crud" element={<GrammarPage/>}/>
-            <Route path="/landing" element={<LandingPage/>}/>
-            <Route path="/login" element={<LoginPage/>}/>
-            <Route path="/register" element={<RegisterPage/>}/>
-            <Route path="/forgotPassword" element={<ForgotPassword/>}/>
-            <Route path="/test" element={<TestList/>}/>
-            <Route path="/question" element={<QuestionList/>}/>
-            <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
+            <Route path="/course_crud" element={<ProtectedRoute><CoursePage/></ProtectedRoute>}/>
+            <Route path="/lesson_crud" element={<ProtectedRoute><LessonPage/></ProtectedRoute>}/>
+            <Route path="/grammar_crud" element={<ProtectedRoute><GrammarPage/></ProtectedRoute>}/>
+            <Route path="/landing" element={<AuthRoute><LandingPage/></AuthRoute>}/>
+            <Route path="/login" element={<AuthRoute><LoginPage/></AuthRoute>}/>
+            <Route path="/register" element={<AuthRoute><RegisterPage/></AuthRoute>}/>
+            <Route path="/forgotPassword" element={<AuthRoute><ForgotPassword/></AuthRoute>}/>
+            <Route path="/test" element={<ProtectedRoute><TestList/></ProtectedRoute>}/>
+            <Route path="/question" element={<ProtectedRoute><QuestionList/></ProtectedRoute>}/>
+            <Route path="/user" element={<ProtectedRoute><User/></ProtectedRoute>}/>
+            {/*<Route path="/blog" element={<Blog/>}/>*/}
             <Route element={<DashboardLayout/>}>
-                <Route path="/flashcards/:setId/cards" element={<FlashcardCRUD/>}/>
+                <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
+                <Route path="/flashcards/:setId/cards" element={<ProtectedRoute><FlashcardCRUD/></ProtectedRoute>}/>
                 <Route path="/course" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
-                <Route path="/alphabet" element={<JapaneseAlphabet/>}/>
-                <Route path="/courses/:courseId/lessons" element={<LessonList/>}/>
-                <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>}/>
-                <Route path="courses/:courseId/lessons/:lessonId/quiz" element={<QuizView/>}/>
-                <Route path="courses/:courseId/lessons/:lessonId/complete" element={<LessonComplete/>}/>
-                <Route path="/flashcards" element={<FlashcardSetList/>}/>
-                <Route path="/flashcards/:setId/study" element={<FlashcardStudy/>}/>
-                <Route path="/flashcards/:setId/edit" element={<FlashcardEditor/>}/>
-                <Route path="/statistics" element={<StudyStats/>}/>
-                <Route path="/achievements" element={<Achievements/>}/>
-                <Route path="/review" element={<SmartReview/>}/>
-                <Route path="/review/session" element={<ReviewSession/>}/>
-                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId" element={<TestExam />} />
-                <Route path="/courses/:courseId/lessons/:lessonId/test" element={<TestListUser/>}/>
-                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId/result" element={<TestResults />} />
+                <Route path="/alphabet" element={<ProtectedRoute><JapaneseAlphabet/></ProtectedRoute>}/>
+                <Route path="/courses/:courseId/lessons" element={<ProtectedRoute><LessonList/></ProtectedRoute>}/>
+                <Route path="courses/:courseId/lessons/:lessonId" element={<ProtectedRoute><LessonDetail/></ProtectedRoute>}/>
+                <Route path="courses/:courseId/lessons/:lessonId/quiz" element={<ProtectedRoute><QuizView/></ProtectedRoute>}/>
+                <Route path="courses/:courseId/lessons/:lessonId/complete" element={<ProtectedRoute><LessonComplete/></ProtectedRoute>}/>
+                <Route path="/flashcards" element={<ProtectedRoute><FlashcardSetList/></ProtectedRoute>}/>
+                <Route path="/flashcards/:setId/study" element={<ProtectedRoute><FlashcardStudy/></ProtectedRoute>}/>
+                <Route path="/flashcards/:setId/edit" element={<ProtectedRoute><FlashcardEditor/></ProtectedRoute>}/>
+                <Route path="/statistics" element={<ProtectedRoute><StudyStats/></ProtectedRoute>}/>
+                <Route path="/history" element={<ProtectedRoute><TestHistory/></ProtectedRoute>}/>
+                <Route path="/review" element={<ProtectedRoute><SmartReview/></ProtectedRoute>}/>
+                <Route path="/review/session" element={<ProtectedRoute><ReviewSession/></ProtectedRoute>}/>
+                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId" element={<ProtectedRoute><TestExam /></ProtectedRoute>} />
+                <Route path="/courses/:courseId/lessons/:lessonId/test" element={<ProtectedRoute><TestListUser/></ProtectedRoute>}/>
+                <Route path="/courses/:courseId/lessons/:lessonId/test/:testId/result" element={<ProtectedRoute><TestResults /></ProtectedRoute>} />
             </Route>
             <Route path="/" element={<Navigate to="/landing" replace/>}/>
         </Routes>

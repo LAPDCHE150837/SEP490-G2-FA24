@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Search, ChevronDown, Bell, User, Menu, Eye, EyeOff, Lock } from 'lucide-react';
 import { useAuth } from "../../context/AuthContext.jsx";
 
-
 // Sidebar Component
 const Sidebar = ({ isOpen, onClose }) => {
     const { customer } = useAuth();
@@ -12,7 +11,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-2">
                     <img src="/api/placeholder/40/40" alt="Riki Logo" className="w-10 h-10"/>
-                    <h1 className="text-xl font-bold text-cyan-400">NihonGo!</h1>
+                    <h1 className="text-xl font-bold text-cyan-400">Minano Nihongo</h1>
                 </div>
                 <button onClick={onClose} className="lg:hidden">
                     <Menu size={24}/>
@@ -31,7 +30,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </div>
                 </div>
             </div>
-
             <nav className="space-y-4">
                 <NavItem icon="📊" text="Thống kê" />
                 <NavItem icon="📚" text="Lớp học của tôi" />
@@ -50,7 +48,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     );
 };
 
-
+// NavItem Component
 const NavItem = ({ icon, text, active }) => (
     <a
         href="#"
@@ -224,10 +222,8 @@ const ChangePassword = () => {
     };
 
     return (
-        <div className="flex bg-gray-100 min-h-screen">
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <div className="max-w-6xl mx-auto p-6">
             <div className="flex-1 flex flex-col">
-                <Header onMenuClick={() => setSidebarOpen(true)} />
                 <main className="flex-1 p-6 overflow-y-auto">
                     <div className="max-w-2xl mx-auto">
                         <div className="bg-white rounded-lg shadow-md p-6">
