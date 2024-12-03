@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Clock, Trophy } from 'lucide-react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {ChevronLeft, Clock, Trophy} from 'lucide-react';
+import {useParams, useNavigate} from 'react-router-dom';
 
 const TestListUser = () => {
     const navigate = useNavigate();
-    const { courseId, lessonId } = useParams();
+    const {courseId, lessonId} = useParams();
     const [tests, setTests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,10 +58,22 @@ const TestListUser = () => {
 
     if (tests.length === 0) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                Không có bài kiểm tra nào cho bài học này
-            </div>
-        );
+            <>
+                <div className="flex items-center space-x-4 mb-8">
+                    <button
+                        onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}`)}
+                        className="flex items-center text-gray-600 hover:text-gray-900"
+                    >
+                        <ChevronLeft className="h-5 w-5"/>
+                        <span>Khóa học/Danh sách khóa học/Bài học/Kiểm tra</span>
+                    </button>
+                </div>
+                <div className="flex items-center justify-center min-h-screen">
+                    Không có bài kiểm tra nào cho bài học này
+                </div>
+            </>
+        )
+            ;
     }
 
     return (
@@ -72,10 +84,9 @@ const TestListUser = () => {
                     onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}`)}
                     className="flex items-center text-gray-600 hover:text-gray-900"
                 >
-                    <ChevronLeft className="h-5 w-5" />
-                    <span>Quay lại bài học</span>
+                    <ChevronLeft className="h-5 w-5"/>
+                    <span>Khóa học/Danh sách khóa học/Bài học/Kiểm tra</span>
                 </button>
-                <h1 className="text-2xl font-bold">Danh sách bài kiểm tra</h1>
             </div>
 
             {/* Test List */}
@@ -92,11 +103,11 @@ const TestListUser = () => {
                                     <p className="text-gray-600 mb-4">{test.description}</p>
                                     <div className="flex space-x-4 text-sm text-gray-500">
                                         <div className="flex items-center">
-                                            <Clock className="h-4 w-4 mr-1" />
+                                            <Clock className="h-4 w-4 mr-1"/>
                                             <span>{test.duration} phút</span>
                                         </div>
                                         <div className="flex items-center">
-                                            <Trophy className="h-4 w-4 mr-1" />
+                                            <Trophy className="h-4 w-4 mr-1"/>
                                             <span>Điểm đạt: {test.passScore}/100</span>
                                         </div>
                                     </div>
