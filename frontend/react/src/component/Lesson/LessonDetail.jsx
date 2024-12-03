@@ -1,6 +1,6 @@
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import {ChevronLeft, Book, GraduationCap, Check, X, Volume2,ChevronDown } from 'lucide-react';
+import {ChevronLeft, Book, GraduationCap, Check, X, Volume2, ChevronDown, ArrowLeft} from 'lucide-react';
 import {getLesson, getLessonById} from "../../service/Lesson.js";
 import axios from "axios";
 
@@ -462,10 +462,10 @@ const LessonDetail = () => {
                         <div className="flex items-center space-x-4">
                             <button
                                 onClick={() => navigate(`/courses/${courseId}/lessons`)}
-                                className="flex items-center text-blue-500 hover:text-blue-600"
+                                className="flex items-center text-gray-600 hover:text-gray-900"
                             >
-                                <ChevronLeft size={20}/>
-                                <span>Quay lại danh sách bài học</span>
+                                <ArrowLeft size={24}/>
+                                <span>Khóa học/Danh sách bài học/Bài học</span>
                             </button>
                         </div>
 
