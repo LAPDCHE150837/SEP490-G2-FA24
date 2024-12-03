@@ -14,7 +14,7 @@ import java.util.List;
 public class TestResultDTO {
     private String id;
     private String userId;
-    private String testId;
+    private String testName;
     private Integer score;
     private Integer timeTaken;
     private LocalDateTime completedAt;
