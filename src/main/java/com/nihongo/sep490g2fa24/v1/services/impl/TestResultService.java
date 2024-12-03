@@ -36,7 +36,8 @@ public class TestResultService {
 
     @Transactional(readOnly = true)
     public List<TestResultDTO> getTestResultsByUserId(String userId) {
-        return testResultRepository.findByUserId(userId).stream()
+        User user = userRepository.findByUsername(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+        return testResultRepository.findByUserId(user.getId()).stream()
                 .map(testResultMapper::toDTO)
                 .collect(Collectors.toList());
     }

@@ -19,7 +19,7 @@ public class TestResultMapper {
         return TestResultDTO.builder()
                 .id(testResult.getId())
                 .userId(testResult.getUser().getId())
-                .testId(testResult.getTest().getId())
+                .testName(testResult.getTest().getTitle())
                 .score(testResult.getScore())
                 .timeTaken(testResult.getTimeTaken())
                 .completedAt(testResult.getCompletedAt())
