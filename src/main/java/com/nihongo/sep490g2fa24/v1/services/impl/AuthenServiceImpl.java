@@ -3,9 +3,11 @@ package com.nihongo.sep490g2fa24.v1.services.impl;
 
 import com.nihongo.sep490g2fa24.config.JwtService;
 import com.nihongo.sep490g2fa24.config.OAuth2Properties;
+import com.nihongo.sep490g2fa24.dtoMapper.UserDTOMapper;
 import com.nihongo.sep490g2fa24.exception.NhgClientException;
 import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
 import com.nihongo.sep490g2fa24.utils.Constants;
+import com.nihongo.sep490g2fa24.v1.dtos.course.UserDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
@@ -34,7 +36,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +51,7 @@ public class AuthenServiceImpl implements AuthenService {
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
     private final ApplicationEventPublisher publisher;
+    private final UserDTOMapper userDTOMapper;
 
     @Override
     public LoginResponse login(OAuth2AuthenticationToken authentication) {
@@ -78,10 +83,6 @@ public class AuthenServiceImpl implements AuthenService {
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
             throw NhgClientException.ofHandler(NhgErrorHandler.USER_IS_EXISTED);
         }
-        // TODO ve sau chi phan quyen cho USER api dang ky
-        if (!Constants.Role.USER.equals(registerRequest.getRole().name())) {
-            throw NhgClientException.ofHandler(NhgErrorHandler.INVALID_ROLE);
-        }
 
         // Khi user dang ki chua xac thuc mail -> flagActive = INACTIVE
         User user =
@@ -102,7 +103,6 @@ public class AuthenServiceImpl implements AuthenService {
                 .token(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
-
 
     }
 
@@ -126,6 +126,7 @@ public class AuthenServiceImpl implements AuthenService {
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
     @Override
     public String verifyEmail(String token) {
@@ -156,7 +157,7 @@ public class AuthenServiceImpl implements AuthenService {
 
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-//        User user = userRepository.findByEmail(changePasswordRequest.getEmail())
+
         User user_info = getCurrentCustomer();
         User user = userRepository.findByEmail(user_info.getEmail())
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
@@ -178,7 +179,6 @@ public class AuthenServiceImpl implements AuthenService {
         String newToken = jwtService.generateToken(user);
         String resetUrl = "http://localhost:5173/forgotPassword?token=";
         publisher.publishEvent(new PasswordResetEvent(user, resetUrl, newToken));
-//        publisher.publishEvent(new PasswordResetEvent(user, applicationUrl(httpServletRequest), newToken));
         return LoginResponse.builder()
                 .token(newToken)
                 .build();
@@ -195,6 +195,13 @@ public class AuthenServiceImpl implements AuthenService {
         }
     }
 
+    @Override
+    public List<UserDTO> getAll() {
+        return userRepository.findAll().stream()
+                .map(userDTOMapper)
+                .collect(Collectors.toList());
+    }
+
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
@@ -206,9 +213,6 @@ public class AuthenServiceImpl implements AuthenService {
         tokenRepository.saveAll(validUserTokens);
     }
 
-    public String applicationUrl(HttpServletRequest request) {
-        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-    }
     public User getCurrentCustomer() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -217,5 +221,9 @@ public class AuthenServiceImpl implements AuthenService {
         }
 
         return (User) authentication.getPrincipal();
+    }
+
+    public String applicationUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }
