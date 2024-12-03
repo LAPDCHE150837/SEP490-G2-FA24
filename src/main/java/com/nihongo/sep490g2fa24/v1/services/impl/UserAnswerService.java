@@ -17,12 +17,7 @@ public class UserAnswerService {
     private final UserAnswerRepository userAnswerRepository;
     private final UserAnswerMapper userAnswerMapper;
 
-    @Transactional(readOnly = true)
-    public List<UserAnswerDTO> getAllUserAnswers() {
-        return userAnswerRepository.findAll().stream()
-                .map(userAnswerMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+
 
     @Transactional(readOnly = true)
     public UserAnswerDTO getUserAnswerById(String id) {
@@ -40,10 +35,8 @@ public class UserAnswerService {
     public UserAnswer updateUserAnswer(String id, UserAnswer userAnswer) {
         UserAnswer existingAnswer = userAnswerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User Answer not found"));
-
         existingAnswer.setIsCorrect(userAnswer.getIsCorrect());
         existingAnswer.setSelectedOption(userAnswer.getSelectedOption());
-
         return userAnswerRepository.save(existingAnswer);
     }
 

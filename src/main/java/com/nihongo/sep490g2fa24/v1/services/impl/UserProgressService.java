@@ -23,12 +23,12 @@ public class UserProgressService {
     private final LessonRepository lessonRepository;
     private final UserProgressMapper userProgressMapper;
 
-    @Transactional(readOnly = true)
-    public List<UserProgressDTO> getAllUserProgress() {
-        return userProgressRepository.findAll().stream()
-                .map(userProgressMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    public List<UserProgressDTO> getAllUserProgress() {
+//        return userProgressRepository.findCompletedLessons().stream()
+//                .map(userProgressMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional(readOnly = true)
     public UserProgressDTO getUserProgressById(String id) {
@@ -48,8 +48,6 @@ public class UserProgressService {
     public UserProgress createUserProgress(UserProgress userProgress, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-
         // Create new progress
         userProgress.setUser(user);
         userProgress.setCompleted(true);
