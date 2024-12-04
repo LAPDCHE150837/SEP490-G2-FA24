@@ -1,7 +1,14 @@
+app:
+  upload:
+    dir: D:\400tr\FuLearning\FALL2024\DATN\References\image
 cors:
   allowed-origins: "*"
   allowed-methods: "*"
 spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
   application:
     name: NihonGO! Learning System
   main:

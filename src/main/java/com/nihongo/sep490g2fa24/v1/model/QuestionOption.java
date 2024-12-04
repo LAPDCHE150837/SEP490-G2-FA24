@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 @Data
 @Entity
-@Table(name = "achievement")
+@Table(name = "question_options")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

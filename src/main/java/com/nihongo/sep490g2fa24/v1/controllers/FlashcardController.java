@@ -41,14 +41,18 @@ public class FlashcardController {
     public BaseApiResponse<Flashcard> updateFlashcard(@PathVariable String id, @RequestBody Flashcard flashcard) {
         return BaseApiResponse.succeed(flashcardService.updateFlashcard(id, flashcard));
     }
+    @GetMapping("/not/{id}")
+    public BaseApiResponse<List<FlashcardDTO>> getFlashcardIsNotMemoryById(@PathVariable String id) {
+        return BaseApiResponse.succeed(flashcardService.getFlashcardIsNotMemoryById(id));
+    }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/isMemoried/{id}")
     public BaseApiResponse<Flashcard> isMemoried(@PathVariable String id) {
         return BaseApiResponse.succeed(flashcardService.isMemoried(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/isNotMemoried/{id}")
     public BaseApiResponse<Flashcard> isNotMemoried(@PathVariable String id) {
         return BaseApiResponse.succeed(flashcardService.isNotMemoried(id));
     }
