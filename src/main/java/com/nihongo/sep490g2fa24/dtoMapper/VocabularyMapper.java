@@ -5,6 +5,7 @@ import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.model.Vocabulary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 @Component
 @RequiredArgsConstructor
 public class VocabularyMapper {
@@ -20,6 +21,7 @@ public class VocabularyMapper {
                 .example(vocabulary.getExample())
                 .exampleReading(vocabulary.getExampleReading())
                 .exampleMeaning(vocabulary.getExampleMeaning())
+                .imageUrl(vocabulary.getImageUrl())
                 .build();
     }
 

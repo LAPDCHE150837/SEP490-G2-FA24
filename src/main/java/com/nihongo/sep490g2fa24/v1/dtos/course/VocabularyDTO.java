@@ -17,4 +17,6 @@ public class VocabularyDTO {
     private String example;
     private String exampleReading;
     private String exampleMeaning;
+    private String imageUrl;
+
 }
