@@ -54,18 +54,18 @@ const Header = ({ onMenuClick }) => {
 
                     </DropdownMenu>
                 </div>
-                {customer.roles[0] === "ROLE_ADMIN" && (
-                    <button onClick={() => navigate('/course_crud')}
-                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
-                        DashBoard
-                    </button>
-                )}
-                {customer.roles[0] === "ROLE_TEACHER" && (
-                    <button onClick={() => navigate('/test')}
-                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
-                        DashBoard
-                    </button>
-                )}
+                {/*{customer.roles[0] === "ROLE_ADMIN" && (*/}
+                {/*<button onClick={() => navigate('/course_crud')}*/}
+                {/*        className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">*/}
+                {/*    DashBoard*/}
+                {/*</button>*/}
+                {/*    )}*/}
+                {/*{customer.roles[0] === "ROLE_TEACHER" && (*/}
+                {/*    <button onClick={() => navigate('/test')}*/}
+                {/*            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">*/}
+                {/*        DashBoard*/}
+                {/*    </button>*/}
+                {/*)}*/}
                 <button onClick={() => {
 
                     navigate("/login")

@@ -73,11 +73,38 @@ const LessonPage = () => {
 
     const handleSubmit = async (data) => {
         try {
+            const formData = new FormData();
+            const lessonData = {
+                course: { id: data.course.id },
+                title: data.title,
+                description: data.description,
+                status: data.status,
+                orderIndex: 1, // Set fixed value
+
+            };
+
+            formData.append('lesson', new Blob([JSON.stringify(lessonData)], { type: 'application/json' }));
+            if (data.videoFile) {
+                formData.append('video', data.videoFile);
+            }
+
             if (modalMode === 'create') {
-                await axios.post('http://localhost:8080/api/v1/lessons', data, getAuthConfig());
+                await axios.post('http://localhost:8080/api/v1/lessons', formData, {
+                    ...getAuthConfig(),
+                    headers: {
+                        ...getAuthConfig().headers,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
                 showToast('Thêm bài học thành công', 'success');
             } else {
-                await axios.put(`http://localhost:8080/api/v1/lessons/${selectedLesson.id}`, data, getAuthConfig());
+                await axios.put(`http://localhost:8080/api/v1/lessons/${selectedLesson.id}`, formData, {
+                    ...getAuthConfig(),
+                    headers: {
+                        ...getAuthConfig().headers,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
                 showToast('Cập nhật bài học thành công', 'success');
             }
             setIsModalOpen(false);

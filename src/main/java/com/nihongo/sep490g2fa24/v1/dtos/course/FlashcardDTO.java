@@ -23,4 +23,5 @@ public class FlashcardDTO {
     private String backExampleReading;
     private Date createdAt;
     private Date updatedAt;
+    private boolean memorized;
 }

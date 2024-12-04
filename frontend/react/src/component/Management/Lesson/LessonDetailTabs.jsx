@@ -45,11 +45,11 @@ const LessonDetailTabs = ({ lessonId }) => {
                 : { ...data, lesson: { id: lessonId } };
 
             await axios.post(endpoints[type], payload, getAuthConfig());
-            showToast(`Thêm ${type} thành công`, 'success');
+            showToast(`Thêm dữ liệu thành công`, 'success');
             setModalType(null);
             fetchLessonData();
         } catch (error) {
-            showToast(`Thêm ${type} thất bại`, 'error');
+            showToast(`Thêm dữ liệu thất bại`, 'error');
         }
     };
 
@@ -64,7 +64,7 @@ const LessonDetailTabs = ({ lessonId }) => {
             setModalType(null);
             fetchLessonData();
         } catch (error) {
-            showToast(`Cập nhật ${type} thất bại`, 'error');
+            showToast(`Cập nhật dữ liệu thất bại`, 'error');
         }
     };
 
@@ -72,7 +72,7 @@ const LessonDetailTabs = ({ lessonId }) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa?')) {
             try {
                 await axios.delete(`http://localhost:8080/api/v1/${type}/${id}`, getAuthConfig());
-                showToast(`Xóa ${type} thành công`, 'success');
+                showToast(`Xóa dữ liệu thành công`, 'success');
                 fetchLessonData();
             } catch (error) {
                 showToast(`Xóa ${type} thất bại`, 'error');
@@ -272,6 +272,7 @@ const VocabularyTable = ({ data, onEdit, onDelete }) => (
                 <th className="text-left py-3 px-4">Ví dụ</th>
                 <th className="text-left py-3 px-4">Cách đọc ví dụ</th>
                 <th className="text-left py-3 px-4">Nghĩa ví dụ</th>
+                <th className="text-left py-3 px-4">Hình ảnh</th>
                 <th className="text-left py-3 px-4">Thao tác</th>
             </tr>
             </thead>
@@ -286,7 +287,15 @@ const VocabularyTable = ({ data, onEdit, onDelete }) => (
                     <td className="py-3 px-4">{item.example}</td>
                     <td className="py-3 px-4">{item.exampleReading}</td>
                     <td className="py-3 px-4">{item.exampleMeaning}</td>
-
+                    <td className="py-3 px-4">
+                        {item.imageUrl && (
+                            <img
+                                src={item.imageUrl}
+                                alt="Item"
+                                className="h-12 w-auto rounded"
+                            />
+                        )}
+                    </td>
                     <td className="py-3 px-4">
                         <TableActions
                             onEdit={() => onEdit(item)}
@@ -300,7 +309,7 @@ const VocabularyTable = ({ data, onEdit, onDelete }) => (
     </div>
 );
 
-const GrammarTable = ({ data, onEdit, onDelete }) => (
+const GrammarTable = ({data, onEdit, onDelete}) => (
     <div className="overflow-x-auto">
         <table className="w-full">
             <thead>
@@ -311,6 +320,7 @@ const GrammarTable = ({ data, onEdit, onDelete }) => (
                 <th className="text-left py-3 px-4">Ví dụ</th>
                 <th className="text-left py-3 px-4">Cách đọc ví dụ</th>
                 <th className="text-left py-3 px-4">Nghĩa ví dụ</th>
+                <th className="text-left py-3 px-4">Ảnh</th>
                 <th className="text-right py-3 px-4">Thao tác</th>
             </tr>
             </thead>
@@ -327,6 +337,15 @@ const GrammarTable = ({ data, onEdit, onDelete }) => (
                     <td className="py-3 px-4">{item.exampleReading}</td>
                     <td className="py-3 px-4">{item.exampleMeaning}</td>
                     <td className="py-3 px-4">
+                        {item.imageUrl && (
+                            <img
+                                src={item.imageUrl}
+                                alt="Item"
+                                className="h-12 w-auto rounded"
+                            />
+                        )}
+                    </td>
+                    <td className="py-3 px-4">
                         <TableActions
                             onEdit={() => onEdit(item)}
                             onDelete={() => onDelete(item.id)}
@@ -339,7 +358,7 @@ const GrammarTable = ({ data, onEdit, onDelete }) => (
     </div>
 );
 
-const KanjiTable = ({data, onEdit, onDelete }) => (
+const KanjiTable = ({data, onEdit, onDelete}) => (
     <div className="overflow-x-auto">
         <table className="w-full">
             <thead>
@@ -348,6 +367,7 @@ const KanjiTable = ({data, onEdit, onDelete }) => (
                 <th className="text-left py-3 px-4">Âm On</th>
                 <th className="text-left py-3 px-4">Âm Kun</th>
                 <th className="text-left py-3 px-4">Nghĩa</th>
+                <th className="text-left py-3 px-4">Ảnh</th>
                 <th className="text-right py-3 px-4">Thao tác</th>
             </tr>
             </thead>
@@ -362,6 +382,15 @@ const KanjiTable = ({data, onEdit, onDelete }) => (
                     <td className="py-3 px-4">{item.kunyomi}</td>
                     <td className="py-3 px-4">{item.meaning}</td>
                     <td className="py-3 px-4">
+                        {item.imageUrl && (
+                            <img
+                                src={item.imageUrl}
+                                alt="Item"
+                                className="h-12 w-auto rounded"
+                            />
+                        )}
+                    </td>
+                    <td className="py-3 px-4">
                         <TableActions
                             onEdit={() => onEdit(item)}
                             onDelete={() => onDelete(item.id)}
@@ -375,7 +404,7 @@ const KanjiTable = ({data, onEdit, onDelete }) => (
 );
 
 // Modal Components
-const Modal = ({ title, onClose, children }) => (
+const Modal = ({title, onClose, children}) => (
     <div className="fixed inset-0 z-50 overflow-y-auto">
         <div className="flex min-h-screen items-center justify-center p-4">
             <div className="fixed inset-0 bg-black bg-opacity-25" onClick={onClose} />
@@ -402,6 +431,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
         example: data?.example || '',
         exampleReading: data?.exampleReading || '',
         exampleMeaning: data?.exampleMeaning || '',
+        imageUrl: data?.imageUrl || '',
     });
 
     const handleSubmit = (e) => {
@@ -417,7 +447,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.word}
-                        onChange={(e) => setFormData({ ...formData, word: e.target.value })}
+                        onChange={(e) => setFormData({...formData, word: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -427,7 +457,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.reading}
-                        onChange={(e) => setFormData({ ...formData, reading: e.target.value })}
+                        onChange={(e) => setFormData({...formData, reading: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -437,7 +467,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.meaning}
-                        onChange={(e) => setFormData({ ...formData, meaning: e.target.value })}
+                        onChange={(e) => setFormData({...formData, meaning: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -448,7 +478,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.example}
-                        onChange={(e) => setFormData({ ...formData, example: e.target.value })}
+                        onChange={(e) => setFormData({...formData, example: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
                 </div>
@@ -457,7 +487,7 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.exampleReading}
-                        onChange={(e) => setFormData({ ...formData, exampleReading: e.target.value })}
+                        onChange={(e) => setFormData({...formData, exampleReading: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
                 </div>
@@ -466,9 +496,26 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.exampleMeaning}
-                        onChange={(e) => setFormData({ ...formData, exampleMeaning: e.target.value })}
+                        onChange={(e) => setFormData({...formData, exampleMeaning: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Hình ảnh</label>
+                    <input
+                        type="text"
+                        value={formData.imageUrl || ''}
+                        onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                        placeholder="Nhập URL hình ảnh"
+                        className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                    {formData.imageUrl && (
+                        <img
+                            src={formData.imageUrl}
+                            alt="Preview"
+                            className="mt-2 h-32 w-auto rounded-lg"
+                        />
+                    )}
                 </div>
                 <div className="flex justify-end space-x-3 pt-4">
                     <button
@@ -490,14 +537,15 @@ const VocabularyModal = ({ data, onClose, onSubmit }) => {
     );
 };
 
-const GrammarModal = ({ data, onClose, onSubmit }) => {
+const GrammarModal = ({data, onClose, onSubmit}) => {
     const [formData, setFormData] = useState({
         pattern: data?.pattern || '',
         meaning: data?.meaning || '',
         usage: data?.grammarUsage || '',
         example: data?.example || '',
         exampleReading: data?.exampleReading || '',
-        exampleMeaning: data?.exampleMeaning || ''
+        exampleMeaning: data?.exampleMeaning || '',
+        imageUrl: data?.imageUrl || '',
     });
 
     const handleSubmit = (e) => {
@@ -513,7 +561,7 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.pattern}
-                        onChange={(e) => setFormData({ ...formData, pattern: e.target.value })}
+                        onChange={(e) => setFormData({...formData, pattern: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -523,7 +571,7 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.meaning}
-                        onChange={(e) => setFormData({ ...formData, meaning: e.target.value })}
+                        onChange={(e) => setFormData({...formData, meaning: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -533,7 +581,7 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.usage}
-                        onChange={(e) => setFormData({ ...formData, usage: e.target.value })}
+                        onChange={(e) => setFormData({...formData, usage: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -543,7 +591,7 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.example}
-                        onChange={(e) => setFormData({ ...formData, example: e.target.value })}
+                        onChange={(e) => setFormData({...formData, example: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
                 </div>
@@ -552,7 +600,7 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.exampleReading}
-                        onChange={(e) => setFormData({ ...formData, exampleReading: e.target.value })}
+                        onChange={(e) => setFormData({...formData, exampleReading: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
                 </div>
@@ -561,9 +609,26 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.exampleMeaning}
-                        onChange={(e) => setFormData({ ...formData, exampleMeaning: e.target.value })}
+                        onChange={(e) => setFormData({...formData, exampleMeaning: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Hình ảnh</label>
+                    <input
+                        type="text"
+                        value={formData.imageUrl || ''}
+                        onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                        placeholder="Nhập URL hình ảnh"
+                        className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                    {formData.imageUrl && (
+                        <img
+                            src={formData.imageUrl}
+                            alt="Preview"
+                            className="mt-2 h-32 w-auto rounded-lg"
+                        />
+                    )}
                 </div>
                 <div className="flex justify-end space-x-3 pt-4">
                     <button
@@ -585,12 +650,13 @@ const GrammarModal = ({ data, onClose, onSubmit }) => {
     );
 };
 
-const KanjiModal = ({ data, onClose, onSubmit }) => {
+const KanjiModal = ({data, onClose, onSubmit}) => {
     const [formData, setFormData] = useState({
         character: data?.character || '',
         onyomi: data?.onyomi || '',
         kunyomi: data?.kunyomi || '',
-        meaning: data?.meaning || ''
+        meaning: data?.meaning || '',
+        imageUrl: data?.imageUrl || '',
     });
 
     const handleSubmit = (e) => {
@@ -606,7 +672,7 @@ const KanjiModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.character}
-                        onChange={(e) => setFormData({ ...formData, character: e.target.value })}
+                        onChange={(e) => setFormData({...formData, character: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -616,7 +682,7 @@ const KanjiModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.onyomi}
-                        onChange={(e) => setFormData({ ...formData, onyomi: e.target.value })}
+                        onChange={(e) => setFormData({...formData, onyomi: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -626,7 +692,7 @@ const KanjiModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.kunyomi}
-                        onChange={(e) => setFormData({ ...formData, kunyomi: e.target.value })}
+                        onChange={(e) => setFormData({...formData, kunyomi: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
@@ -636,10 +702,27 @@ const KanjiModal = ({ data, onClose, onSubmit }) => {
                     <input
                         type="text"
                         value={formData.meaning}
-                        onChange={(e) => setFormData({ ...formData, meaning: e.target.value })}
+                        onChange={(e) => setFormData({...formData, meaning: e.target.value})}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
                         required
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Hình ảnh</label>
+                    <input
+                        type="text"
+                        value={formData.imageUrl || ''}
+                        onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                        placeholder="Nhập URL hình ảnh"
+                        className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                    {formData.imageUrl && (
+                        <img
+                            src={formData.imageUrl}
+                            alt="Preview"
+                            className="mt-2 h-32 w-auto rounded-lg"
+                        />
+                    )}
                 </div>
                 <div className="flex justify-end space-x-3 pt-4">
                     <button

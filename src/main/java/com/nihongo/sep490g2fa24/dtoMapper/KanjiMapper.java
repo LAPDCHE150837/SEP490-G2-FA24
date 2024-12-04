@@ -22,6 +22,7 @@ public class KanjiMapper {
                 .meaning(kanji.getMeaning())
                 .strokeCount(kanji.getStrokeCount())
                 .radical(kanji.getRadical())
+                .imageUrl(kanji.getImageUrl())
                 .build();
     }
 

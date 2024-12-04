@@ -25,7 +25,6 @@ public class AuthenController {
 
     @GetMapping("/user")
     public List<UserDTO> getAllUser() throws IOException {
-
         return authenService.getAll();
     }
 

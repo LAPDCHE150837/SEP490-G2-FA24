@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
 
 const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) => {
     const [formData, setFormData] = useState({
@@ -7,7 +7,10 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
         title: '',
         description: '',
         orderIndex: 1,
-        status: true
+        imageUrl: '',
+        status: true,
+        videoUrl: '',
+        videoFile: null
     });
 
     const [errors, setErrors] = useState({});
@@ -19,32 +22,46 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                 title: '',
                 description: '',
                 orderIndex: 1,
-                status: true
+                imageUrl: '',
+                status: true,
+                videoUrl: '',
+                videoFile: null
             });
             setErrors({});
         } else if (mode === 'edit' && lessonData) {
             setFormData({
-                course: { id: lessonData.courseId },  // Change from lessonData.course.id to lessonData.courseId
+                course: { id: lessonData.courseId },
                 title: lessonData.title,
                 description: lessonData.description,
+                imageUrl: lessonData.imageUrl,
                 orderIndex: lessonData.orderIndex,
-                status: lessonData.status
+                status: lessonData.status,
+                videoUrl: lessonData.videoUrl || '',
+                videoFile: null
             });
         }
     }, [isOpen, mode, lessonData]);
 
     const validateForm = () => {
         const errors = {};
-        if (!formData.course.id) {
-            errors.courseId = 'Vui lòng chọn khóa học';
-        }
-        if (!formData.title) {
-            errors.title = 'Tên bài học không được để trống';
-        }
-        if (!formData.description) {
-            errors.description = 'Mô tả không được để trống';
+        if (!formData.course.id) errors.courseId = 'Vui lòng chọn khóa học';
+        if (!formData.title) errors.title = 'Tên bài học không được để trống';
+        if (!formData.description) errors.description = 'Mô tả không được để trống';
+        if (!formData.videoUrl && !formData.videoFile && mode === 'add') {
+            errors.video = 'Vui lòng tải lên video bài học';
         }
         return errors;
+    };
+
+    const handleVideoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFormData({
+                ...formData,
+                videoFile: file,
+                videoUrl: URL.createObjectURL(file)
+            });
+        }
     };
 
     const handleSubmit = (e) => {
@@ -75,7 +92,6 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
 
                         {mode === 'view' ? (
                             <div className="space-y-4">
-
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Tên bài học</label>
                                     <p className="mt-1">{lessonData.title}</p>
@@ -84,7 +100,16 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                                     <label className="block text-sm font-medium text-gray-700">Mô tả</label>
                                     <p className="mt-1">{lessonData.description}</p>
                                 </div>
-
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Video bài học</label>
+                                    {lessonData.videoUrl && (
+                                        <video
+                                            controls
+                                            className="mt-2 w-full rounded-lg"
+                                            src={lessonData.videoUrl}
+                                        />
+                                    )}
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
                                     <p className="mt-1">{lessonData.status ? 'Hoạt động' : 'Không hoạt động'}</p>
@@ -152,7 +177,42 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                                     )}
                                 </div>
 
-
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Video bài học
+                                    </label>
+                                    <div className="mt-1">
+                                        <div className="flex items-center justify-center w-full">
+                                            <label className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer ${
+                                                errors.video ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50'
+                                            } hover:bg-gray-100`}>
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <Upload className="w-8 h-8 mb-4 text-gray-500"/>
+                                                    <p className="mb-2 text-sm text-gray-500">
+                                                        <span className="font-semibold">Click để tải lên</span> hoặc kéo thả video
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">MP4, WebM hoặc Ogg</p>
+                                                </div>
+                                                <input
+                                                    type="file"
+                                                    className="hidden"
+                                                    accept="video/*"
+                                                    onChange={handleVideoChange}
+                                                />
+                                            </label>
+                                        </div>
+                                        {formData.videoUrl && (
+                                            <video
+                                                controls
+                                                className="w-full h-full rounded-lg"
+                                                src={`http://localhost:8080/api/v1/lessons/video/${formData.id}`}
+                                            />
+                                        )}
+                                        {errors.video && (
+                                            <p className="mt-1 text-sm text-red-600">{errors.video}</p>
+                                        )}
+                                    </div>
+                                </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">

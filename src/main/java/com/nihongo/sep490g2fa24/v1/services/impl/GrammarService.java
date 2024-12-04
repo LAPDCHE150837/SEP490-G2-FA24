@@ -47,6 +47,7 @@ public class GrammarService {
         existingGrammar.setExample(grammar.getExample());
         existingGrammar.setExampleReading(grammar.getExampleReading());
         existingGrammar.setExampleMeaning(grammar.getExampleMeaning());
+        existingGrammar.setImageUrl(grammar.getImageUrl());
 
         return grammarRepository.save(existingGrammar);
     }

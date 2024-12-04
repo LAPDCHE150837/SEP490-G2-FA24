@@ -66,7 +66,7 @@ class TestResultServiceDiffblueTest {
         // Mock TestResultDTO
         mockTestResultDTO = TestResultDTO.builder()
                 .id("42")
-                .testId("42")
+                .score(42)
                 .userId("42")
                 .completedAt(LocalDateTime.of(1970, 1, 1, 0, 0))
                 .build();
@@ -88,7 +88,7 @@ class TestResultServiceDiffblueTest {
 
         assertNotNull(result);
         assertEquals("42", result.getId());
-        assertEquals("42", result.getTestId());
+        assertEquals(42, result.getScore());
         assertEquals("42", result.getUserId());
         assertEquals("1970-01-01T00:00", result.getCompletedAt().toString());
     }
