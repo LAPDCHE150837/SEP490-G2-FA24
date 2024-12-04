@@ -71,4 +71,18 @@ public class FlashcardService {
                 .map(flashcardMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    public Flashcard isMemoried(String id) {
+        Flashcard existingCard = flashcardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Flashcard not found"));
+        existingCard.setMemorized(true); ;
+        return flashcardRepository.save(existingCard);
+    }
+
+    public Flashcard isNotMemoried(String id) {
+        Flashcard existingCard = flashcardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Flashcard not found"));
+        existingCard.setMemorized(false); ;
+        return flashcardRepository.save(existingCard);
+    }
 }

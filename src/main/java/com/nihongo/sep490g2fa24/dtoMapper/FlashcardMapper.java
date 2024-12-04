@@ -21,6 +21,7 @@ public class FlashcardMapper {
                 .backReading(card.getBackReading())
                 .backMeaning(card.getBackMeaning())
                 .backExample(card.getBackExample())
+                .memorized(card.isMemorized())
                 .backExampleReading(card.getBackExampleReading())
                 .createdAt(card.getCreatedAt())
                 .updatedAt(card.getUpdatedAt())

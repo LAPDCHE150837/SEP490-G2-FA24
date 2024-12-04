@@ -21,6 +21,7 @@ public class GrammarMapper {
                 .example(grammar.getExample())
                 .exampleReading(grammar.getExampleReading())
                 .exampleMeaning(grammar.getExampleMeaning())
+                .imageUrl(grammar.getImageUrl())
                 .build();
     }
 

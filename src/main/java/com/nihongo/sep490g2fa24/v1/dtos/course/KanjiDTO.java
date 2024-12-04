@@ -17,4 +17,5 @@ public class KanjiDTO {
     private String meaning;
     private Integer strokeCount;
     private String radical;
+    private String imageUrl;
 }

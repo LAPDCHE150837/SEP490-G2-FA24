@@ -47,6 +47,8 @@ public class Flashcard {
     @Column(name = "back_example_reading", columnDefinition = "TEXT")
     private String backExampleReading;
 
+    @Column(name = "memorized")
+    private boolean memorized = false;
 
     @Column(name = "created_at")
     private Date createdAt;

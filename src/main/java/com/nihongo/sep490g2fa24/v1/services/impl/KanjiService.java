@@ -47,6 +47,7 @@ public class KanjiService {
         existingKanji.setMeaning(kanji.getMeaning());
         existingKanji.setStrokeCount(kanji.getStrokeCount());
         existingKanji.setRadical(kanji.getRadical());
+        existingKanji.setImageUrl(kanji.getImageUrl());
 
         return kanjiRepository.save(existingKanji);
     }

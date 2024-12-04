@@ -42,6 +42,18 @@ public class FlashcardController {
         return BaseApiResponse.succeed(flashcardService.updateFlashcard(id, flashcard));
     }
 
+
+    @PutMapping("/{id}")
+    public BaseApiResponse<Flashcard> isMemoried(@PathVariable String id) {
+        return BaseApiResponse.succeed(flashcardService.isMemoried(id));
+    }
+
+    @PutMapping("/{id}")
+    public BaseApiResponse<Flashcard> isNotMemoried(@PathVariable String id) {
+        return BaseApiResponse.succeed(flashcardService.isNotMemoried(id));
+    }
+
+
     @DeleteMapping("/{id}")
     public BaseApiResponse<Void> deleteFlashcard(@PathVariable String id) {
         flashcardService.deleteFlashcard(id);
