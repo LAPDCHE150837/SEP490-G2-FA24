@@ -8,7 +8,7 @@ import {
     Plus, Filter, MoreHorizontal, ArrowRight, X, ArrowLeft
 } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
-import logo from "../../assets/japan.jpg";
+import logo from "../../assets/japan.png";
 
 // Layout Component
 const CRMLayout = ({ children }) => {
@@ -20,8 +20,8 @@ const CRMLayout = ({ children }) => {
 
     const navigation = [
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
-        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_ADMIN'] },
-        { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud',roles: ['ROLE_ADMIN']},
+        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_ADMIN','ROLE_TEACHER'] },
+        { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud',roles: ['ROLE_ADMIN','ROLE_TEACHER']},
         { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí người dùng', icon: Users, path: '/user', roles: ['ROLE_ADMIN']},
