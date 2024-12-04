@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class LessonMapper {
+
     public LessonListDTO toListDTO(Lesson lesson) {
         if (lesson == null) return null;
 
@@ -25,6 +26,8 @@ public class LessonMapper {
                 .status(lesson.getStatus())
                 .createdAt(lesson.getCreatedAt())
                 .updatedAt(lesson.getUpdatedAt())
+                .videoUr(lesson.getVideoUrl()) // Add this line
+
                 .build();
     }
 
@@ -40,6 +43,7 @@ public class LessonMapper {
                 .status(lesson.getStatus())
                 .createdAt(lesson.getCreatedAt())
                 .updatedAt(lesson.getUpdatedAt())
+                .videoUrl(lesson.getVideoUrl())
                 .vocabularies(lesson.getVocabularies().stream()
                         .map(this::toVocabularyDTO)
                         .collect(Collectors.toList()))
@@ -57,6 +61,7 @@ public class LessonMapper {
 
         return VocabularyDTO.builder()
                 .id(vocabulary.getId())
+                .imageUrl(vocabulary.getImageUrl())
                 .word(vocabulary.getWord())
                 .reading(vocabulary.getReading())
                 .meaning(vocabulary.getMeaning())
@@ -71,6 +76,7 @@ public class LessonMapper {
 
         return GrammarDTO.builder()
                 .id(grammar.getId())
+                .imageUrl(grammar.getImageUrl())
                 .pattern(grammar.getPattern())
                 .meaning(grammar.getMeaning())
                 .grammarUsage(grammar.getUsage())
@@ -85,6 +91,7 @@ public class LessonMapper {
 
         return KanjiDTO.builder()
                 .id(kanji.getId())
+                .imageUrl(kanji.getImageUrl())
                 .character(kanji.getCharacter())
                 .onyomi(kanji.getOnyomi())
                 .kunyomi(kanji.getKunyomi())

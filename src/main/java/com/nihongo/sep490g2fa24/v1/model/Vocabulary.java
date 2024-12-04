@@ -1,11 +1,17 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,7 +28,8 @@ public class Vocabulary {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private String id;
-
+    @Column(name = "image_url")
+    private String imageUrl;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +20,5 @@ public class LessonListDTO {
     private Boolean status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String videoUr;
 }
