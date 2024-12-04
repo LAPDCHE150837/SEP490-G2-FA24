@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class VocabularyService {
@@ -46,6 +47,7 @@ public class VocabularyService {
         existingVocabulary.setExample(vocabulary.getExample());
         existingVocabulary.setExampleReading(vocabulary.getExampleReading());
         existingVocabulary.setExampleMeaning(vocabulary.getExampleMeaning());
+        existingVocabulary.setImageUrl(vocabulary.getImageUrl());
 
         return vocabularyRepository.save(existingVocabulary);
     }
@@ -55,3 +57,4 @@ public class VocabularyService {
         vocabularyRepository.deleteById(id);
     }
 }
+
