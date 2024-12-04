@@ -25,10 +25,10 @@ const LessonAccordionItem = ({lesson, index, courseId, navigate}) => (
         <div className="bg-gray-100 rounded-lg p-4 cursor-pointer">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                    <div
-                        className="bg-blue-100 text-blue-800 text-xl font-semibold rounded-full w-8 h-8 flex items-center justify-center">
-                        {lesson.orderIndex || index + 1}
-                    </div>
+                    {/*<div*/}
+                    {/*    className="bg-blue-100 text-blue-800 text-xl font-semibold rounded-full w-8 h-8 flex items-center justify-center">*/}
+                    {/*    {lesson.orderIndex || index + 1}*/}
+                    {/*</div>*/}
                     <h3 className="text-lg font-semibold">{lesson.title}</h3>
                 </div>
                 <button
@@ -41,44 +41,45 @@ const LessonAccordionItem = ({lesson, index, courseId, navigate}) => (
                 </button>
             </div>
 
-            <div className="mt-4">
-                <p className="text-gray-600 mb-4">{lesson.description}</p>
+            {/*<div className="mt-4">*/}
+            {/*<div className="mt-4">*/}
+            {/*    <p className="text-gray-600 mb-4">{lesson.description}</p>*/}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Vocabulary Section */}
-                    <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-center space-x-2 mb-3">
-                            <Book className="h-5 w-5 text-blue-500"/>
-                            <h4 className="font-semibold">Từ vựng</h4>
-                        </div>
-                        <p className="text-gray-600">{lesson.vocabularies?.length || 0} từ mới</p>
+            {/*    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">*/}
+            {/*        /!* Vocabulary Section *!/*/}
+            {/*        <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">*/}
+            {/*            <div className="flex items-center space-x-2 mb-3">*/}
+            {/*                <Book className="h-5 w-5 text-blue-500"/>*/}
+            {/*                <h4 className="font-semibold">Từ vựng</h4>*/}
+            {/*            </div>*/}
+            {/*            <p className="text-gray-600">{lesson.vocabularies?.length || 0} từ mới</p>*/}
 
-                    </div>
+            {/*        </div>*/}
 
-                    {/* Grammar Section */}
-                    <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-center space-x-2 mb-3">
-                            <GraduationCap className="h-5 w-5 text-green-500"/>
-                            <h4 className="font-semibold">Ngữ pháp</h4>
-                        </div>
-                        <p className="text-gray-600">{lesson.grammars?.length || 0} cấu trúc</p>
+            {/*        /!* Grammar Section *!/*/}
+            {/*        <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">*/}
+            {/*            <div className="flex items-center space-x-2 mb-3">*/}
+            {/*                <GraduationCap className="h-5 w-5 text-green-500"/>*/}
+            {/*                <h4 className="font-semibold">Ngữ pháp</h4>*/}
+            {/*            </div>*/}
+            {/*            <p className="text-gray-600">{lesson.grammars?.length || 0} cấu trúc</p>*/}
 
-                    </div>
+            {/*        </div>*/}
 
-                    {/* Kanji Section */}
-                    <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-center space-x-2 mb-3">
-                            <Book className="h-5 w-5 text-red-500"/>
-                            <h4 className="font-semibold">Kanji</h4>
-                        </div>
-                        <p className="text-gray-600">{lesson.kanjis?.length || 0} chữ Kanji</p>
+            {/*        /!* Kanji Section *!/*/}
+            {/*        <div className="border bg-white rounded-lg p-4 hover:shadow-md transition-shadow">*/}
+            {/*            <div className="flex items-center space-x-2 mb-3">*/}
+            {/*                <Book className="h-5 w-5 text-red-500"/>*/}
+            {/*                <h4 className="font-semibold">Kanji</h4>*/}
+            {/*            </div>*/}
+            {/*            <p className="text-gray-600">{lesson.kanjis?.length || 0} chữ Kanji</p>*/}
 
-                    </div>
-                </div>
+            {/*        </div>*/}
+            {/*    </div>*/}
 
-                {/* Progress Bar - You might want to add this to your API response */}
+            {/*    /!* Progress Bar - You might want to add this to your API response *!/*/}
 
-            </div>
+            {/*</div>*/}
         </div>
     </div>
 );

@@ -85,4 +85,10 @@ public class FlashcardService {
         existingCard.setMemorized(false); ;
         return flashcardRepository.save(existingCard);
     }
+
+    public List<FlashcardDTO> getFlashcardIsNotMemoryById(String id) {
+        return flashcardRepository.findBySetIdAndMemorized(id,false).stream()
+                .map(flashcardMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

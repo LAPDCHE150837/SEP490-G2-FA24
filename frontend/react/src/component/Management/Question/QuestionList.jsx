@@ -137,8 +137,7 @@ export const QuestionList = () => {
         const types = {
             'voca': 'Từ vựng',
             'grammar': 'Ngữ pháp',
-            'reading': 'Đọc hiểu',
-            'listening': 'Nghe hiểu'
+            'kanji': 'Hán tự',
         };
         return types[type] || type;
     };
@@ -166,8 +165,7 @@ export const QuestionList = () => {
                         {[
                             { label: 'Từ vựng', value: questions.filter(q => q.questionType === 'voca').length, color: 'blue' },
                             { label: 'Ngữ pháp', value: questions.filter(q => q.questionType === 'grammar').length, color: 'green' },
-                            { label: 'Đọc hiểu', value: questions.filter(q => q.questionType === 'reading').length, color: 'yellow' },
-                            { label: 'Nghe hiểu', value: questions.filter(q => q.questionType === 'listening').length, color: 'purple' }
+                            { label: 'Hán tự', value: questions.filter(q => q.questionType === 'kanji').length, color: 'yellow' },
                         ].map(stat => (
                             <div key={stat.label} className={`bg-${stat.color}-50 p-4 rounded-lg border border-${stat.color}-200`}>
                                 <div className="text-sm text-gray-600">{stat.label}</div>
@@ -211,8 +209,7 @@ export const QuestionList = () => {
                                 <option value="">Tất cả loại câu hỏi</option>
                                 <option value="voca">Từ vựng</option>
                                 <option value="grammar">Ngữ pháp</option>
-                                <option value="reading">Đọc hiểu</option>
-                                <option value="listening">Nghe hiểu</option>
+                                <option value="kanji">Hán tự</option>
                             </select>
                         </div>
                     </div>
@@ -278,8 +275,7 @@ export const QuestionList = () => {
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
                                                     ${question.questionType === 'voca' && 'bg-blue-100 text-blue-800'}
                                                     ${question.questionType === 'grammar' && 'bg-green-100 text-green-800'}
-                                                    ${question.questionType === 'reading' && 'bg-yellow-100 text-yellow-800'}
-                                                    ${question.questionType === 'listening' && 'bg-purple-100 text-purple-800'}
+                                                    ${question.questionType === 'kanji' && 'bg-yellow-100 text-yellow-800'}
                                                 `}>
                                                     {getQuestionTypeLabel(question.questionType)}
                                                 </span>
