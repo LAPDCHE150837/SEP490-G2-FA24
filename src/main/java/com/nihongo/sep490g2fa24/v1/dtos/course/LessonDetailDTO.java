@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,4 +24,5 @@ public class LessonDetailDTO {
     private List<VocabularyDTO> vocabularies;
     private List<GrammarDTO> grammars;
     private List<KanjiDTO> kanjis;
+    private String videoUrl ;
 }
