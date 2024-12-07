@@ -34,7 +34,7 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public List<Lesson> getAllLessons() {
-        return lessonRepository.findByStatus(true);
+        return lessonRepository.findAll();
     }
 
     @Transactional(readOnly = true)
