@@ -34,7 +34,7 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public List<Lesson> getAllLessons() {
-        return lessonRepository.findByStatus(true);
+        return lessonRepository.findAll();
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +94,7 @@ public class LessonService {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(video.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return "D:\\400tr\\FuLearning\\FALL2024\\DATN\\References\\image" + fileName;
+            return "D:\\400tr\\FuLearning\\FALL2024\\DATN\\References\\image\\" + fileName;
         } catch (IOException e) {
             throw new RuntimeException("Could not store video file", e);
         }
