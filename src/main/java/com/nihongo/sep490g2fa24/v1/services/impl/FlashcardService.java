@@ -41,6 +41,22 @@ public class FlashcardService {
                 .orElseThrow(() -> new RuntimeException("Flashcard set not found"));
         flashcardSet.setTotalCards(flashcardSet.getTotalCards() + 1);
         flashcardSetRepository.save(flashcardSet);
+
+        if (flashcard.getFrontText() == null || flashcard.getFrontText().isEmpty()) {
+            throw new RuntimeException("Front text is empty");
+        }
+        if (flashcard.getFrontType() == null || flashcard.getFrontType().isEmpty()) {
+            throw new RuntimeException("Front type is empty");
+        }
+
+        if (flashcard.getBackReading() == null || flashcard.getBackReading().isEmpty()) {
+            throw new RuntimeException("Back reading is empty");
+        }
+
+        if (flashcard.getBackMeaning() == null || flashcard.getBackMeaning().isEmpty()) {
+            throw new RuntimeException("Back meaning is empty");
+        }
+
         return flashcardRepository.save(flashcard);
     }
 
@@ -48,6 +64,22 @@ public class FlashcardService {
     public Flashcard updateFlashcard(String id, Flashcard flashcard) {
         Flashcard existingCard = flashcardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flashcard not found"));
+
+        if (flashcard.getFrontText() == null || flashcard.getFrontText().isEmpty()) {
+            throw new RuntimeException("Front text is empty");
+        }
+        if (flashcard.getFrontType() == null || flashcard.getFrontType().isEmpty()) {
+            throw new RuntimeException("Front type is empty");
+        }
+
+        if (flashcard.getBackReading() == null || flashcard.getBackReading().isEmpty()) {
+            throw new RuntimeException("Back reading is empty");
+        }
+
+        if (flashcard.getBackMeaning() == null || flashcard.getBackMeaning().isEmpty()) {
+            throw new RuntimeException("Back meaning is empty");
+        }
+
         existingCard.setFrontText(flashcard.getFrontText());
         existingCard.setFrontType(flashcard.getFrontType());
         existingCard.setBackReading(flashcard.getBackReading());

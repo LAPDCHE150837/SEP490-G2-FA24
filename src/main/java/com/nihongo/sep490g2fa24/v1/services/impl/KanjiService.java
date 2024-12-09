@@ -33,6 +33,12 @@ public class KanjiService {
 
     @Transactional
     public Kanji createKanji(Kanji kanji) {
+        if (kanji.getCharacter() == null || kanji.getCharacter().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (kanji.getMeaning() == null || kanji.getMeaning().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
         return kanjiRepository.save(kanji);
     }
 
@@ -40,6 +46,13 @@ public class KanjiService {
     public Kanji updateKanji(String id, Kanji kanji) {
         Kanji existingKanji = kanjiRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Kanji not found"));
+
+        if (kanji.getCharacter() == null || kanji.getCharacter().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (kanji.getMeaning() == null || kanji.getMeaning().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
 
         existingKanji.setCharacter(kanji.getCharacter());
         existingKanji.setOnyomi(kanji.getOnyomi());

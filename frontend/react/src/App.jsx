@@ -31,11 +31,15 @@ import TestListUser from "./component/Test/TestList.jsx";
 import TestHistory from "./component/History/TestHistory.jsx";
 import User from "./component/Management/User/User.jsx";
 import {AuthRoute} from "./context/AuthRoute.jsx";
+import CreateBlog from "./component/Blog/Crud/CreateBlog.jsx";
+import ViewBlog from "./component/Blog/Crud/ListBlog.jsx";
 
 
 function App() {
     return (
         <Routes>
+            <Route path="/create_blog" element={<CreateBlog/>}/>
+            <Route path="/view_blog" element={<ViewBlog/>}/>
             <Route path="/course_crud" element={<ProtectedRoute><CoursePage/></ProtectedRoute>}/>
             <Route path="/lesson_crud" element={<ProtectedRoute><LessonPage/></ProtectedRoute>}/>
             <Route path="/grammar_crud" element={<ProtectedRoute><GrammarPage/></ProtectedRoute>}/>

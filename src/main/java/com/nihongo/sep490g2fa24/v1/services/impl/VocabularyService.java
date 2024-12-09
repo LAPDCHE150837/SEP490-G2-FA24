@@ -33,6 +33,18 @@ public class VocabularyService {
 
     @Transactional
     public Vocabulary createVocabulary(Vocabulary vocabulary) {
+        if (vocabulary.getLesson() == null) {
+            throw new RuntimeException("Lesson cannot be null");
+        }
+        if (vocabulary.getWord() == null || vocabulary.getWord().isEmpty()) {
+            throw new RuntimeException("Word cannot be null or empty");
+        }
+        if (vocabulary.getReading() == null || vocabulary.getReading().isEmpty()) {
+            throw new RuntimeException("Reading cannot be null or empty");
+        }
+        if (vocabulary.getMeaning() == null || vocabulary.getMeaning().isEmpty()) {
+            throw new RuntimeException("Meaning cannot be null or empty");
+        }
         return vocabularyRepository.save(vocabulary);
     }
 
@@ -40,6 +52,16 @@ public class VocabularyService {
     public Vocabulary updateVocabulary(String id, Vocabulary vocabulary) {
         Vocabulary existingVocabulary = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vocabulary not found"));
+
+        if (vocabulary.getWord() == null || vocabulary.getWord().isEmpty()) {
+            throw new RuntimeException("Word cannot be null or empty");
+        }
+        if (vocabulary.getReading() == null || vocabulary.getReading().isEmpty()) {
+            throw new RuntimeException("Reading cannot be null or empty");
+        }
+        if (vocabulary.getMeaning() == null || vocabulary.getMeaning().isEmpty()) {
+            throw new RuntimeException("Meaning cannot be null or empty");
+        }
 
         existingVocabulary.setWord(vocabulary.getWord());
         existingVocabulary.setReading(vocabulary.getReading());

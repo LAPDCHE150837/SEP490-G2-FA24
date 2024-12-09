@@ -35,6 +35,7 @@ public class Vocabulary {
     private Lesson lesson;
 
     @Column(name = "word", length = 50, nullable = false)
+    @NotNull(message = "Word cannot be null")
     private String word;
 
     @Column(name = "reading", length = 50, nullable = false)
