@@ -34,19 +34,19 @@ public class TestQuestionService {
 
     @Transactional
     public TestQuestion createQuestion(TestQuestion question) {
-        if(question.getQuestionType() ==null || question.getQuestionType().isEmpty()){
-            throw new RuntimeException("Question type is null");
-        }
-
-        if (question.getQuestionText() == null || question.getQuestionText().isEmpty()) {
-            throw new RuntimeException("Question text is null");
-        }
-        if (question.getQuestionTranslation() == null || question.getQuestionTranslation().isEmpty()) {
-            throw new RuntimeException("Question translation is null");
-        }
-        if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isEmpty()) {
-            throw new RuntimeException("Correct answer is null");
-        }
+//        if(question.getQuestionType() ==null || question.getQuestionType().isEmpty()){
+//            throw new RuntimeException("Question type is null");
+//        }
+//
+//        if (question.getQuestionText() == null || question.getQuestionText().isEmpty()) {
+//            throw new RuntimeException("Question text is null");
+//        }
+//        if (question.getQuestionTranslation() == null || question.getQuestionTranslation().isEmpty()) {
+//            throw new RuntimeException("Question translation is null");
+//        }
+//        if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isEmpty()) {
+//            throw new RuntimeException("Correct answer is null");
+//        }
 
         return questionRepository.save(question);
     }
@@ -56,19 +56,19 @@ public class TestQuestionService {
         TestQuestion existingQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Question not found"));
 
-        if(question.getQuestionType() ==null || question.getQuestionType().isEmpty()){
-            throw new RuntimeException("Question type is null");
-        }
-
-        if (question.getQuestionText() == null || question.getQuestionText().isEmpty()) {
-            throw new RuntimeException("Question text is null");
-        }
-        if (question.getQuestionTranslation() == null || question.getQuestionTranslation().isEmpty()) {
-            throw new RuntimeException("Question translation is null");
-        }
-        if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isEmpty()) {
-            throw new RuntimeException("Correct answer is null");
-        }
+//        if(question.getQuestionType() ==null || question.getQuestionType().isEmpty()){
+//            throw new RuntimeException("Question type is null");
+//        }
+//
+//        if (question.getQuestionText() == null || question.getQuestionText().isEmpty()) {
+//            throw new RuntimeException("Question text is null");
+//        }
+//        if (question.getQuestionTranslation() == null || question.getQuestionTranslation().isEmpty()) {
+//            throw new RuntimeException("Question translation is null");
+//        }
+//        if (question.getCorrectAnswer() == null || question.getCorrectAnswer().isEmpty()) {
+//            throw new RuntimeException("Correct answer is null");
+//        }
 
         existingQuestion.setQuestionType(question.getQuestionType());
         existingQuestion.setQuestionText(question.getQuestionText());
