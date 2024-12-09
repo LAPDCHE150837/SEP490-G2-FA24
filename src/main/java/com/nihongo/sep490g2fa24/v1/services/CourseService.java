@@ -37,14 +37,50 @@ public class CourseService {
         if (courseRepository.existsByTitleAndStatus(course.getTitle(), true)) {
             throw new RuntimeException("Course with this title already exists");
         }
+        if(course.getDescription().isEmpty()){
+            throw new RuntimeException("description not null");
+        }
+
+        if(course.getLevel().isEmpty()){
+            throw new RuntimeException("level not null");
+        }
+
+        if(course.getTotalLessons() == null){
+            throw new RuntimeException("total lesson not null");
+        }
         return courseRepository.save(course);
     }
 
     @Transactional
     public Course updateCourse(String id, Course courseDetails) {
+        // Retrieve the course to be updated
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
+        // Validate the input fields (courseDetails)
+        if (courseDetails.getTitle() == null || courseDetails.getTitle().isEmpty()) {
+            throw new RuntimeException("Course title cannot be null or empty");
+        }
+        if (courseDetails.getDescription() == null || courseDetails.getDescription().isEmpty()) {
+            throw new RuntimeException("Course description cannot be null or empty");
+        }
+        if (courseDetails.getLevel().isEmpty()) {
+            throw new RuntimeException("Course level cannot be null");
+        }
+        if (courseDetails.getTotalLessons() == null) {
+            throw new RuntimeException("Total lessons cannot be null");
+        }
+        if (courseDetails.getStatus() == null) {
+            throw new RuntimeException("Course status cannot be null");
+        }
+        if (courseDetails.getCreatedAt() == null) {
+            throw new RuntimeException("Created at date cannot be null");
+        }
+        if (courseDetails.getUpdatedAt() == null) {
+            throw new RuntimeException("Updated at date cannot be null");
+        }
+
+        // Update the course details with the validated courseDetails
         course.setTitle(courseDetails.getTitle());
         course.setDescription(courseDetails.getDescription());
         course.setLevel(courseDetails.getLevel());
@@ -53,8 +89,11 @@ public class CourseService {
         course.setStatus(courseDetails.getStatus());
         course.setCreatedAt(courseDetails.getCreatedAt());
         course.setUpdatedAt(courseDetails.getUpdatedAt());
+
+        // Save and return the updated course
         return courseRepository.save(course);
     }
+
 
     @Transactional
     public void deleteCourse(String id) {

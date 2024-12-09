@@ -42,6 +42,16 @@ public class FlashcardSetService {
         User user = userRepository.findByUsername(req).orElseThrow(() -> new RuntimeException("User not found")); ;
         set.setUser(user);
 
+        if (set.getTitle() == null || set.getTitle().isEmpty()) {
+            throw new RuntimeException("Title cannot be empty");
+        }
+        if (set.getDescription() == null || set.getDescription().isEmpty()) {
+            throw new RuntimeException("Description cannot be empty");
+        }
+        if (set.getCategory() == null || set.getCategory().isEmpty()) {
+            throw new RuntimeException("Category cannot be empty");
+        }
+
         return setRepository.save(set);
     }
 
@@ -50,6 +60,16 @@ public class FlashcardSetService {
 
         FlashcardSet existingSet = setRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flashcard set not found"));
+
+        if (set.getTitle() == null || set.getTitle().isEmpty()) {
+            throw new RuntimeException("Title cannot be empty");
+        }
+        if (set.getDescription() == null || set.getDescription().isEmpty()) {
+            throw new RuntimeException("Description cannot be empty");
+        }
+        if (set.getCategory() == null || set.getCategory().isEmpty()) {
+            throw new RuntimeException("Category cannot be empty");
+        }
 
         existingSet.setTitle(set.getTitle());
         existingSet.setDescription(set.getDescription());

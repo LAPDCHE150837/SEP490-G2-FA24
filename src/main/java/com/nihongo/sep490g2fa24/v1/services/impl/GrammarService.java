@@ -33,6 +33,13 @@ public class GrammarService {
 
     @Transactional
     public Grammar createGrammar(Grammar grammar) {
+
+        if (grammar.getPattern() == null || grammar.getPattern().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (grammar.getMeaning() == null || grammar.getMeaning().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
         return grammarRepository.save(grammar);
     }
 
@@ -40,6 +47,13 @@ public class GrammarService {
     public Grammar updateGrammar(String id, Grammar grammar) {
         Grammar existingGrammar = grammarRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grammar not found"));
+
+        if (grammar.getPattern() == null || grammar.getPattern().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (grammar.getMeaning() == null || grammar.getMeaning().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
 
         existingGrammar.setPattern(grammar.getPattern());
         existingGrammar.setMeaning(grammar.getMeaning());

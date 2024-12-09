@@ -36,6 +36,19 @@ public class TestService {
 
     @Transactional
     public Test createTest(Test test) {
+        if(test.getLesson() == null || test.getLesson().getId().isEmpty()) {
+            throw new RuntimeException("Lesson id cannot be empty");
+        }
+        if(test.getTitle() == null || test.getTitle().isEmpty()) {
+            throw new RuntimeException("Title cannot be empty");
+        }
+        if (test.getDuration() == null) {
+            throw new RuntimeException("Duration cannot be empty");
+        }
+        if (test.getPassScore() == null) {
+            throw new RuntimeException("PassScore cannot be empty");
+        }
+
         return testRepository.save(test);
     }
 
@@ -43,6 +56,19 @@ public class TestService {
     public Test updateTest(String id, Test test) {
         Test existingTest = testRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Test not found"));
+
+        if(test.getLesson() == null || test.getLesson().getId().isEmpty()) {
+            throw new RuntimeException("Lesson id cannot be empty");
+        }
+        if(test.getTitle() == null || test.getTitle().isEmpty()) {
+            throw new RuntimeException("Title cannot be empty");
+        }
+        if (test.getDuration() == null) {
+            throw new RuntimeException("Duration cannot be empty");
+        }
+        if (test.getPassScore() == null) {
+            throw new RuntimeException("PassScore cannot be empty");
+        }
 
         existingTest.setTitle(test.getTitle());
         existingTest.setDescription(test.getDescription());
