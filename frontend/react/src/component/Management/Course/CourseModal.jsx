@@ -143,11 +143,6 @@ const CourseModal = ({ isOpen, onClose, mode, courseData, onSubmit }) => {
                                     <p className="mt-1">{courseData.level}</p>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">Số bài học</label>
-                                    <p className="mt-1">{courseData.totalLessons}</p>
-                                </div>
-
-                                <div>
                                     <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
                                     <p className="mt-1">{courseData.status ? 'Đang hoạt động' : 'Không hoạt động'}</p>
                                 </div>
