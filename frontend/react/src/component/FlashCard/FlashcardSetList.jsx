@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, BookOpen, Clock, Target, MoreVertical, Edit, Trash, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import StudyButton from "./StudyButton.jsx";
 const getAuthConfig = () => ({
     headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -125,6 +126,18 @@ const FlashcardSetList = () => {
         return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${formatDate(date)}`;
     };
 
+    const handleStudyAll = (setId) => {
+        navigate(`/flashcards/${setId}/study`);
+        // Logic for studying entire set
+        console.log(`Studying all cards in set ${setId}`);
+    };
+
+    const handleStudyUnknown = (setId) => {
+        navigate(`/flashcards/${setId}/study/isNotMemory`);
+        // Logic for studying only unknown cards
+        console.log(`Studying unknown cards in set ${setId}`);
+    };
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -179,13 +192,11 @@ const FlashcardSetList = () => {
                                     <span>Xem thẻ</span>
                                 </button>
                                 {set.totalCards !== 0 ? (
-                                    <button
-                                        onClick={(e) => handleStudy(e, set.id)}
-                                        className="flex items-center space-x-1 px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                    >
-                                        <Play size={16}/>
-                                        <span>Học</span>
-                                    </button>
+                                    <StudyButton
+                                        set={{ id: `${set.id}` }}
+                                        onStudyAll={handleStudyAll}
+                                        onStudyUnknown={handleStudyUnknown}
+                                    />
                                 ) : ""}
                                 <button
                                     onClick={(e) => handleEdit(e, set.id)}

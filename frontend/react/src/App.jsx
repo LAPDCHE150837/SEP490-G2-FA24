@@ -31,15 +31,14 @@ import TestListUser from "./component/Test/TestList.jsx";
 import TestHistory from "./component/History/TestHistory.jsx";
 import User from "./component/Management/User/User.jsx";
 import {AuthRoute} from "./context/AuthRoute.jsx";
-import CreateBlog from "./component/Blog/Crud/CreateBlog.jsx";
-import ViewBlog from "./component/Blog/Crud/ListBlog.jsx";
+import FlashcardStudyIsNotMemeory from "./component/FlashCard/FlashcardStudyIsNotMemory.jsx";
+import MatchingGame from "./component/FlashCard/MatchingGame.jsx";
+import AccessDenied from "./component/AccessDenied.jsx";
 
 
 function App() {
     return (
         <Routes>
-            <Route path="/create_blog" element={<CreateBlog/>}/>
-            <Route path="/view_blog" element={<ViewBlog/>}/>
             <Route path="/course_crud" element={<ProtectedRoute><CoursePage/></ProtectedRoute>}/>
             <Route path="/lesson_crud" element={<ProtectedRoute><LessonPage/></ProtectedRoute>}/>
             <Route path="/grammar_crud" element={<ProtectedRoute><GrammarPage/></ProtectedRoute>}/>
@@ -50,6 +49,7 @@ function App() {
             <Route path="/test" element={<ProtectedRoute><TestList/></ProtectedRoute>}/>
             <Route path="/question" element={<ProtectedRoute><QuestionList/></ProtectedRoute>}/>
             <Route path="/user" element={<ProtectedRoute><User/></ProtectedRoute>}/>
+            <Route path="/denied" element={<ProtectedRoute><AccessDenied/></ProtectedRoute>}/>
             {/*<Route path="/blog" element={<Blog/>}/>*/}
             <Route element={<DashboardLayout/>}>
                 <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
@@ -62,6 +62,8 @@ function App() {
                 <Route path="courses/:courseId/lessons/:lessonId/complete" element={<ProtectedRoute><LessonComplete/></ProtectedRoute>}/>
                 <Route path="/flashcards" element={<ProtectedRoute><FlashcardSetList/></ProtectedRoute>}/>
                 <Route path="/flashcards/:setId/study" element={<ProtectedRoute><FlashcardStudy/></ProtectedRoute>}/>
+                <Route path="/flashcards/:setId/game" element={<ProtectedRoute><MatchingGame/></ProtectedRoute>}/>
+                <Route path="/flashcards/:setId/study/isNotMemory" element={<ProtectedRoute><FlashcardStudyIsNotMemeory/></ProtectedRoute>}/>
                 <Route path="/flashcards/:setId/edit" element={<ProtectedRoute><FlashcardEditor/></ProtectedRoute>}/>
                 <Route path="/statistics" element={<ProtectedRoute><StudyStats/></ProtectedRoute>}/>
                 <Route path="/history" element={<ProtectedRoute><TestHistory/></ProtectedRoute>}/>
