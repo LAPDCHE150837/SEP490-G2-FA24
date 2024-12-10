@@ -100,13 +100,27 @@ const TestExam = () => {
         );
     }
 
-    if (!examData) {
+    if (!examData.totalQuestions) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                Không có bài kiểm tra nào cho bài học này
+            <>
+                <div className="flex items-center space-x-4">
+                    <button
+                        onClick={() => navigate(`/courses/${courseId}/lessons/${lessonId}/test`)}
+                        className="flex items-center text-gray-600 hover:text-gray-900"
+                    >
+                        <ChevronLeft className="h-5 w-5"/>
+                        <span>Quay lại danh sách</span>
+                    </button>
+                </div>
+                <div className="flex items-center justify-center min-h-screen">
 
-            </div>
-        );
+                    Không có bài kiểm tra nào cho bài học này
+
+                </div>
+            </>
+
+        )
+
     }
 
     const handleSelectAnswer = (questionId, answer) => {

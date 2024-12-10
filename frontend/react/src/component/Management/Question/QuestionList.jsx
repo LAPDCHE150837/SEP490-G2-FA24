@@ -2,10 +2,12 @@
 import {EditQuestionModal} from "./EditQuestionModal.jsx";
 import {CreateQuestionModal} from "./CreateQuestionModal.jsx";
 import CRMLayout from "../Crm.jsx";
-import { Plus, Edit, Trash, Search, Clock, Award, ChevronUp, ChevronDown, ChevronRight,Check  } from 'lucide-react';
+import { Plus, Edit, Trash, Search, Clock, Award, ChevronUp, ChevronDown, ChevronRight,Check ,ChevronLeft } from 'lucide-react';
 
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 export const QuestionList = () => {
     const [tests, setTests] = useState([]);
@@ -18,6 +20,68 @@ export const QuestionList = () => {
     const [loading, setLoading] = useState(true);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [lessons, setLessons] = useState([]);
+    // Updated search states
+    const [selectedLesson, setSelectedLesson] = useState('');
+    const [courses, setCourses] = useState([]);
+    const navigate = useNavigate();
+    // Updated search states
+    const [searchText, setSearchText] = useState('');
+    const [selectedColumn, setSelectedColumn] = useState('content'); // Default to content search
+    const [selectedType, setSelectedType] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const paginationOptions = [10, 25, 50, 100];
+    // Updated filter function
+    const getFilteredQuestions = () => {
+        return questions.filter(question => {
+            if (!searchText.trim()) return true;
+
+            const test = tests.find(t => t.id === question.testId);
+            const lesson = lessons.find(l => l.id === test?.lessonId);
+            const course = lesson ? courses.find(c => c.id === lesson.courseId) : null;
+            const searchLower = searchText.toLowerCase().trim();
+
+            switch (selectedColumn) {
+                case 'course':
+                    return course?.title.toLowerCase().includes(searchLower);
+                case 'lesson':
+                    return lesson?.title.toLowerCase().includes(searchLower);
+                case 'test':
+                    return test?.title.toLowerCase().includes(searchLower);
+                case 'content':
+                default:
+                    return (
+                        question.questionText.toLowerCase().includes(searchLower) ||
+                        (question.questionTranslation?.toLowerCase() || '').includes(searchLower) ||
+                        (question.explanation?.toLowerCase() || '').includes(searchLower)
+                    );
+            }
+        }).filter(question =>
+            !selectedType || question.questionType === selectedType
+        );
+    };
+    // Get paginated questions
+    const getPaginatedQuestions = () => {
+        const filteredData = getFilteredQuestions();
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        return filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    };
+
+    // Calculate total pages
+    const totalPages = Math.ceil(getFilteredQuestions().length / itemsPerPage);
+
+    // Reset to first page when filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchText, selectedColumn, selectedType]);
+    const searchColumns = [
+        { value: 'content', label: 'Nội dung câu hỏi' },
+        { value: 'course', label: 'Khóa học' },
+        { value: 'lesson', label: 'Bài học' },
+        { value: 'test', label: 'Bài kiểm tra' }
+    ];
+
 
     const api = axios.create({
         baseURL: 'http://localhost:8080/api/v1',
@@ -31,8 +95,20 @@ export const QuestionList = () => {
         fetchQuestions();
         fetchTests();
         fetchLessons();
+        fetchCourses();
 
     }, []);
+    const fetchCourses = async () => {
+        try {
+            setLoading(true);
+            const { data } = await api.get('/courses');
+            setCourses(data.data);
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchLessons = async () => {
         try {
@@ -52,7 +128,12 @@ export const QuestionList = () => {
     };
 
     const fetchQuestions = async () => {
-        try {
+        try {    const token = localStorage.getItem("access_token");
+            const decodedToken = jwtDecode(token);
+            if (decodedToken.permission[0].authority !== "ROLE_TEACHER") {
+                navigate("/denied")
+            }
+
             setLoading(true);
             const {data} = await api.get('/questions');
             setQuestions(data.data);
@@ -141,9 +222,12 @@ export const QuestionList = () => {
         };
         return types[type] || type;
     };
+
+
     return (
         <CRMLayout>
             <div className="max-w-7xl mx-auto p-6">
+
                 {/* Header Section with Stats */}
                 <div className="mb-8">
                     <div className="flex justify-between items-center mb-6">
@@ -175,45 +259,45 @@ export const QuestionList = () => {
                     </div>
                 </div>
 
-                {/* Search and Filter Section */}
+                {/* Updated Search and Filter Section */}
                 <div className="bg-white p-4 rounded-lg shadow-sm mb-6 space-y-4">
                     <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-grow">
-                            <div className="relative">
+                        <div className="flex-grow flex gap-2">
+                            <select
+                                value={selectedColumn}
+                                onChange={(e) => setSelectedColumn(e.target.value)}
+                                className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 min-w-[160px]"
+                            >
+                                {searchColumns.map(column => (
+                                    <option key={column.value} value={column.value}>
+                                        {column.label}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="relative flex-grow">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20}/>
                                 <input
                                     type="text"
-                                    placeholder="Tìm kiếm theo nội dung câu hỏi, dịch nghĩa..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    placeholder={`Tìm kiếm theo ${searchColumns.find(c => c.value === selectedColumn)?.label.toLowerCase()}...`}
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
                                     className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all"
                                 />
                             </div>
                         </div>
-                        <div className="flex gap-4">
-                            <select
-                                className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            >
-                                <option value="">Tất cả bài học</option>
-                                {lessons.map(lesson => (
-                                    <option key={lesson.id} value={lesson.title}>
-                                        {lesson.title}
-                                    </option>
-                                ))}
-                            </select>
-                            <select
-                                className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            >
-                                <option value="">Tất cả loại câu hỏi</option>
-                                <option value="voca">Từ vựng</option>
-                                <option value="grammar">Ngữ pháp</option>
-                                <option value="kanji">Hán tự</option>
-                            </select>
-                        </div>
+                        <select
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 min-w-[160px]"
+                        >
+                            <option value="">Tất cả loại câu hỏi</option>
+                            <option value="voca">Từ vựng</option>
+                            <option value="grammar">Ngữ pháp</option>
+                            <option value="kanji">Hán tự</option>
+                        </select>
                     </div>
                 </div>
+
 
                 {/* Question List */}
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -221,7 +305,8 @@ export const QuestionList = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                             <tr>
-                                <th className="w-10 px-6 py-3"></th>
+                                <th></th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khóa học</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Bài học
                                 </th>
@@ -243,9 +328,10 @@ export const QuestionList = () => {
                             </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                            {questions.map((question) => (
+                            {getPaginatedQuestions().map((question) => (
                                 <React.Fragment key={question.id}>
                                     <tr className="hover:bg-gray-50 transition-colors">
+
                                         <td className="px-6 py-4">
                                             <button
                                                 onClick={() => toggleRowExpansion(question.id)}
@@ -256,6 +342,25 @@ export const QuestionList = () => {
                                                     <ChevronRight size={20}/>
                                                 }
                                             </button>
+                                        </td>
+
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {(() => {
+                                                    const test = tests.find(t => t.id === question.testId);
+
+                                                    // Find the lesson for this test
+                                                    const lesson = lessons.find(l => l.id === test?.lessonId);
+
+                                                    // If lesson found, find its corresponding course
+                                                    const course = lesson
+                                                        ? courses.find(course => course.id === lesson.courseId)
+                                                        : null;
+
+                                                    // Return course title or a fallback
+                                                    return course ? course.title : 'No course';
+                                                })()}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-sm font-medium text-gray-900">
@@ -315,12 +420,15 @@ export const QuestionList = () => {
                                                 <div className="ml-8 space-y-4">
                                                     <div className="text-sm space-y-2">
                                                         <div className="font-medium text-gray-900">Giải thích:</div>
-                                                        <div className="text-gray-700 bg-white p-3 rounded-lg border border-gray-200">
+                                                        <div
+                                                            className="text-gray-700 bg-white p-3 rounded-lg border border-gray-200">
                                                             {question.explanation}
                                                         </div>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <div className="text-sm font-medium text-gray-900">Các lựa chọn:</div>
+                                                        <div className="text-sm font-medium text-gray-900">Các lựa
+                                                            chọn:
+                                                        </div>
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                             {question.options?.map((option) => (
                                                                 <div
@@ -352,15 +460,90 @@ export const QuestionList = () => {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination Controls */}
+                    <div className="px-6 py-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="border rounded-lg px-2 py-1 text-sm focus:ring-2
+                                    focus:ring-blue-200 focus:border-blue-400"
+                                >
+                                    {paginationOptions.map(option => (
+                                        <option key={option} value={option}>
+                                            {option} / trang
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="text-sm text-gray-600">
+                                    Hiển thị {Math.min((currentPage - 1) * itemsPerPage + 1, getFilteredQuestions().length)} - {Math.min(currentPage * itemsPerPage, getFilteredQuestions().length)} trong số {getFilteredQuestions().length} câu hỏi
+                                </span>
+                            </div>
 
-                    {loading && (
-                        <div className="text-center py-8">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
-                            <div className="mt-2 text-gray-500">Đang tải...</div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setCurrentPage(curr => Math.max(curr - 1, 1))}
+                                    disabled={currentPage === 1}
+                                    className={`p-2 rounded-lg transition-colors ${
+                                        currentPage === 1
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    // Show first page, last page, current page and one page on each side
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'text-gray-600 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    } else if (
+                                        pageNumber === currentPage - 2 ||
+                                        pageNumber === currentPage + 2
+                                    ) {
+                                        return <span key={pageNumber} className="px-2 text-gray-400">...</span>;
+                                    }
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => setCurrentPage(curr => Math.min(curr + 1, totalPages))}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-2 rounded-lg transition-colors ${
+                                        currentPage === totalPages
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </div>
                         </div>
-                    )}
+                    </div>
 
-                    {!loading && questions.length === 0 && (
+
+                    {!loading && getFilteredQuestions().length === 0 && (
                         <div className="text-center py-8">
                             <div className="text-gray-400 mb-2">
                                 <Search size={48} className="mx-auto"/>
