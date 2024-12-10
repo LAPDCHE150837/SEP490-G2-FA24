@@ -273,7 +273,6 @@ const VocabularyTable = ({ data, onEdit, onDelete }) => (
                 <th className="text-left py-3 px-4">Cách đọc ví dụ</th>
                 <th className="text-left py-3 px-4">Nghĩa ví dụ</th>
                 <th className="text-left py-3 px-4">Hình ảnh</th>
-                <th className="text-left py-3 px-4">Thao tác</th>
             </tr>
             </thead>
             <tbody>
@@ -321,7 +320,6 @@ const GrammarTable = ({data, onEdit, onDelete}) => (
                 <th className="text-left py-3 px-4">Cách đọc ví dụ</th>
                 <th className="text-left py-3 px-4">Nghĩa ví dụ</th>
                 <th className="text-left py-3 px-4">Ảnh</th>
-                <th className="text-right py-3 px-4">Thao tác</th>
             </tr>
             </thead>
             <tbody>
@@ -368,7 +366,6 @@ const KanjiTable = ({data, onEdit, onDelete}) => (
                 <th className="text-left py-3 px-4">Âm Kun</th>
                 <th className="text-left py-3 px-4">Nghĩa</th>
                 <th className="text-left py-3 px-4">Ảnh</th>
-                <th className="text-right py-3 px-4">Thao tác</th>
             </tr>
             </thead>
             <tbody>
