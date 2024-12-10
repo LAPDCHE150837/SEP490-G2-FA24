@@ -3,17 +3,15 @@ package com.nihongo.sep490g2fa24.v1.model;
 
 import com.nihongo.sep490g2fa24.v1.dtos.users.Role;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.*;
-
-import jakarta.persistence.Id;
-
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,12 +36,6 @@ public class User implements UserDetails {
 
     @Size(max = 100)
     @NotNull
-    @ColumnDefault("'INACTIVE'")
-    @Column(name = "flag_active", nullable = false, length = 100)
-    private String flagActive;
-
-    @Size(max = 100)
-    @NotNull
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
@@ -58,6 +50,21 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVocabulary> userVocabularies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGrammar> userGrammars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserKanji> userKanjis = new ArrayList<>();
+
+    @Size(max = 100)
+    @NotNull
+    @ColumnDefault("'INACTIVE'")
+    @Column(name = "flag_active", nullable = false, length = 100)
+    private String flagActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -84,4 +91,3 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 }
-

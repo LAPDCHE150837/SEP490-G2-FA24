@@ -1,12 +1,14 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -53,6 +55,10 @@ public class Grammar {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "grammar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserGrammar> userVocabularies = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {

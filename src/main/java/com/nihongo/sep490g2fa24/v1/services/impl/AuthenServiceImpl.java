@@ -1,12 +1,10 @@
 package com.nihongo.sep490g2fa24.v1.services.impl;
 
-
 import com.nihongo.sep490g2fa24.config.JwtService;
 import com.nihongo.sep490g2fa24.config.OAuth2Properties;
 import com.nihongo.sep490g2fa24.dtoMapper.UserDTOMapper;
 import com.nihongo.sep490g2fa24.exception.NhgClientException;
 import com.nihongo.sep490g2fa24.exception.NhgErrorHandler;
-import com.nihongo.sep490g2fa24.utils.Constants;
 import com.nihongo.sep490g2fa24.v1.dtos.course.UserDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
@@ -20,6 +18,7 @@ import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.TokenRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
+import com.nihongo.sep490g2fa24.v1.utils.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -128,6 +127,7 @@ public class AuthenServiceImpl implements AuthenService {
     }
 
 
+
     @Override
     public String verifyEmail(String token) {
         Token theToken = tokenRepository.findByAccessToken(token)
@@ -159,7 +159,7 @@ public class AuthenServiceImpl implements AuthenService {
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
 
         User user_info = getCurrentCustomer();
-        User user = userRepository.findByEmail(user_info.getEmail())
+        User user = userRepository.findById(user_info.getId())
                 .orElseThrow(NhgClientException.supplier(NhgErrorHandler.EMAIL_NOT_FOUND));
         if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
@@ -201,6 +201,13 @@ public class AuthenServiceImpl implements AuthenService {
                 .map(userDTOMapper)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public User getMyProfile(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
+    }
+
+
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());

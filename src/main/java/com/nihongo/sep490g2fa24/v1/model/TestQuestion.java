@@ -6,8 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "test_questions")
@@ -45,8 +46,9 @@ public class TestQuestion {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<QuestionOption> options;
+
     public void addOption(QuestionOption option) {
         options.add(option);
         option.setQuestion(this);

@@ -2,7 +2,6 @@ package com.nihongo.sep490g2fa24.v1.controllers;
 
 import com.nihongo.sep490g2fa24.dtoMapper.LessonMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.LessonDetailDTO;
-import com.nihongo.sep490g2fa24.v1.dtos.course.LessonListDTO;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.services.impl.LessonService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
@@ -40,6 +40,7 @@ public class LessonController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
     @GetMapping
     public BaseApiResponse<List<LessonDetailDTO>> getAllLessons() {
         List<Lesson> lessons = lessonService.getAllLessons();
@@ -56,10 +57,10 @@ public class LessonController {
     }
 
     @GetMapping("/course/{courseId}")
-    public BaseApiResponse<List<LessonListDTO>> getLessonsByCourse(@PathVariable String courseId) {
+    public BaseApiResponse<List<LessonDetailDTO>> getLessonsByCourse(@PathVariable String courseId) {
         List<Lesson> lessons = lessonService.getLessonsByCourseId(courseId);
-        List<LessonListDTO> lessonDTOs = lessons.stream()
-                .map(lessonMapper::toListDTO)
+        List<LessonDetailDTO> lessonDTOs = lessons.stream()
+                .map(lessonMapper::toDetailDTO)
                 .collect(Collectors.toList());
         return BaseApiResponse.succeed(lessonDTOs);
     }
