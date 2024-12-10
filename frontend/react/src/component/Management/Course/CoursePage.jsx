@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Loader2, Edit2, Trash2, Eye } from 'lucide-react';
+import { Search, Plus, Loader2, Edit2, Trash2, Eye,ChevronLeft,ChevronRight  } from 'lucide-react';
 import CRMLayout from "../Crm.jsx";
 import { useToast } from "../../../context/ToastProvider.jsx";
 import axios from "axios";
 import CourseModal from "./CourseModal.jsx";
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 const getAuthConfig = () => ({
     headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -11,6 +13,7 @@ const getAuthConfig = () => ({
 });
 
 const CoursePage = () => {
+    const [searchColumn, setSearchColumn] = useState('title');
     const [searchTerm, setSearchTerm] = useState('');
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,9 +22,61 @@ const CoursePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState('create');
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const navigate = useNavigate();
+
+// Add pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const paginationOptions = [10, 25, 50, 100];
+    const getFilteredCourses = () => {
+        if (!searchTerm) return courses;
+
+        return courses.filter(course => {
+            const searchLower = searchTerm.toLowerCase().trim();
+
+            switch (searchColumn) {
+                case 'title':
+                    return course.title.toLowerCase().includes(searchLower);
+                case 'description':
+                    return course.description.toLowerCase().includes(searchLower);
+                case 'level':
+                    return course.level.toLowerCase().includes(searchLower);
+                default:
+                    return true;
+            }
+        });
+    };
+    // Get paginated courses
+    const getPaginatedCourses = () => {
+        const filteredData = getFilteredCourses();
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        return filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    };
+
+    // Calculate total pages
+    const totalPages = Math.ceil(getFilteredCourses().length / itemsPerPage);
+
+    // Reset to first page when filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, searchColumn]);
+
+    // Define search columns
+    const searchColumns = [
+        { value: 'title', label: 'Tên khóa học' },
+        { value: 'description', label: 'Mô tả' },
+        { value: 'level', label: 'Cấp độ' }
+    ];
+
 
     const fetchCourses = async () => {
         try {
+            const token = localStorage.getItem("access_token");
+            const decodedToken = jwtDecode(token);
+            if (decodedToken.permission[0].authority !== "ROLE_TEACHER") {
+                navigate("/denied")
+            }
             setLoading(true);
             const response = await axios.get('http://localhost:8080/api/v1/courses');
             setCourses(response.data.data);
@@ -103,16 +158,31 @@ const CoursePage = () => {
                     </button>
                 </div>
 
+
+                {/* Updated search section */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"/>
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm theo tên khóa học..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
+                    <div className="relative flex-1 flex gap-2">
+                        <select
+                            value={searchColumn}
+                            onChange={(e) => setSearchColumn(e.target.value)}
+                            className="w-48 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3"
+                        >
+                            {searchColumns.map(column => (
+                                <option key={column.value} value={column.value}>
+                                    {column.label}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"/>
+                            <input
+                                type="text"
+                                placeholder={`Tìm kiếm theo ${searchColumns.find(c => c.value === searchColumn)?.label.toLowerCase()}...`}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -130,7 +200,7 @@ const CoursePage = () => {
                             </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                            {filteredCourses.map((course) => (
+                            {getPaginatedCourses().map((course) => (
                                 <tr key={course.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 text-sm font-medium">{course.title}</td>
                                     <td className="px-6 py-4 text-sm text-gray-500">{course.description}</td>
@@ -189,6 +259,88 @@ const CoursePage = () => {
                             ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Pagination Controls */}
+                    <div className="px-6 py-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="border border-gray-300 rounded-xl px-2 py-1 text-sm focus:ring-2
+                                    focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                                    {paginationOptions.map(option => (
+                                        <option key={option} value={option}>
+                                            {option} / trang
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="text-sm text-gray-600">
+                                    Hiển thị {Math.min((currentPage - 1) * itemsPerPage + 1, getFilteredCourses().length)} - {Math.min(currentPage * itemsPerPage, getFilteredCourses().length)} trong số {getFilteredCourses().length} khóa học
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setCurrentPage(curr => Math.max(curr - 1, 1))}
+                                    disabled={currentPage === 1}
+                                    className={`p-2 rounded-xl transition-colors ${
+                                        currentPage === 1
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    // Show first page, last page, current page and one page on each side
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                className={`px-3 py-1 rounded-xl text-sm transition-colors ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-indigo-600 text-white'
+                                                        : 'text-gray-600 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    } else if (
+                                        pageNumber === currentPage - 2 ||
+                                        pageNumber === currentPage + 2
+                                    ) {
+                                        return <span key={pageNumber} className="px-2 text-gray-400">...</span>;
+                                    }
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => setCurrentPage(curr => Math.min(curr + 1, totalPages))}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-2 rounded-xl transition-colors ${
+                                        currentPage === totalPages
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

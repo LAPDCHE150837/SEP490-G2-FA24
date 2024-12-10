@@ -143,6 +143,11 @@ const CourseModal = ({ isOpen, onClose, mode, courseData, onSubmit }) => {
                                     <p className="mt-1">{courseData.level}</p>
                                 </div>
                                 <div>
+                                    <label className="block text-sm font-medium text-gray-700">Số bài học</label>
+                                    <p className="mt-1">{courseData.totalLessons}</p>
+                                </div>
+
+                                <div>
                                     <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
                                     <p className="mt-1">{courseData.status ? 'Đang hoạt động' : 'Không hoạt động'}</p>
                                 </div>
@@ -240,38 +245,6 @@ const CourseModal = ({ isOpen, onClose, mode, courseData, onSubmit }) => {
                                     )}
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Số bài học
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formData.totalLessons}
-                                        onChange={(e) => setFormData({
-                                            ...formData,
-                                            totalLessons: parseInt(e.target.value) || 0
-                                        })}
-                                        className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2"
-                                        min="0"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">
-                                        Trạng thái
-                                    </label>
-                                    <div className="mt-1">
-                                        <label className="inline-flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.status}
-                                                onChange={(e) => setFormData({...formData, status: e.target.checked})}
-                                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                            />
-                                            <span className="ml-2">Hoạt động</span>
-                                        </label>
-                                    </div>
-                                </div>
 
                                 <div className="flex justify-end space-x-3 pt-6">
                                     <button

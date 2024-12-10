@@ -114,19 +114,32 @@ const FlashcardCRUD = () => {
         <div className="max-w-6xl mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center space-x-4">
-                    <button onClick={() => navigate(`/flashcards`)}
-                            className="text-gray-600 hover:text-gray-800">
+                    <button
+                        onClick={() => navigate(`/flashcards`)}
+                        className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
                         <ArrowLeft size={24}/>
                     </button>
-                    <h1 className="text-2xl font-bold">Quản lý thẻ ghi nhớ</h1>
+                    <h1 className="text-2xl font-bold text-gray-900">Quản lý thẻ ghi nhớ</h1>
                 </div>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                >
-                    <Plus size={20}/>
-                    <span>Thêm thẻ</span>
-                </button>
+
+                <div className="flex items-center space-x-3">
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg
+                     hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                        <Plus size={20}/>
+                        <span>Thêm thẻ</span>
+                    </button>
+                    <button
+                        onClick={() => navigate(`/flashcards/${setId}/game`)}
+                        className="flex items-center space-x-2 bg-yellow-500 text-white px-4 py-2.5 rounded-lg
+                     hover:bg-yellow-600 transition-colors shadow-sm"
+                    >
+                        <span>Chơi game</span>
+                    </button>
+                </div>
             </div>
 
             <div className="flex space-x-4 mb-6">

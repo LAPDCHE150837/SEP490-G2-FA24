@@ -8,7 +8,7 @@ import {
     Plus, Filter, MoreHorizontal, ArrowRight, X, ArrowLeft
 } from 'lucide-react';
 import {useAuth} from "../../context/AuthContext.jsx";
-import logo from "../../assets/japan.png";
+import logo from "../../assets/japan.jpg";
 
 // Layout Component
 const CRMLayout = ({ children }) => {
@@ -20,7 +20,7 @@ const CRMLayout = ({ children }) => {
 
     const navigation = [
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
-        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_TEACHER'] },
+        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question',roles: ['ROLE_TEACHER']},
@@ -42,8 +42,7 @@ const CRMLayout = ({ children }) => {
                 <div className="h-16 border-b border-gray-200 flex items-center justify-between px-4">
                     {!collapsedSidebar && (
                         <Link to="/course" className="flex items-center">
-                            <img src={logo} className="h-11 w-11 text-indigo-600" alt="Logo"/>
-                            <span className="ml-2 font-bold text-xl">Quản lý</span>
+                            <span className="ml-2 font-bold text-xl">Màn hình Quản lý</span>
                         </Link>
                     )}
                     <button
