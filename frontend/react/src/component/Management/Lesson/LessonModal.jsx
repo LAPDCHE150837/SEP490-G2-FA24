@@ -10,7 +10,8 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
         imageUrl: '',
         status: true,
         videoUrl: '',
-        videoFile: null
+        videoFile: null,
+        isDeleted:true
     });
 
     const [errors, setErrors] = useState({});
@@ -25,7 +26,9 @@ const LessonModal = ({ isOpen, onClose, mode, lessonData, courses, onSubmit }) =
                 imageUrl: '',
                 status: true,
                 videoUrl: '',
-                videoFile: null
+                videoFile: null,
+                isDeleted:true
+
             });
             setErrors({});
         } else if (mode === 'edit' && lessonData) {

@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Search, Plus, Loader2, Edit2, Trash2, Eye, ChevronDown, ChevronUp} from 'lucide-react';
+import {Search, Plus, Loader2, Edit2, Trash2, Eye, ChevronDown, ChevronUp,ChevronRight,ChevronLeft  } from 'lucide-react';
 import CRMLayout from "../Crm.jsx";
 import {useToast} from "../../../context/ToastProvider.jsx";
 import axios from "axios";
 import LessonModal from "./LessonModal.jsx";
 import LessonDetailTabs from "./LessonDetailTabs.jsx";
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const getAuthConfig = () => ({
     headers: {
@@ -13,6 +15,7 @@ const getAuthConfig = () => ({
 });
 
 const LessonPage = () => {
+    const [searchColumn, setSearchColumn] = useState('title');
     const [searchTerm, setSearchTerm] = useState('');
     const [lessons, setLessons] = useState([]);
     const [courses, setCourses] = useState([]);
@@ -23,11 +26,65 @@ const LessonPage = () => {
     const [modalMode, setModalMode] = useState('create');
     const [selectedLesson, setSelectedLesson] = useState(null);
     const [expandedLesson, setExpandedLesson] = useState(null);
+    const navigate = useNavigate();
+    // Add pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const paginationOptions = [10, 25, 50, 100];
+    const getFilteredLessons = () => {
+        if (!searchTerm) return lessons;
+
+        return lessons.filter(lesson => {
+            const searchLower = searchTerm.toLowerCase().trim();
+
+            switch (searchColumn) {
+                case 'title':
+                    return lesson.title.toLowerCase().includes(searchLower);
+                case 'course':
+                    return lesson.courseTitle.toLowerCase().includes(searchLower);
+                case 'description':
+                    return lesson.description.toLowerCase().includes(searchLower);
+                case 'status':
+                    const statusText = lesson.status ? 'hoạt động' : 'không hoạt động';
+                    return statusText.includes(searchLower);
+                default:
+                    return true;
+            }
+        });
+    };
+    // Get paginated lessons
+    const getPaginatedLessons = () => {
+        const filteredData = getFilteredLessons();
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        return filteredData.slice(indexOfFirstItem, indexOfLastItem);
+    };
+
+    // Calculate total pages
+    const totalPages = Math.ceil(getFilteredLessons().length / itemsPerPage);
+
+    // Reset to first page when filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, searchColumn]);
+    // Define search columns
+    const searchColumns = [
+        { value: 'title', label: 'Tên bài học' },
+        { value: 'course', label: 'Khóa học' },
+        { value: 'description', label: 'Mô tả' },
+        { value: 'status', label: 'Trạng thái' }
+    ];
+
 
     const [enrichedLessons, setEnrichedLessons] = useState([]);
 
     const fetchLessons = async () => {
         try {
+            const token = localStorage.getItem("access_token");
+            const decodedToken = jwtDecode(token);
+            if (decodedToken.permission[0].authority !== "ROLE_TEACHER") {
+                navigate("/denied")
+            }
             setLoading(true);
             const [lessonsResponse, coursesResponse] = await Promise.all([
                 axios.get('http://localhost:8080/api/v1/lessons', getAuthConfig()),
@@ -163,23 +220,38 @@ const LessonPage = () => {
                     </div>
                 </div>
 
-                {/* Search Bar with Modern Design */}
+                {/* Updated Search Bar with Column Selection */}
                 <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative flex-1">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Search className="h-5 w-5 text-gray-400"/>
+                    <div className="relative flex-1 flex gap-4">
+                        <select
+                            value={searchColumn}
+                            onChange={(e) => setSearchColumn(e.target.value)}
+                            className="w-48 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500
+                            focus:border-indigo-500 bg-white shadow-sm transition-all duration-200 px-4"
+                        >
+                            {searchColumns.map(column => (
+                                <option key={column.value} value={column.value}>
+                                    {column.label}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="relative flex-1">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-5 w-5 text-gray-400"/>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder={`Tìm kiếm theo ${searchColumns.find(c => c.value === searchColumn)?.label.toLowerCase()}...`}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
+                                focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                bg-white shadow-sm transition-all duration-200"
+                            />
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm theo tên bài học..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
-                            focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                            bg-white shadow-sm transition-all duration-200"
-                        />
                     </div>
                 </div>
+
 
                 {/* Table with Modern Styling */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -194,7 +266,7 @@ const LessonPage = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredLessons.map((lesson, index) => (
+                        {getPaginatedLessons().map((lesson, index) => (
                             <React.Fragment key={lesson.id}>
                                 <tr
                                     className={`transition-all duration-200 cursor-pointer
@@ -271,7 +343,87 @@ const LessonPage = () => {
                     </table>
                 </div>
 
+                {/* Pagination Controls */}
+                <div className="px-6 py-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={itemsPerPage}
+                                onChange={(e) => {
+                                    setItemsPerPage(Number(e.target.value));
+                                    setCurrentPage(1);
+                                }}
+                                className="border border-gray-200 rounded-xl px-2 py-1 text-sm focus:ring-2
+                                    focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                            >
+                                {paginationOptions.map(option => (
+                                    <option key={option} value={option}>
+                                        {option} / trang
+                                    </option>
+                                ))}
+                            </select>
+                            <span className="text-sm text-gray-600">
+                                    Hiển thị {Math.min((currentPage - 1) * itemsPerPage + 1, getFilteredLessons().length)} - {Math.min(currentPage * itemsPerPage, getFilteredLessons().length)} trong số {getFilteredLessons().length} bài học
+                                </span>
+                        </div>
 
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setCurrentPage(curr => Math.max(curr - 1, 1))}
+                                disabled={currentPage === 1}
+                                className={`p-2 rounded-xl transition-colors ${
+                                    currentPage === 1
+                                        ? 'text-gray-300 cursor-not-allowed'
+                                        : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </button>
+
+                            {[...Array(totalPages)].map((_, index) => {
+                                const pageNumber = index + 1;
+                                // Show first page, last page, current page and one page on each side
+                                if (
+                                    pageNumber === 1 ||
+                                    pageNumber === totalPages ||
+                                    (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                ) {
+                                    return (
+                                        <button
+                                            key={pageNumber}
+                                            onClick={() => setCurrentPage(pageNumber)}
+                                            className={`px-3 py-1 rounded-xl text-sm transition-colors ${
+                                                currentPage === pageNumber
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'text-gray-600 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            {pageNumber}
+                                        </button>
+                                    );
+                                } else if (
+                                    pageNumber === currentPage - 2 ||
+                                    pageNumber === currentPage + 2
+                                ) {
+                                    return <span key={pageNumber} className="px-2 text-gray-400">...</span>;
+                                }
+                                return null;
+                            })}
+
+                            <button
+                                onClick={() => setCurrentPage(curr => Math.min(curr + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className={`p-2 rounded-xl transition-colors ${
+                                    currentPage === totalPages
+                                        ? 'text-gray-300 cursor-not-allowed'
+                                        : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             {isModalOpen && (
                 <LessonModal

@@ -27,6 +27,7 @@ const Header = ({ onMenuClick }) => {
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const userRole = customer?.roles?.[0] || null;
 
     return (
         <header className="bg-white shadow-sm p-4 flex justify-between items-center relative">
@@ -49,23 +50,22 @@ const Header = ({ onMenuClick }) => {
                         <User size={20}/>
                     </button>
                     <DropdownMenu isOpen={userMenuOpen}>
-                        <a href="/reset" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đổi mật
-                            khẩu</a>
+                        <a href="/reset" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
 
                     </DropdownMenu>
                 </div>
-                {/*{customer.roles[0] === "ROLE_ADMIN" && (*/}
-                {/*<button onClick={() => navigate('/course_crud')}*/}
-                {/*        className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">*/}
-                {/*    DashBoard*/}
-                {/*</button>*/}
-                {/*    )}*/}
-                {/*{customer.roles[0] === "ROLE_TEACHER" && (*/}
-                {/*    <button onClick={() => navigate('/test')}*/}
-                {/*            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">*/}
-                {/*        DashBoard*/}
-                {/*    </button>*/}
-                {/*)}*/}
+                {userRole === "ROLE_ADMIN" ? (
+                    <button onClick={() => navigate('/user')}
+                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
+                        DashBoard
+                    </button>
+                ) : ""}
+                {userRole === "ROLE_TEACHER" ? (
+                    <button onClick={() => navigate('/course_crud')}
+                            className="p-2 hover:bg-gray-100 rounded-full text-yellow-600 transition duration-150">
+                        DashBoard
+                    </button>
+                ) : ""}
                 <button onClick={() => {
 
                     navigate("/login")
