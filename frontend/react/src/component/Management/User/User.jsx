@@ -1,9 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit2, Trash2, UserPlus } from 'lucide-react';
+import { UserPlus, Search, Edit2, Trash2, Check,ChevronLeft,ChevronRight } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area,XAxis,YAxis,Tooltip } from 'recharts';
 import axios from 'axios';
 import CRMLayout from "../Crm.jsx";
+import { format } from 'date-fns';
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const UserManagement = () => {
+    // Add new state for analytics
+    const [analytics, setAnalytics] = useState({
+        usersByRole: {},
+        usersByStatus: {},
+        registrationTrend: { labels: [], values: [] },
+        totalUsers: 0,
+        activeUsers: 0,
+        inactiveUsers: 0
+    });
+    const navigate = useNavigate();
+
+// Add function to fetch analytics
+    const fetchAnalytics = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/v1/admin/analytics/users', getAuthConfig());
+            setAnalytics(response.data);
+        } catch (err) {
+            console.error('Error fetching analytics:', err);
+        }
+    };
+
+// Update useEffect to fetch both users and analytics
+    useEffect(() => {
+        fetchUsers();
+        fetchAnalytics();
+    }, []);
     const [users, setUsers] = useState([]);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +47,43 @@ const UserManagement = () => {
     const [error, setError] = useState('');
 
     const roles = ['ADMIN', 'USER', 'CONTENT','TEACHER'];
+    // ... keep existing states ...
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
+
+    // Add pagination options
+    const paginationOptions = [5, 25, 50, 100];
+    const filteredUsers = users.filter(user =>
+        user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    // Get current users
+    const getCurrentUsers = () => {
+        const indexOfLastUser = currentPage * itemsPerPage;
+        const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+        return filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    };
+
+    // Update total pages when filtered results or items per page changes
+    useEffect(() => {
+        setTotalPages(Math.ceil(filteredUsers.length / itemsPerPage));
+        // Reset to first page if current page is out of bounds
+        if (currentPage > Math.ceil(filteredUsers.length / itemsPerPage)) {
+            setCurrentPage(1);
+        }
+    }, [filteredUsers.length, itemsPerPage]);
+
+    // Pagination controls
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(Number(e.target.value));
+        setCurrentPage(1); // Reset to first page when changing items per page
+    };
 
     const getAuthConfig = () => ({
         headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` }
@@ -28,7 +95,14 @@ const UserManagement = () => {
 
     const fetchUsers = async () => {
         try {
+
             setLoading(true);
+            const token = localStorage.getItem("access_token");
+            const decodedToken = jwtDecode(token);
+            if (decodedToken.permission[0].authority !== "ROLE_ADMIN") {
+                navigate("/denied")
+            }
+
             const response = await axios.get('http://localhost:8080/v1/auth/user', getAuthConfig());
             setUsers(response.data);
         } catch (err) {
@@ -60,11 +134,7 @@ const UserManagement = () => {
         }
     };
 
-    const filteredUsers = users.filter(user =>
-        user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.role?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
 
     const getRoleColor = (role) => {
         const colors = {
@@ -80,7 +150,7 @@ const UserManagement = () => {
         <CRMLayout>
 
             <div className="min-h-screen bg-gray-50 p-6">
-                <div className="max-w-7xl mx-auto space-y-6">
+                <div className=" mx-auto space-y-6">
                     {/* Header */}
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold text-gray-900">Quản lý người dùng</h1>
@@ -109,6 +179,86 @@ const UserManagement = () => {
                         </div>
                     </div>
 
+
+                    {/* Pagination Controls */}
+                    <div className="px-6 py-4 bg-white border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={handleItemsPerPageChange}
+                                    className="border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    {paginationOptions.map(option => (
+                                        <option key={option} value={option}>
+                                            {option} / trang
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="text-sm text-gray-500">
+                                        Hiển thị {Math.min((currentPage - 1) * itemsPerPage + 1, filteredUsers.length)} - {Math.min(currentPage * itemsPerPage, filteredUsers.length)} trong số {filteredUsers.length} kết quả
+                                    </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className={`p-2 rounded-lg ${
+                                        currentPage === 1
+                                            ? 'text-gray-400 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    // Show first page, last page, current page, and pages around current page
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => handlePageChange(pageNumber)}
+                                                className={`px-3 py-1 rounded-lg ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'text-gray-600 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    } else if (
+                                        pageNumber === currentPage - 2 ||
+                                        pageNumber === currentPage + 2
+                                    ) {
+                                        return <span key={pageNumber} className="px-2">...</span>;
+                                    }
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-2 rounded-lg ${
+                                        currentPage === totalPages
+                                            ? 'text-gray-400 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
                     {/* Users Table */}
                     <div className="bg-white rounded-lg shadow overflow-hidden">
                         <table className="min-w-full divide-y divide-gray-200">
@@ -129,7 +279,7 @@ const UserManagement = () => {
                             </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredUsers.map((user) => (
+                            {getCurrentUsers().map((user) => (
                                 <tr key={user.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">
@@ -161,7 +311,6 @@ const UserManagement = () => {
                             </tbody>
                         </table>
                     </div>
-
                     {/* Add User Modal */}
                     {isAddModalOpen && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -261,7 +410,84 @@ const UserManagement = () => {
                         </div>
                     )}
                 </div>
+                {/* Analytics Section */}
+                <div className="grid grid-cols-1 mt-2  md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {/* Total Users */}
+                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-gray-600">Tổng người dùng</p>
+                                <p className="text-2xl font-bold text-gray-900">{analytics.totalUsers}</p>
+                            </div>
+                            <div className="p-3 bg-blue-100 rounded-lg">
+                                <UserPlus className="h-6 w-6 text-blue-600"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    {/* Users by Role */}
+                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div className="space-y-2">
+                            <p className="text-sm text-gray-600 mb-3">Phân bố vai trò</p>
+                            {Object.entries(analytics.usersByRole).map(([role, count]) => (
+                                <div key={role} className="flex justify-between items-center">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRoleColor(role)}`}>
+                        {role}
+                    </span>
+                                    <span className="font-medium">{count}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Registration Trend */}
+                    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div>
+                            <p className="text-sm text-gray-600 mb-3">Đăng ký trong tháng</p>
+                            <div className="h-20">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart
+                                        data={analytics.registrationTrend.labels.map((label, index) => ({
+                                            name: format(new Date(label), 'dd/MM'),
+                                            value: analytics.registrationTrend.values[index]
+                                        }))}
+                                        margin={{top: 5, right: 5, bottom: 5, left: 5}}
+                                    >
+                                        <XAxis
+                                            dataKey="name"
+                                            fontSize={10}
+                                            tick={{fill: '#6B7280'}}
+                                        />
+                                        <YAxis
+                                            fontSize={10}
+                                            tick={{fill: '#6B7280'}}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: 'white',
+                                                border: '1px solid #E5E7EB',
+                                                borderRadius: '8px',
+                                                padding: '8px'
+                                            }}
+                                            formatter={(value) => [`${value} người dùng`]}
+                                            labelFormatter={(label) => `Ngày ${label}`}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke="#4F46E5"
+                                            fill="#EEF2FF"
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </CRMLayout>
     );
 };

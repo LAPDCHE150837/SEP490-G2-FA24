@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Calendar, Clock, Target, Award, BookOpen, Search } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
+import { Calendar, Clock, Target, Award, BookOpen, Search,ChevronLeft ,ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import axios from "axios";
 
@@ -8,6 +8,24 @@ const TestHistory = ({ userId }) => {
     const [testResults, setTestResults] = useState([]);
     const [filteredResults, setFilteredResults] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const paginationOptions = [10, 25, 50, 100];
+
+    // Get paginated data
+    const getPaginatedData = () => {
+        const indexOfLastItem = currentPage * itemsPerPage;
+        const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+        return filteredResults.slice(indexOfFirstItem, indexOfLastItem);
+    };
+
+    // Calculate total pages
+    const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+
+    // Reset to first page when search term changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const getAuthConfig = () => ({
         headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` }
@@ -193,7 +211,7 @@ const TestHistory = ({ userId }) => {
                             </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                            {filteredResults.map((test) => (
+                            {getPaginatedData().map((test) => (
                                 <tr key={test.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">{test.testName}</div>
@@ -217,6 +235,83 @@ const TestHistory = ({ userId }) => {
                             ))}
                             </tbody>
                         </table>
+                    </div>
+                    {/* Pagination Controls */}
+                    <div className="px-6 py-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="border rounded-lg px-2 py-1 text-sm focus:ring-2
+                                    focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    {paginationOptions.map(option => (
+                                        <option key={option} value={option}>
+                                            {option} / trang
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="text-sm text-gray-600">
+                                    Hiển thị {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, filteredResults.length)} trong số {filteredResults.length} kết quả
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className={`p-2 rounded-lg transition-colors ${
+                                        currentPage === 1
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    if (
+                                        pageNumber === 1 ||
+                                        pageNumber === totalPages ||
+                                        (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                    ) {
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'text-gray-600 hover:bg-gray-100'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    } else if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                                        return <span key={pageNumber} className="px-2 text-gray-400">...</span>;
+                                    }
+                                    return null;
+                                })}
+
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-2 rounded-lg transition-colors ${
+                                        currentPage === totalPages
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
