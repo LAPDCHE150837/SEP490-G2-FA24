@@ -64,7 +64,7 @@ public class GrammarService {
         grammarRepository.deleteById(id);
     }
 
-    public UserGrammar addUserGrammar(UserGrammar userGrammar, String username) {
+    public UserGrammar addUserGrammar(UserGrammar userGrammar,String username) {
         // Fetch the user by username or throw an exception if not found
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

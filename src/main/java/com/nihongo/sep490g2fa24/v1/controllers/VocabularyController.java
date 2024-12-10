@@ -1,6 +1,7 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
 import com.nihongo.sep490g2fa24.v1.dtos.course.VocabularyDTO;
+import com.nihongo.sep490g2fa24.v1.model.UserVocabulary;
 import com.nihongo.sep490g2fa24.v1.model.Vocabulary;
 import com.nihongo.sep490g2fa24.v1.services.impl.VocabularyService;
 import jakarta.servlet.http.HttpServletRequest;
