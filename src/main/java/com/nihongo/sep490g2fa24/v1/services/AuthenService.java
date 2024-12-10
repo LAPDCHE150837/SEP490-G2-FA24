@@ -21,6 +21,7 @@ public interface AuthenService {
 
     String verifyEmail(String token);
     void saveUserToken(User user, String jwtToken);
+
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     LoginResponse forgotPassword(ChangePasswordRequest changePasswordRequest, HttpServletRequest httpServletRequest);
@@ -28,4 +29,7 @@ public interface AuthenService {
     void resetPassword(String token, HttpServletResponse response, ChangePasswordRequest changePasswordRequest);
 
     List<UserDTO> getAll();
+
+
+    User getMyProfile(String remoteUser);
 }

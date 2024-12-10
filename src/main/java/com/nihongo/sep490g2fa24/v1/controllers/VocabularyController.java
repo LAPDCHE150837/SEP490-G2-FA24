@@ -3,10 +3,12 @@ package com.nihongo.sep490g2fa24.v1.controllers;
 import com.nihongo.sep490g2fa24.v1.dtos.course.VocabularyDTO;
 import com.nihongo.sep490g2fa24.v1.model.Vocabulary;
 import com.nihongo.sep490g2fa24.v1.services.impl.VocabularyService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/vocabularies")
 @RequiredArgsConstructor
@@ -37,5 +39,10 @@ public class VocabularyController {
     public BaseApiResponse<Void> deleteVocabulary(@PathVariable String id) {
         vocabularyService.deleteVocabulary(id);
         return BaseApiResponse.succeed();
+    }
+
+    @PostMapping("/user")
+    public BaseApiResponse<UserVocabulary> addUserVocabulary(@RequestBody UserVocabulary userVocabulary, HttpServletRequest req) {
+        return BaseApiResponse.succeed(vocabularyService.addUserVocabulary(userVocabulary,req.getRemoteUser()));
     }
 }

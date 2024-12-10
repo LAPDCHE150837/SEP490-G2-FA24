@@ -24,5 +24,13 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
     @Query("SELECT MAX(l.orderIndex) FROM Lesson l WHERE l.course.id = :courseId")
     Optional<Integer> findMaxOrderIndexByCourseId(@Param("courseId") String courseId);
 
+    List<Lesson> findByCourseId(String courseId);
+
     List<Lesson> findByStatus(Boolean status);
+
+    Optional<Lesson> findByIdAndStatus(String id, Boolean status);
+
+    @Query("SELECT l FROM Lesson l WHERE l.course.status = true AND l.isDeleted = true")
+    List<Lesson> findLessonsByCourseStatusTrue();
+
 }

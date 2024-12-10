@@ -1,11 +1,11 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
-import jakarta.persistence.*;
-
-import lombok.*;
-
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class Course {
     @Column(name = "status")
     private Boolean status = true;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessons = new ArrayList<>();
 
     @PrePersist
@@ -62,5 +62,4 @@ public class Course {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
 }

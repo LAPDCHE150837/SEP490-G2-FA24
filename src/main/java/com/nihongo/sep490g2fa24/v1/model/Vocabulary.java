@@ -1,18 +1,13 @@
 package com.nihongo.sep490g2fa24.v1.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,6 +22,7 @@ public class Vocabulary {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
+
     private String id;
     @Column(name = "image_url")
     private String imageUrl;
@@ -35,7 +31,6 @@ public class Vocabulary {
     private Lesson lesson;
 
     @Column(name = "word", length = 50, nullable = false)
-    @NotNull(message = "Word cannot be null")
     private String word;
 
     @Column(name = "reading", length = 50, nullable = false)
@@ -58,6 +53,9 @@ public class Vocabulary {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "vocabulary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVocabulary> userVocabularies = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

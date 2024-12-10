@@ -5,10 +5,12 @@ import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.LoginRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.request.RegisterRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.LoginResponse;
+import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.services.AuthenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,12 @@ public class AuthenController {
         return authenService.getAll();
     }
 
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('ROLE_ADMIN')  ")
+    public BaseApiResponse<User> getMyProfile(HttpServletRequest req) throws IOException {
+        return BaseApiResponse.succeed(authenService.getMyProfile(req.getRemoteUser()));
+    }
+
     @PostMapping("/register")
     public BaseApiResponse<LoginResponse> register(@RequestBody RegisterRequest registerRequest,
                                                    final HttpServletRequest httpServletRequest) {
@@ -39,8 +47,6 @@ public class AuthenController {
     public BaseApiResponse<LoginResponse> authenticate(@RequestBody LoginRequest loginRequest) {
         return BaseApiResponse.succeed(authenService.authenticate(loginRequest));
     }
-
-
 
     @GetMapping("/verify-email")
     public BaseApiResponse<Void> verifyEmail(@RequestParam String token,

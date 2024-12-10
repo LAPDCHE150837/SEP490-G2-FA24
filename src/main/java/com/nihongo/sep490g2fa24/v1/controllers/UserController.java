@@ -1,17 +1,18 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
+import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.PersonalInfoResponse;
+import com.nihongo.sep490g2fa24.v1.model.User;
+import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.services.CourseService;
 import com.nihongo.sep490g2fa24.v1.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -20,14 +21,24 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class UserController {
     private final UserService userService;
     private final CourseService courseService;
-//    @GetMapping("/course/find-all")
+    private final UserRepository userRepository;
+
+    //    @GetMapping("/course/find-all")
 //    BaseApiResponse<List<CourseDTO>> getAllCourses() {
 //        return BaseApiResponse.succeed(courseService.getAllCourse());
 //    }
-    @GetMapping("/{id}")
-    public BaseApiResponse<PersonalInfoResponse> getUser(@PathVariable String id) {
-        return BaseApiResponse.succeed(userService.getUser(id));
+    @GetMapping("/id")
+    public BaseApiResponse<PersonalInfoResponse> getUser(HttpServletRequest request) {
+        User user = userRepository.findByUsername(request.getRemoteUser()).orElseThrow() ;
+        return BaseApiResponse.succeed(userService.getUser(user.getId()));
+    }
+
+    @PostMapping("/change-password")
+    public BaseApiResponse<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest, HttpServletRequest req) {
+        userService.changePassword(changePasswordRequest,req.getRemoteUser());
+        return BaseApiResponse.succeed();
     }
 
 
+    //TODO viet api lession vao day
 }

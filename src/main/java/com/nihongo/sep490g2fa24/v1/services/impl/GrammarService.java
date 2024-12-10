@@ -3,12 +3,17 @@ package com.nihongo.sep490g2fa24.v1.services.impl;
 import com.nihongo.sep490g2fa24.dtoMapper.GrammarMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.GrammarDTO;
 import com.nihongo.sep490g2fa24.v1.model.Grammar;
+import com.nihongo.sep490g2fa24.v1.model.User;
+import com.nihongo.sep490g2fa24.v1.model.UserGrammar;
 import com.nihongo.sep490g2fa24.v1.repositories.GrammarRepository;
+import com.nihongo.sep490g2fa24.v1.repositories.UserGrammarRepository;
+import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,6 +21,8 @@ import java.util.stream.Collectors;
 public class GrammarService {
     private final GrammarRepository grammarRepository;
     private final GrammarMapper grammarMapper;
+    private final UserGrammarRepository userGrammarRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<GrammarDTO> getAllGrammars() {
@@ -33,13 +40,6 @@ public class GrammarService {
 
     @Transactional
     public Grammar createGrammar(Grammar grammar) {
-
-        if (grammar.getPattern() == null || grammar.getPattern().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (grammar.getMeaning() == null || grammar.getMeaning().isEmpty()) {
-            throw new IllegalArgumentException("Description cannot be null or empty");
-        }
         return grammarRepository.save(grammar);
     }
 
@@ -47,13 +47,6 @@ public class GrammarService {
     public Grammar updateGrammar(String id, Grammar grammar) {
         Grammar existingGrammar = grammarRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grammar not found"));
-
-        if (grammar.getPattern() == null || grammar.getPattern().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (grammar.getMeaning() == null || grammar.getMeaning().isEmpty()) {
-            throw new IllegalArgumentException("Description cannot be null or empty");
-        }
 
         existingGrammar.setPattern(grammar.getPattern());
         existingGrammar.setMeaning(grammar.getMeaning());
@@ -69,5 +62,25 @@ public class GrammarService {
     @Transactional
     public void deleteGrammar(String id) {
         grammarRepository.deleteById(id);
+    }
+
+    public UserGrammar addUserGrammar(UserGrammar userGrammar, String username) {
+        // Fetch the user by username or throw an exception if not found
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check if the vocabulary already exists for the user
+        Optional<UserGrammar> existingUserGrammar = userGrammarRepository.findByUserAndGrammar(user, userGrammar.getGrammar());
+
+        if (existingUserGrammar.isPresent()) {
+            // If exists, toggle the status (true to false or false to true)
+            UserGrammar existing = existingUserGrammar.get();
+            existing.setIsLearning(!existing.getIsLearning());
+            return userGrammarRepository.save(existing); // Save and return the updated object
+        } else {
+            // If not exists, set the user and save it to the database
+            userGrammar.setUser(user);
+            return userGrammarRepository.save(userGrammar);
+        }
     }
 }

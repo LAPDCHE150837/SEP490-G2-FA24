@@ -34,12 +34,12 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public List<Lesson> getAllLessons() {
-        return lessonRepository.findAll();
+        return lessonRepository.findLessonsByCourseStatusTrue();
     }
 
     @Transactional(readOnly = true)
     public Lesson getLessonById(String id) {
-        return lessonRepository.findById(id)
+        return lessonRepository.findByIdAndStatus(id,true)
                 .orElseThrow(() -> new RuntimeException("Lesson not found with id: " + id));
     }
 
@@ -66,7 +66,7 @@ public class LessonService {
 
     @Transactional
     public Lesson updateLesson(String id, Lesson lesson, MultipartFile video) {
-        Lesson existingLesson = getLessonById(id);
+        Lesson existingLesson = lessonRepository.getReferenceById(id) ;
 
         if (video != null && !video.isEmpty()) {
             deleteExistingVideo(existingLesson.getVideoUrl());
@@ -78,7 +78,6 @@ public class LessonService {
         existingLesson.setTitle(lesson.getTitle());
         existingLesson.setDescription(lesson.getDescription());
         existingLesson.setStatus(lesson.getStatus());
-
         return lessonRepository.save(existingLesson);
     }
 
@@ -94,7 +93,7 @@ public class LessonService {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(video.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            return "D:\\FU_Learning\\FALL2024\\DATN\\Video\\" + fileName;
+            return "C:\\image\\" + fileName;
         } catch (IOException e) {
             throw new RuntimeException("Could not store video file", e);
         }
@@ -144,24 +143,16 @@ public class LessonService {
     }
     @Transactional
     public void deleteLesson(String id) {
-        Lesson lesson = getLessonById(id);
+        Lesson lesson = lessonRepository.getReferenceById(id);
         Course course = lesson.getCourse();
-
-
 
         // Update course total lessons
         course.setTotalLessons(course.getTotalLessons() - 1);
+        lesson.setIsDeleted(false);
         courseRepository.save(course);
 
-        // Reorder remaining lessons
-        List<Lesson> remainingLessons = lessonRepository.findByCourseIdAndStatusAndOrderIndexGreaterThan(
-                course.getId(), true, lesson.getOrderIndex());
 
-        remainingLessons.forEach(remainingLesson -> {
-            remainingLesson.setOrderIndex(remainingLesson.getOrderIndex() - 1);
-            lessonRepository.save(remainingLesson);
-        });
-        lessonRepository.delete(lesson);
+        lessonRepository.save(lesson);
     }
 
     public List<Lesson> getLessonsByCourse(String courseId) {

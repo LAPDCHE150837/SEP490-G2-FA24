@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
+
 import java.util.List;
+
 @Data
 @Entity
 @Table(name = "tests")
@@ -42,6 +43,6 @@ public class Test {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<TestQuestion> questions;
 }

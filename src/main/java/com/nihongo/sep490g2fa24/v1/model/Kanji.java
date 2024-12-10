@@ -7,12 +7,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "kanji")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Kanji {
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -20,10 +24,8 @@ public class Kanji {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private String id;
-
     @Column(name = "image_url")
     private String imageUrl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
@@ -45,6 +47,9 @@ public class Kanji {
 
     @Column(name = "radical", length = 10)
     private String radical;
+
+    @OneToMany(mappedBy = "kanji", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserKanji> userVocabularies = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
