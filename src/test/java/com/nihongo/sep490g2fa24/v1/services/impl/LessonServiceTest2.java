@@ -1,7 +1,6 @@
 package com.nihongo.sep490g2fa24.v1.services.impl;
 
 import com.nihongo.sep490g2fa24.dtoMapper.LessonMapper;
-import com.nihongo.sep490g2fa24.v1.dtos.course.LessonDetailDTO;
 import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
@@ -12,9 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
-
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,8 +28,8 @@ class LessonServiceTest2 {
     @Mock
     private CourseRepository courseRepository;
 
-    @Mock
-    private LessonMapper lessonMapper;
+//    @Mock
+//    private LessonMapper lessonMapper;
 
     // Inject mocks into the LessonService instance
     @InjectMocks
