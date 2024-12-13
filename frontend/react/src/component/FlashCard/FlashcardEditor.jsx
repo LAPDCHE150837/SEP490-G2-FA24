@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Save, ArrowLeft,BookOpen } from 'lucide-react';
+import { Plus, X, Save, ArrowLeft, BookOpen } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -12,6 +12,11 @@ const FlashcardEditor = () => {
         category: '',
         createdAt: '',
         updatedAt: ''
+    });
+    const [errors, setErrors] = useState({
+        title: '',
+        description: '',
+        category: ''
     });
 
     const api = axios.create({
@@ -40,14 +45,67 @@ const FlashcardEditor = () => {
         return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
     };
 
+    const validateField = (field, value) => {
+        let error = '';
+        switch (field) {
+            case 'title':
+                if (!value.trim()) {
+                    error = 'Tên bộ thẻ không được để trống';
+                } else if (value.length < 3) {
+                    error = 'Tên bộ thẻ phải có ít nhất 3 ký tự';
+                } else if (value.length > 100) {
+                    error = 'Tên bộ thẻ không được vượt quá 100 ký tự';
+                }
+                break;
+            case 'description':
+                if (!value.trim()) {
+                    error = 'Mô tả không được để trống';
+                } else if (value.length > 500) {
+                    error = 'Mô tả không được vượt quá 500 ký tự';
+                }
+                break;
+            case 'category':
+                if (!value.trim()) {
+                    error = 'Danh mục không được để trống';
+                } else if (value.length > 50) {
+                    error = 'Danh mục không được vượt quá 50 ký tự';
+                }
+                break;
+            default:
+                break;
+        }
+        return error;
+    };
+
     const handleInputChange = (field, value) => {
         setFlashcardSet(prev => ({
             ...prev,
             [field]: value
         }));
+
+        const error = validateField(field, value);
+        setErrors(prev => ({
+            ...prev,
+            [field]: error
+        }));
+    };
+
+    const isFormValid = () => {
+        const newErrors = {
+            title: validateField('title', flashcardSet.title),
+            description: validateField('description', flashcardSet.description),
+            category: validateField('category', flashcardSet.category)
+        };
+
+        setErrors(newErrors);
+        return !Object.values(newErrors).some(error => error !== '');
     };
 
     const handleSave = async () => {
+        if (!isFormValid()) {
+            return;
+        }
+
         try {
             await api.put(`/flashcard-sets/${setId}`, {
                 title: flashcardSet.title,
@@ -70,9 +128,11 @@ const FlashcardEditor = () => {
                     <h1 className="text-2xl font-bold">Chỉnh sửa bộ thẻ: {flashcardSet.title}</h1>
                 </div>
                 <div className="flex space-x-3">
-
-                    <button onClick={handleSave}
-                            className="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                    <button
+                        onClick={handleSave}
+                        className="flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
+                        disabled={Object.values(errors).some(error => error !== '')}
+                    >
                         <Save size={20}/>
                         <span>Lưu thay đổi</span>
                     </button>
@@ -86,17 +146,19 @@ const FlashcardEditor = () => {
                         type="text"
                         value={flashcardSet.title}
                         onChange={(e) => handleInputChange('title', e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                        className={`w-full border rounded-lg px-3 py-2 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
                 </div>
                 <div>
                     <label className="block text-sm text-gray-600 mb-1">Mô tả</label>
                     <textarea
                         value={flashcardSet.description}
                         onChange={(e) => handleInputChange('description', e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                        className={`w-full border rounded-lg px-3 py-2 ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
                         rows="3"
                     />
+                    {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                 </div>
                 <div>
                     <label className="block text-sm text-gray-600 mb-1">Danh mục</label>
@@ -104,8 +166,9 @@ const FlashcardEditor = () => {
                         type="text"
                         value={flashcardSet.category}
                         onChange={(e) => handleInputChange('category', e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                        className={`w-full border rounded-lg px-3 py-2 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
                 </div>
                 {flashcardSet.createdAt && (
                     <div className="text-sm text-gray-600">

@@ -11,7 +11,7 @@ const FlashcardCRUD = () => {
     const [showModal, setShowModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
-    const [currentSetId, setCurrentSetId] = useState(null);
+    const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         frontText: '',
         frontType: 'Từ vựng',
@@ -35,19 +35,35 @@ const FlashcardCRUD = () => {
         }
     }, [setId]);
 
-    const fetchCards = async () => {
-        try {
-            const { data } = await api.get('/flashcards/a', {
-                params: { setId }
-            });
-            setCards(data.data);
-        } catch (error) {
-            console.error('Error fetching cards:', error);
+    const validateForm = (data) => {
+        const newErrors = {};
+        if (!data.frontText.trim()) {
+            newErrors.frontText = 'Mặt trước không được để trống';
         }
+        if (!data.backReading.trim()) {
+            newErrors.backReading = 'Mặt sau không được để trống';
+        }
+        if (!data.backMeaning.trim()) {
+            newErrors.backMeaning = 'Nghĩa không được để trống';
+        }
+        if (!data.backExample.trim()) {
+            newErrors.backExample = 'Ví dụ không được để trống';
+        }
+        if (!data.backExampleReading.trim()) {
+            newErrors.backExampleReading = 'Cách đọc ví dụ không được để trống';
+        }
+        return newErrors;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const formErrors = validateForm(formData);
+
+        if (Object.keys(formErrors).length > 0) {
+            setErrors(formErrors);
+            return;
+        }
+
         try {
             if (selectedCard) {
                 await api.put(`/flashcards/${selectedCard.id}`, formData);
@@ -61,6 +77,17 @@ const FlashcardCRUD = () => {
             resetForm();
         } catch (error) {
             console.error('Error saving card:', error);
+        }
+    };
+
+    const fetchCards = async () => {
+        try {
+            const { data } = await api.get('/flashcards/a', {
+                params: { setId }
+            });
+            setCards(data.data);
+        } catch (error) {
+            console.error('Error fetching cards:', error);
         }
     };
 
@@ -85,6 +112,7 @@ const FlashcardCRUD = () => {
             backExample: card.backExample,
             backExampleReading: card.backExampleReading
         });
+        setErrors({});
         setShowModal(true);
     };
 
@@ -98,7 +126,22 @@ const FlashcardCRUD = () => {
             backExample: '',
             backExampleReading: ''
         });
+        setErrors({});
         setShowModal(false);
+    };
+
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+        // Clear error when user starts typing
+        if (errors[field]) {
+            setErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
     };
 
     const filteredCards = cards.filter(card => {
@@ -112,6 +155,7 @@ const FlashcardCRUD = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
+            {/* Header and controls remain the same */}
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center space-x-4">
                     <button
@@ -126,22 +170,21 @@ const FlashcardCRUD = () => {
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={() => setShowModal(true)}
-                        className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg
-                     hover:bg-blue-700 transition-colors shadow-sm"
+                        className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
                     >
                         <Plus size={20}/>
                         <span>Thêm thẻ</span>
                     </button>
                     <button
                         onClick={() => navigate(`/flashcards/${setId}/game`)}
-                        className="flex items-center space-x-2 bg-yellow-500 text-white px-4 py-2.5 rounded-lg
-                     hover:bg-yellow-600 transition-colors shadow-sm"
+                        className="flex items-center space-x-2 bg-yellow-500 text-white px-4 py-2.5 rounded-lg hover:bg-yellow-600 transition-colors shadow-sm"
                     >
                         <span>Chơi game</span>
                     </button>
                 </div>
             </div>
 
+            {/* Search and filter */}
             <div className="flex space-x-4 mb-6">
                 <div className="flex-1">
                     <div className="relative">
@@ -167,6 +210,7 @@ const FlashcardCRUD = () => {
                 </select>
             </div>
 
+            {/* Cards grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredCards.map(card => (
                     <div key={card.id} className="bg-white rounded-lg shadow-sm p-6">
@@ -198,7 +242,7 @@ const FlashcardCRUD = () => {
                 ))}
             </div>
 
-            {/* Modal */}
+            {/* Modal with simplified validation */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -218,10 +262,10 @@ const FlashcardCRUD = () => {
                                 <input
                                     type="text"
                                     value={formData.frontText}
-                                    onChange={(e) => setFormData({...formData, frontText: e.target.value})}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                    required
+                                    onChange={(e) => handleInputChange('frontText', e.target.value)}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.frontText ? 'border-red-500' : ''}`}
                                 />
+                                {errors.frontText && <p className="text-red-500 text-sm mt-1">{errors.frontText}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -229,7 +273,7 @@ const FlashcardCRUD = () => {
                                 </label>
                                 <select
                                     value={formData.frontType}
-                                    onChange={(e) => setFormData({...formData, frontType: e.target.value})}
+                                    onChange={(e) => handleInputChange('frontType', e.target.value)}
                                     className="w-full border rounded-lg px-3 py-2"
                                 >
                                     <option value="Từ vựng">Từ vựng</option>
@@ -244,10 +288,10 @@ const FlashcardCRUD = () => {
                                 <input
                                     type="text"
                                     value={formData.backReading}
-                                    onChange={(e) => setFormData({...formData, backReading: e.target.value})}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                    required
+                                    onChange={(e) => handleInputChange('backReading', e.target.value)}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.backReading ? 'border-red-500' : ''}`}
                                 />
+                                {errors.backReading && <p className="text-red-500 text-sm mt-1">{errors.backReading}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -256,10 +300,10 @@ const FlashcardCRUD = () => {
                                 <input
                                     type="text"
                                     value={formData.backMeaning}
-                                    onChange={(e) => setFormData({...formData, backMeaning: e.target.value})}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                    required
+                                    onChange={(e) => handleInputChange('backMeaning', e.target.value)}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.backMeaning ? 'border-red-500' : ''}`}
                                 />
+                                {errors.backMeaning && <p className="text-red-500 text-sm mt-1">{errors.backMeaning}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -268,10 +312,10 @@ const FlashcardCRUD = () => {
                                 <input
                                     type="text"
                                     value={formData.backExample}
-                                    onChange={(e) => setFormData({...formData, backExample: e.target.value})}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                    required
+                                    onChange={(e) => handleInputChange('backExample', e.target.value)}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.backExample ? 'border-red-500' : ''}`}
                                 />
+                                {errors.backExample && <p className="text-red-500 text-sm mt-1">{errors.backExample}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -280,10 +324,10 @@ const FlashcardCRUD = () => {
                                 <input
                                     type="text"
                                     value={formData.backExampleReading}
-                                    onChange={(e) => setFormData({...formData, backExampleReading: e.target.value})}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                    required
+                                    onChange={(e) => handleInputChange('backExampleReading', e.target.value)}
+                                    className={`w-full border rounded-lg px-3 py-2 ${errors.backExampleReading ? 'border-red-500' : ''}`}
                                 />
+                                {errors.backExampleReading && <p className="text-red-500 text-sm mt-1">{errors.backExampleReading}</p>}
                             </div>
                             <div className="flex justify-end space-x-3">
                                 <button
@@ -297,7 +341,7 @@ const FlashcardCRUD = () => {
                                     type="submit"
                                     className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                                 >
-                                    {selectedCard ? 'Lưu' : 'Thêm '}
+                                    {selectedCard ? 'Lưu' : 'Thêm'}
                                 </button>
                             </div>
                         </form>

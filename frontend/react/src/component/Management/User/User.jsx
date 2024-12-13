@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Search, Edit2, Trash2, Check,ChevronLeft,ChevronRight } from 'lucide-react';
+import { UserPlus, Search, Edit2, Trash2, Check,ChevronLeft,ChevronRight,Eye,EyeOff   } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area,XAxis,YAxis,Tooltip } from 'recharts';
 import axios from 'axios';
 import CRMLayout from "../Crm.jsx";
@@ -18,6 +18,8 @@ const UserManagement = () => {
         inactiveUsers: 0
     });
     const navigate = useNavigate();
+    const [validationErrors, setValidationErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
 
 // Add function to fetch analytics
     const fetchAnalytics = async () => {
@@ -112,9 +114,58 @@ const UserManagement = () => {
             setLoading(false);
         }
     };
+    const validateForm = () => {
+        const errors = {};
+
+        // Username validation
+        if (!newUser.username.trim()) {
+            errors.username = 'Vui lòng nhập tên người dùng';
+        } else if (newUser.username.length < 3) {
+            errors.username = 'Tên người dùng phải có ít nhất 3 ký tự';
+        }
+
+        // Email validation
+        if (!newUser.email.trim()) {
+            errors.email = 'Vui lòng nhập email';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newUser.email)) {
+            errors.email = 'Email không hợp lệ';
+        }
+
+        // Password validation
+        if (!newUser.password) {
+            errors.password = 'Vui lòng nhập mật khẩu';
+        } else if (newUser.password.length < 6) {
+            errors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        } else if (!/[A-Z]/.test(newUser.password)) {
+            errors.password = 'Mật khẩu phải chứa ít nhất 1 chữ in hoa';
+        }
+
+        return errors;
+    };
+
+    const handleInputChange = (field, value) => {
+        setNewUser(prev => ({
+            ...prev,
+            [field]: value
+        }));
+        // Clear error when user types
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
+    };
 
     const handleAddUser = async (e) => {
         e.preventDefault();
+        const errors = validateForm();
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         try {
             setLoading(true);
             await axios.post('http://localhost:8080/v1/auth/register', newUser, getAuthConfig());
@@ -125,6 +176,7 @@ const UserManagement = () => {
                 password: '',
                 role: 'STUDENT'
             });
+            setValidationErrors({});
             fetchUsers();
         } catch (err) {
             setError('Failed to add user');
@@ -140,7 +192,6 @@ const UserManagement = () => {
         const colors = {
             ADMIN: 'bg-red-100 text-red-800',
             USER: 'bg-blue-100 text-blue-800',
-            CONTENT: 'bg-purple-100 text-purple-800',
             STUDENT: 'bg-green-100 text-green-800'
         };
         return colors[role] || 'bg-gray-100 text-gray-800';
@@ -313,7 +364,7 @@ const UserManagement = () => {
                     </div>
                     {/* Add User Modal */}
                     {isAddModalOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                                 <h2 className="text-xl font-bold mb-4">Thêm người dùng mới</h2>
                                 <form onSubmit={handleAddUser} className="space-y-4">
@@ -321,79 +372,91 @@ const UserManagement = () => {
                                         <label className="block text-sm font-medium text-gray-700">Tên người dùng</label>
                                         <input
                                             type="text"
-                                            required
-                                            className="w-full px-4 py-3 bg-white rounded-lg border-2 border-gray-200
-                    outline-none focus:border-blue-500 transition-all duration-200 ease-in-out
-                    shadow-sm hover:border-gray-300
-                    text-gray-700 text-base
-                    placeholder:text-gray-400
-                    disabled:bg-gray-50 disabled:cursor-not-allowed
-                    focus:ring-4 focus:ring-blue-100"
+                                            className={`w-full px-4 py-3 bg-white rounded-lg border-2 
+                                        ${validationErrors.username ? 'border-red-500' : 'border-gray-200'}
+                                        outline-none focus:border-blue-500 transition-all duration-200`}
                                             value={newUser.username}
-                                            onChange={(e) => setNewUser({...newUser, username: e.target.value})}
+                                            onChange={(e) => handleInputChange('username', e.target.value)}
                                         />
+                                        {validationErrors.username && (
+                                            <p className="mt-1 text-sm text-red-500">{validationErrors.username}</p>
+                                        )}
                                     </div>
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Email</label>
                                         <input
                                             type="email"
-                                            required
-                                            className="w-full px-4 py-3 bg-white rounded-lg border-2 border-gray-200
-                    outline-none focus:border-blue-500 transition-all duration-200 ease-in-out
-                    shadow-sm hover:border-gray-300
-                    text-gray-700 text-base
-                    placeholder:text-gray-400
-                    disabled:bg-gray-50 disabled:cursor-not-allowed
-                    focus:ring-4 focus:ring-blue-100"
+                                            className={`w-full px-4 py-3 bg-white rounded-lg border-2 
+                                        ${validationErrors.email ? 'border-red-500' : 'border-gray-200'}
+                                        outline-none focus:border-blue-500 transition-all duration-200`}
                                             value={newUser.email}
-                                            onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
                                         />
+                                        {validationErrors.email && (
+                                            <p className="mt-1 text-sm text-red-500">{validationErrors.email}</p>
+                                        )}
                                     </div>
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
-                                        <input
-                                            type="password"
-                                            required
-                                            className="w-full px-4 py-3 bg-white rounded-lg border-2 border-gray-200
-                    outline-none focus:border-blue-500 transition-all duration-200 ease-in-out
-                    shadow-sm hover:border-gray-300
-                    text-gray-700 text-base
-                    placeholder:text-gray-400
-                    disabled:bg-gray-50 disabled:cursor-not-allowed
-                    focus:ring-4 focus:ring-blue-100"
-                                            value={newUser.password}
-                                            onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                                        />
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                className={`w-full px-4 py-3 bg-white rounded-lg border-2 
+                                            ${validationErrors.password ? 'border-red-500' : 'border-gray-200'}
+                                            outline-none focus:border-blue-500 transition-all duration-200`}
+                                                value={newUser.password}
+                                                onChange={(e) => handleInputChange('password', e.target.value)}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                            >
+                                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                            </button>
+                                        </div>
+                                        {validationErrors.password && (
+                                            <p className="mt-1 text-sm text-red-500">{validationErrors.password}</p>
+                                        )}
                                     </div>
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">Vai trò</label>
                                         <select
                                             className="w-full px-4 py-3 bg-white rounded-lg border-2 border-gray-200
-                    outline-none focus:border-blue-500 transition-all duration-200 ease-in-out
-                    shadow-sm hover:border-gray-300
-                    text-gray-700 text-base
-                    placeholder:text-gray-400
-                    disabled:bg-gray-50 disabled:cursor-not-allowed
-                    focus:ring-4 focus:ring-blue-100"
+                                        outline-none focus:border-blue-500 transition-all duration-200"
                                             value={newUser.role}
-                                            onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                                            onChange={(e) => handleInputChange('role', e.target.value)}
                                         >
                                             {roles.map(role => (
                                                 <option key={role} value={role}>{role}</option>
                                             ))}
                                         </select>
                                     </div>
+
                                     <div className="flex justify-end gap-4 mt-4">
                                         <button
                                             type="button"
-                                            onClick={() => setIsAddModalOpen(false)}
+                                            onClick={() => {
+                                                setIsAddModalOpen(false);
+                                                setValidationErrors({});
+                                                setNewUser({
+                                                    username: '',
+                                                    email: '',
+                                                    password: '',
+                                                    role: 'STUDENT'
+                                                });
+                                            }}
                                             className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                                         >
                                             Hủy
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300"
+                                            disabled={loading}
                                         >
                                             {loading ? 'Đang thêm...' : 'Thêm người dùng'}
                                         </button>

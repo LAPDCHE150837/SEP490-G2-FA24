@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Lock, Eye, EyeOff,User  } from 'lucide-react';
+import { Lock, Eye, EyeOff, User, Check } from 'lucide-react';
 
 const ChangePassword = () => {
     const [formData, setFormData] = useState({
@@ -19,6 +19,12 @@ const ChangePassword = () => {
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [passwordValidation, setPasswordValidation] = useState({
+        minLength: false,
+        hasUpperCase: false,
+        hasNumber: false,
+        match: false
+    });
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -46,33 +52,39 @@ const ChangePassword = () => {
         fetchUserData();
     }, []);
 
-    if (isLoading) {
-        return (
-            <div className="max-w-2xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                    <div className="flex justify-center items-center min-h-[200px]">
-                        <div className="text-gray-500">Loading...</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const validatePassword = (password, confirmPass) => {
+        return {
+            minLength: password.length >= 6,
+            hasUpperCase: /[A-Z]/.test(password),
+            hasNumber: /[0-9]/.test(password),
+            match: password === confirmPass && password !== ''
+        };
+    };
 
     const validateForm = () => {
         const newErrors = {};
         if (!formData.oldPassword) {
             newErrors.oldPassword = 'Vui lòng nhập mật khẩu cũ';
         }
+
+        const validation = validatePassword(formData.newPassword, formData.confirmPassword);
+
         if (!formData.newPassword) {
             newErrors.newPassword = 'Vui lòng nhập mật khẩu mới';
-        } else if (formData.newPassword.length < 6) {
+        } else if (!validation.minLength) {
             newErrors.newPassword = 'Mật khẩu phải có ít nhất 6 ký tự';
+        } else if (!validation.hasUpperCase) {
+            newErrors.newPassword = 'Mật khẩu phải chứa ít nhất 1 chữ in hoa';
+        } else if (!validation.hasNumber) {
+            newErrors.newPassword = 'Mật khẩu phải chứa ít nhất 1 số';
         }
+
         if (!formData.confirmPassword) {
             newErrors.confirmPassword = 'Vui lòng xác nhận mật khẩu mới';
         } else if (formData.newPassword !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
         }
+
         return newErrors;
     };
 
@@ -82,6 +94,15 @@ const ChangePassword = () => {
             ...prev,
             [name]: value
         }));
+
+        if (name === 'newPassword' || name === 'confirmPassword') {
+            const validation = validatePassword(
+                name === 'newPassword' ? value : formData.newPassword,
+                name === 'confirmPassword' ? value : formData.confirmPassword
+            );
+            setPasswordValidation(validation);
+        }
+
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -132,10 +153,30 @@ const ChangePassword = () => {
         }
     };
 
+    const renderPasswordRequirement = (met, text) => (
+        <div className={`flex items-center space-x-2 ${met ? 'text-green-600' : 'text-gray-500'}`}>
+            {met ? <Check size={16} /> : <div className="w-4 h-4 border rounded-full" />}
+            <span className="text-sm">{text}</span>
+        </div>
+    );
+
+    if (isLoading) {
+        return (
+            <div className="max-w-2xl mx-auto">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex justify-center items-center min-h-[200px]">
+                        <div className="text-gray-500">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="max-w-2xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-6">
+                {/* User Info Section */}
+                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div className="flex items-center space-x-2 mb-6">
                         <User className="text-cyan-500" size={24}/>
                         <h2 className="text-xl font-semibold">Thông tin cá nhân</h2>
@@ -160,8 +201,8 @@ const ChangePassword = () => {
                         </div>
                     )}
                 </div>
-            </div>
-            <div className="max-w-2xl mx-auto">
+
+                {/* Password Change Section */}
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex items-center space-x-2 mb-6">
                         <Lock className="text-cyan-500" size={24}/>
@@ -173,7 +214,6 @@ const ChangePassword = () => {
                             {successMessage}
                         </div>
                     )}
-
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Old Password Field */}
@@ -230,6 +270,14 @@ const ChangePassword = () => {
                             )}
                         </div>
 
+                        {/* Password Requirements */}
+                        <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+                            {renderPasswordRequirement(passwordValidation.minLength, "Ít nhất 6 ký tự")}
+                            {renderPasswordRequirement(passwordValidation.hasUpperCase, "Ít nhất 1 chữ in hoa")}
+                            {renderPasswordRequirement(passwordValidation.hasNumber, "Ít nhất 1 số")}
+                            {renderPasswordRequirement(passwordValidation.match, "Mật khẩu xác nhận khớp")}
+                        </div>
+
                         {/* Confirm Password Field */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -261,8 +309,11 @@ const ChangePassword = () => {
                         <div className="flex justify-end">
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
-                                className={`px-6 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition duration-150 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={isSubmitting || Object.values(passwordValidation).some(v => !v)}
+                                className={`px-6 py-2 bg-cyan-500 text-white rounded-lg transition duration-150 
+                                    ${(isSubmitting || Object.values(passwordValidation).some(v => !v))
+                                    ? 'opacity-50 cursor-not-allowed'
+                                    : 'hover:bg-cyan-600'}`}
                             >
                                 {isSubmitting ? 'Đang xử lý...' : 'Đổi mật khẩu'}
                             </button>

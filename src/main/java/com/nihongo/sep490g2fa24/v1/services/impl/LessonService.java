@@ -158,4 +158,17 @@ public class LessonService {
     public List<Lesson> getLessonsByCourse(String courseId) {
         return null ;
     }
+
+
+    public int countTotalContentsByCourse(String courseId) {
+        List<Lesson> lessons = lessonRepository.findByCourseId(courseId);
+
+        return lessons.stream()
+                .mapToInt(lesson -> lesson.getVocabularies().size() +
+                        lesson.getGrammars().size() +
+                        lesson.getKanjis().size())
+                .sum();
+    }
+
+
 }

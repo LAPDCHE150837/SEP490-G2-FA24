@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
-import {ChevronLeft, Book, GraduationCap, Check, X, Volume2, ChevronDown, ArrowLeft,ChevronRight } from 'lucide-react';
-import {getLesson, getLessonById} from "../../service/Lesson.js";
+import React, {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, GraduationCap, Volume2} from 'lucide-react';
+import {getLessonById} from "../../service/Lesson.js";
 import axios from "axios";
 
-const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
-    const { courseId } = useParams();
+const LessonNavigation = ({lesson, activeSection, setActiveSection}) => {
+    const {courseId} = useParams();
     const [allLessons, setAllLessons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -49,6 +49,7 @@ const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
         setExpandedLesson(lesson?.id);
     }, [lesson?.id]);
 
+
     if (loading) {
         return (
             <div className="w-64 bg-white shadow-md rounded-lg p-4">
@@ -73,7 +74,7 @@ const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
         // Only handle expand/collapse, no navigation
         setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
     };
-    const ProgressButton = ({ type, itemId }) => {
+    const ProgressButton = ({type, itemId}) => {
         const isCompleted = progress[type]?.includes(itemId);
 
         return (
@@ -93,7 +94,7 @@ const LessonNavigation = ({ lesson, activeSection, setActiveSection }) => {
         );
     };
 
-    const LessonSections = ({ isCurrentLesson, lessonId }) => {
+    const LessonSections = ({isCurrentLesson, lessonId}) => {
         const lessonData = allLessons.find(l => l.id === lessonId);
 
         return (
@@ -228,20 +229,84 @@ const LessonDetail = () => {
     const [data, setData] = useState(null);
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
     const totalSlides = 12; // Or however many slides you have
+    const [vocabLearningStatus, setVocabLearningStatus] = useState({});
+    const [grammarLearningStatus, setGrammarLearningStatus] = useState({});
+    const [kanjiLearningStatus, setKanjiLearningStatus] = useState({});
+    const [vocabularyCurrentSlide, setVocabularyCurrentSlide] = useState(0);
+    const [grammarCurrentSlide, setGrammarCurrentSlide] = useState(0);
+    const [kanjiCurrentSlide, setKanjiCurrentSlide] = useState(0);
+    const [totalLearning, setTotalLearning] = useState(0);
+    const [totalLesson, setTotalLesson] = useState(0);
+    const [userTotal, setUserTotal] = useState(0);
+    const [contentsTotal, setContentsTotal] = useState(0);
+    const [showCongrats, setShowCongrats] = useState(false);
 
-    const handleNextSlide = () => {
-        setCurrentSlideIndex((prev) => (prev + 1) % totalSlides);
-    };
 
-    const handlePrevSlide = () => {
-        setCurrentSlideIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-    };
     const [isCompleted, setIsCompleted] = useState(false);
     const getAuthConfig = () => ({
         headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
     });
+
+    useEffect(() => {
+        const fetchTotals = async () => {
+            try {
+                const [userResponse, contentsResponse] = await Promise.all([
+                    axios.get(
+                        `http://localhost:8080/api/v1/lessons/course/${courseId}/user/total`,
+                        getAuthConfig()
+                    ),
+                    axios.get(
+                        `http://localhost:8080/api/v1/lessons/course/${courseId}/contents/total`,
+                        getAuthConfig()
+                    )
+                ]);
+
+                setUserTotal(userResponse.data);
+                setContentsTotal(contentsResponse.data);
+
+                // Check if course is completed
+                if (contentsResponse.data > 0 &&
+                    userResponse.data / contentsResponse.data === 1) {
+                    setShowCongrats(true);
+                }
+            } catch (error) {
+                console.error('Error fetching course totals:', error);
+            }
+        };
+
+        fetchTotals();
+
+    }, [courseId]);
+
+
+
+    useEffect(() => {
+        const fetchTotals = async () => {
+            try {
+                const [learningResponse, totalResponse] = await Promise.all([
+                    axios.get(
+                        `http://localhost:8080/api/v1/vocabularies/user/learning-count/${lessonId}`,
+                        getAuthConfig()
+                    ),
+                    axios.get(
+                        `http://localhost:8080/api/v1/vocabularies/user/total_lesson/${lessonId}`,
+                        getAuthConfig()
+                    )
+                ]);
+
+                setTotalLearning(learningResponse.data);
+                setTotalLesson(totalResponse.data);
+            } catch (error) {
+                console.error('Error fetching totals:', error);
+            }
+        };
+
+        if (lessonId) {
+            fetchTotals();
+        }
+    }, [lessonId]);
     useEffect(() => {
         const fetchLesson = async () => {
             try {
@@ -283,6 +348,272 @@ const LessonDetail = () => {
             fetchUserProgress();
         }
     }, [lessonId]);
+
+    // Add this useEffect to fetch learning status for all vocabularies
+    useEffect(() => {
+        const fetchLearningStatus = async () => {
+            if (lesson?.vocabularies) {
+                const statuses = {};
+                for (const vocab of lesson.vocabularies) {
+                    try {
+                        const response = await axios.get(
+                            `http://localhost:8080/api/v1/vocabularies/user/${vocab.id}`,
+                            getAuthConfig()
+                        );
+                        statuses[vocab.id] = response.data;
+                    } catch (error) {
+                        console.error('Error fetching vocab status:', error);
+                        statuses[vocab.id] = false;
+                    }
+                }
+                setVocabLearningStatus(statuses);
+            }
+        };
+
+        fetchLearningStatus();
+    }, [lesson]);
+
+    // Add this useEffect to fetch learning status for all grammar
+    useEffect(() => {
+        const fetchGrammarStatus = async () => {
+            if (lesson?.grammars) {
+                const statuses = {};
+                for (const grammar of lesson.grammars) {
+                    try {
+                        const response = await axios.get(
+                            `http://localhost:8080/api/v1/vocabularies/user/grammar/${grammar.id}`,
+                            getAuthConfig()
+                        );
+                        statuses[grammar.id] = response.data;
+                    } catch (error) {
+                        console.error('Error fetching vocab status:', error);
+                        statuses[grammar.id] = false;
+                    }
+                }
+                setGrammarLearningStatus(statuses);
+            }
+        };
+
+        fetchGrammarStatus();
+    }, [lesson]);
+
+    // Add this useEffect to fetch learning status for all grammar
+    useEffect(() => {
+        const fetchKanjiStatus = async () => {
+            if (lesson?.kanjis) {
+                const statuses = {};
+                for (const kanji of lesson.kanjis) {
+                    try {
+                        const response = await axios.get(
+                            `http://localhost:8080/api/v1/vocabularies/user/kanji/${kanji.id}`,
+                            getAuthConfig()
+                        );
+                        statuses[kanji.id] = response.data;
+                    } catch (error) {
+                        console.error('Error fetching vocab status:', error);
+                        statuses[kanji.id] = false;
+                    }
+                }
+                setKanjiLearningStatus(statuses);
+            }
+        };
+
+        fetchKanjiStatus();
+    }, [lesson]);
+
+// Add this useEffect after your existing useEffects in LessonDetail component
+    const checkCompletion = async () => {
+        // Skip if no lesson data or if already completed
+        if (!lesson || isCompleted) return;
+
+        // Calculate total items
+        const totalVocabs = lesson.vocabularies?.length || 0;
+        const totalGrammars = lesson.grammars?.length || 0;
+        const totalKanjis = lesson.kanjis?.length || 0;
+
+        // Count learned items
+        const learnedVocabs = Object.values(vocabLearningStatus).filter(status => status).length;
+        const learnedGrammars = Object.values(grammarLearningStatus).filter(status => status).length;
+        const learnedKanjis = Object.values(kanjiLearningStatus).filter(status => status).length;
+
+        // Check if all items are learned
+        const isAllLearned =
+            learnedVocabs === totalVocabs &&
+            learnedGrammars === totalGrammars &&
+            learnedKanjis === totalKanjis;
+
+        // Only update if all items are learned and there are items to learn
+        if (isAllLearned && (totalVocabs > 0 || totalGrammars > 0 || totalKanjis > 0)) {
+            const method = !data ? 'POST' : 'PUT';
+            const url = !data
+                ? `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress`
+                : `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress/lesson/${lessonId}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lesson: {
+                            id: lessonId
+                        },
+                        completed: true
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update completion status');
+                }
+
+                // Update local state
+                setIsCompleted(true);
+
+                // Update data state if it's a new completion
+                if (!data) {
+                    const result = await response.json();
+                    setData(result.data);
+                }
+
+                // Refetch totals to update progress
+                const [userResponse, contentsResponse] = await Promise.all([
+                    axios.get(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/user/total`,
+                        getAuthConfig()
+                    ),
+                    axios.get(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/contents/total`,
+                        getAuthConfig()
+                    )
+                ]);
+
+                setUserTotal(userResponse.data);
+                setContentsTotal(contentsResponse.data);
+
+                // Show congratulations if course is completed
+                if (contentsResponse.data > 0 &&
+                    userResponse.data / contentsResponse.data === 1) {
+                    setShowCongrats(true);
+                }
+            } catch (error) {
+                console.error('Error updating completion status:', error);
+            }
+        }
+    };
+
+
+    async function isLearning(id) {
+        try {
+            await axios.post(
+                `http://localhost:8080/api/v1/vocabularies/user`,
+                {
+                    vocabulary: {
+                        id: id
+                    }
+                },
+                getAuthConfig()
+            );
+            // Update the state after successful API call
+            setVocabLearningStatus(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+
+            // Refetch the totals after updating learning status
+            const [learningResponse, totalResponse] = await Promise.all([
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/learning-count/${lessonId}`,
+                    getAuthConfig()
+                ),
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/total_lesson/${lessonId}`,
+                    getAuthConfig()
+                )
+            ]);
+
+
+            setTotalLearning(learningResponse.data);
+            setTotalLesson(totalResponse.data);
+
+        } catch (error) {
+            console.error('Error updating learning status:', error);
+        }
+
+
+    }
+
+    async function isGrammarLearning(id) {
+        try {
+            await axios.post(
+                `http://localhost:8080/api/v1/grammars/user`,
+                {
+                    grammar: {
+                        id: id
+                    }
+                },
+                getAuthConfig()
+            );
+            setGrammarLearningStatus(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+
+            // Refetch the totals
+            const [learningResponse, totalResponse] = await Promise.all([
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/learning-count/${lessonId}`,
+                    getAuthConfig()
+                ),
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/total_lesson/${lessonId}`,
+                    getAuthConfig()
+                )
+            ]);
+
+            setTotalLearning(learningResponse.data);
+            setTotalLesson(totalResponse.data);
+        } catch (error) {
+            console.error('Error updating learning status:', error);
+        }
+    }
+
+
+    async function iskanjiLearning(id) {
+        try {
+            await axios.post(
+                `http://localhost:8080/api/v1/kanjis/user`,
+                {
+                    kanji: {
+                        id: id
+                    }
+                },
+                getAuthConfig()
+            );
+            setKanjiLearningStatus(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+
+            // Refetch the totals
+            const [learningResponse, totalResponse] = await Promise.all([
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/learning-count/${lessonId}`,
+                    getAuthConfig()
+                ),
+                axios.get(
+                    `http://localhost:8080/api/v1/vocabularies/user/total_lesson/${lessonId}`,
+                    getAuthConfig()
+                )
+            ]);
+
+            setTotalLearning(learningResponse.data);
+            setTotalLesson(totalResponse.data);
+        } catch (error) {
+            console.error('Error updating learning status:', error);
+        }
+    }
 
     const handleToggleCompletion = async () => {
 
@@ -386,8 +717,10 @@ const LessonDetail = () => {
         </div>
     );
 
+
+
+
     const VocabularyContent = () => {
-        const [currentSlide, setCurrentSlide] = useState(0);
         const totalSlides = lesson.vocabularies?.length || 0;
 
         return (
@@ -395,12 +728,12 @@ const LessonDetail = () => {
                 {lesson.vocabularies && lesson.vocabularies.length > 0 ? (
                     <>
                         {/* Prev Button */}
-                        {currentSlide > 0 && (
+                        {vocabularyCurrentSlide  > 0 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev - 1)}
+                                onClick={() => setVocabularyCurrentSlide(prev => prev - 1)}
                                 className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronLeft size={24} />
+                                <ChevronLeft size={24}/>
                             </button>
                         )}
 
@@ -408,12 +741,14 @@ const LessonDetail = () => {
                         <div className="h-full overflow-hidden">
                             <div
                                 className="flex transition-transform duration-300 h-full"
-                                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                style={{transform: `translateX(-${vocabularyCurrentSlide * 100}%)`}}
                             >
                                 {lesson.vocabularies.map((vocab, index) => (
                                     <div key={index} className="min-w-full px-16">
-                                        <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                            <div className="grid grid-cols-4 gap-8"> {/* Increased gap from gap-6 to gap-8 */}
+                                        <div
+                                            className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                            <div
+                                                className="grid grid-cols-4 gap-8"> {/* Increased gap from gap-6 to gap-8 */}
                                                 <div className="col-span-1">
                                                     {vocab.imageUrl ? (
                                                         <img
@@ -422,16 +757,20 @@ const LessonDetail = () => {
                                                             className="w-full h-40 object-cover rounded-lg shadow-sm"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                        <div
+                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
                                                             <span className="text-gray-400">No image</span>
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 <div className="col-span-3">
-                                                    <div className="flex items-center justify-between mb-6"> {/* Increased margin */}
+                                                    <div
+                                                        className="flex items-center justify-between mb-6"> {/* Increased margin */}
                                                         <div className="flex items-center space-x-4">
-                                                            <span className="text-4xl font-bold text-gray-800">{vocab.word}</span>
+                                                            <span className="text-4xl font-bold text-gray-800">
+                                                                {vocab.word}
+                                                            </span>
                                                             <span className="text-xl text-gray-600">({vocab.reading})</span>
                                                             <button
                                                                 onClick={() => playAudio(vocab.word)}
@@ -440,8 +779,29 @@ const LessonDetail = () => {
                                                             >
                                                                 <Volume2 className="text-blue-500" size={20}/>
                                                             </button>
+                                                            <button
+                                                                onClick={() => isLearning(vocab.id)}
+                                                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
+                                                                ${!vocabLearningStatus[vocab.id]
+                                                                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                                }`}
+                                                            >
+                                                                {!vocabLearningStatus[vocab.id] ? (
+                                                                    <>
+                                                                        <div
+                                                                            className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                                                        Chưa học
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <div
+                                                                            className="w-2 h-2 rounded-full bg-green-500"></div>
+                                                                        Đã học
+                                                                    </>
+                                                                )}
+                                                            </button>
                                                         </div>
-
                                                     </div>
 
                                                     <div className="space-y-4">
@@ -466,18 +826,18 @@ const LessonDetail = () => {
                         </div>
 
                         {/* Next Button */}
-                        {currentSlide < totalSlides - 1 && (
+                        {vocabularyCurrentSlide < totalSlides - 1 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev + 1)}
+                                onClick={() => setVocabularyCurrentSlide(prev => prev + 1)}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronRight size={24} />
+                                <ChevronRight size={24}/>
                             </button>
                         )}
 
                         {/* Slide Counter */}
                         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {currentSlide + 1}/{totalSlides}
+                            {vocabularyCurrentSlide + 1}/{totalSlides}
                         </div>
                     </>
                 ) : (
@@ -488,30 +848,30 @@ const LessonDetail = () => {
     };
 
     const GrammarContent = () => {
-        const [currentSlide, setCurrentSlide] = useState(0);
         const totalSlides = lesson.grammars?.length || 0;
 
         return (
             <div className="relative h-full">
                 {lesson.grammars && lesson.grammars.length > 0 ? (
                     <>
-                        {currentSlide > 0 && (
+                        {grammarCurrentSlide > 0 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev - 1)}
+                                onClick={() => setGrammarCurrentSlide(prev => prev - 1)}
                                 className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronLeft size={24} />
+                                <ChevronLeft size={24}/>
                             </button>
                         )}
 
                         <div className="h-full overflow-hidden">
                             <div
                                 className="flex transition-transform duration-300 h-full"
-                                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                style={{transform: `translateX(-${grammarCurrentSlide * 100}%)`}}
                             >
                                 {lesson.grammars.map((gram, index) => (
                                     <div key={index} className="min-w-full px-8">
-                                        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                        <div
+                                            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                                             <div className="grid grid-cols-4 gap-6">
                                                 <div className="col-span-1">
                                                     {gram.imageUrl ? (
@@ -521,7 +881,8 @@ const LessonDetail = () => {
                                                             className="w-full h-40 object-cover rounded-lg shadow-sm"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                        <div
+                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
                                                             <span className="text-gray-400">No image</span>
                                                         </div>
                                                     )}
@@ -537,6 +898,28 @@ const LessonDetail = () => {
                                                                 className={`p-2 hover:bg-blue-50 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
                                                             >
                                                                 <Volume2 className="text-blue-500" size={20}/>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => isGrammarLearning(gram.id)}
+                                                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
+                                                                ${!grammarLearningStatus[gram.id]
+                                                                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                                }`}
+                                                            >
+                                                                {!grammarLearningStatus[gram.id] ? (
+                                                                    <>
+                                                                        <div
+                                                                            className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                                                        Chưa học
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <div
+                                                                            className="w-2 h-2 rounded-full bg-green-500"></div>
+                                                                        Đã học
+                                                                    </>
+                                                                )}
                                                             </button>
                                                         </div>
                                                         <p className="text-lg text-gray-700 mt-2">{gram.meaning}</p>
@@ -565,17 +948,17 @@ const LessonDetail = () => {
                             </div>
                         </div>
 
-                        {currentSlide < totalSlides - 1 && (
+                        {grammarCurrentSlide < totalSlides - 1 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev + 1)}
+                                onClick={() => setGrammarCurrentSlide(prev => prev + 1)}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronRight size={24} />
+                                <ChevronRight size={24}/>
                             </button>
                         )}
 
                         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {currentSlide + 1}/{totalSlides}
+                            {grammarCurrentSlide + 1}/{totalSlides}
                         </div>
                     </>
                 ) : (
@@ -586,30 +969,30 @@ const LessonDetail = () => {
     };
 
     const KanjiContent = () => {
-        const [currentSlide, setCurrentSlide] = useState(0);
         const totalSlides = lesson.kanjis?.length || 0;
 
         return (
             <div className="relative h-full">
                 {lesson.kanjis && lesson.kanjis.length > 0 ? (
                     <>
-                        {currentSlide > 0 && (
+                        {kanjiCurrentSlide > 0 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev - 1)}
+                                onClick={() => setKanjiCurrentSlide(prev => prev - 1)}
                                 className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronLeft size={24} />
+                                <ChevronLeft size={24}/>
                             </button>
                         )}
 
                         <div className="h-full overflow-hidden">
                             <div
                                 className="flex transition-transform duration-300 h-full"
-                                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                                style={{transform: `translateX(-${kanjiCurrentSlide * 100}%)`}}
                             >
                                 {lesson.kanjis.map((kanji, index) => (
                                     <div key={index} className="min-w-full px-8">
-                                        <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                        <div
+                                            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                                             <div className="grid grid-cols-4 gap-6">
                                                 <div className="col-span-1">
                                                     {kanji.imageUrl ? (
@@ -619,7 +1002,8 @@ const LessonDetail = () => {
                                                             className="w-full h-40 object-cover rounded-lg shadow-sm"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                        <div
+                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
                                                             <span className="text-gray-400">No image</span>
                                                         </div>
                                                     )}
@@ -627,13 +1011,36 @@ const LessonDetail = () => {
 
                                                 <div className="col-span-3">
                                                     <div className="flex items-center mb-4">
-                                                        <span className="text-6xl font-bold text-gray-800">{kanji.character}</span>
+                                                        <span
+                                                            className="text-6xl font-bold text-gray-800">{kanji.character}</span>
                                                         <button
                                                             onClick={() => playAudio(kanji.character)}
                                                             disabled={isPlaying}
                                                             className={`ml-4 p-2 hover:bg-blue-50 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
                                                         >
                                                             <Volume2 className="text-blue-500" size={24}/>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => iskanjiLearning(kanji.id)}
+                                                            className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
+                                                                ${!kanjiLearningStatus[kanji.id]
+                                                                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                            }`}
+                                                        >
+                                                            {!kanjiLearningStatus[kanji.id] ? (
+                                                                <>
+                                                                    <div
+                                                                        className="w-2 h-2 rounded-full bg-gray-400"></div>
+                                                                    Chưa học
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <div
+                                                                        className="w-2 h-2 rounded-full bg-green-500"></div>
+                                                                    Đã học
+                                                                </>
+                                                            )}
                                                         </button>
                                                     </div>
 
@@ -687,17 +1094,17 @@ const LessonDetail = () => {
                             </div>
                         </div>
 
-                        {currentSlide < totalSlides - 1 && (
+                        {kanjiCurrentSlide < totalSlides - 1 && (
                             <button
-                                onClick={() => setCurrentSlide(prev => prev + 1)}
+                                onClick={() => setKanjiCurrentSlide(prev => prev + 1)}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
                             >
-                                <ChevronRight size={24} />
+                                <ChevronRight size={24}/>
                             </button>
                         )}
 
                         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {currentSlide + 1}/{totalSlides}
+                            {kanjiCurrentSlide + 1}/{totalSlides}
                         </div>
                     </>
                 ) : (
@@ -710,6 +1117,34 @@ const LessonDetail = () => {
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-8xl mx-auto px-4 py-6">
                 <header className="mb-8">
+                    {showCongrats && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all">
+                                <div className="text-center">
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                                        🎉 Chúc mừng!
+                                    </h3>
+                                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                                        <Check className="h-6 w-6 text-green-600" />
+                                    </div>
+                                    <div className="mt-3 text-center sm:mt-5">
+                                        <p className="text-lg text-gray-500">
+                                            Bạn đã hoàn thành khóa học này!
+                                            Hãy tiếp tục phát huy nhé!
+                                        </p>
+                                    </div>
+                                    <div className="mt-5 sm:mt-6">
+                                        <button
+                                            onClick={() => setShowCongrats(false)}
+                                            className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+                                        >
+                                            Đóng
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     <div className="flex justify-between items-center">
                         <button
                             onClick={() => navigate(`/courses/${courseId}/lessons`)}
@@ -750,6 +1185,31 @@ const LessonDetail = () => {
                             </button>
                         </div>
                     </div>
+                    <div className="border-b border-gray-200 p-6">
+                        <h1 className="text-2xl font-bold">{lesson.title}</h1>
+                        <p className="text-gray-600 mt-2">{lesson.description}</p>
+
+                        {/* Add this progress bar section */}
+                        <div className="mt-4">
+                            <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium text-gray-700">
+                Tiến độ học tập
+            </span>
+                                <span className="text-sm font-medium text-gray-700">
+                {totalLearning}/{totalLesson} ({totalLesson > 0 ? Math.round((totalLearning / totalLesson) * 100) : 0}%)
+            </span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div
+                                    className="bg-green-600 h-2.5 rounded-full transition-all duration-300"
+                                    style={{
+                                        width: `${totalLesson > 0 ? (totalLearning / totalLesson) * 100 : 0}%`
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </header>
 
                 <div className="flex gap-8">
@@ -761,10 +1221,10 @@ const LessonDetail = () => {
                             </div>
 
                             <div className="flex-1 overflow-hidden p-8">
-                                {activeSection === 'video' && <VideoContent />}
-                                {activeSection === 'vocabulary' && <VocabularyContent />}
-                                {activeSection === 'grammar' && <GrammarContent />}
-                                {activeSection === 'kanji' && <KanjiContent />}
+                                {activeSection === 'video' && <VideoContent/>}
+                                {activeSection === 'vocabulary' && <VocabularyContent/>}
+                                {activeSection === 'grammar' && <GrammarContent/>}
+                                {activeSection === 'kanji' && <KanjiContent/>}
                             </div>
                         </div>
                     </main>

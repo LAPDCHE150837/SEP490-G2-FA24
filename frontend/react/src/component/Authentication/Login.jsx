@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader } from 'lucide-react';
-import {useAuth} from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 import ForgotPasswordModal from "./ForgotPasswordModal.jsx";
 
 const LoginPage = () => {
@@ -11,23 +11,75 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({
+        username: '',
+        password: ''
+    });
+
     const navigate = useNavigate();
     const { login } = useAuth();
 
+    const validateForm = () => {
+        const newErrors = {
+            username: '',
+            password: ''
+        };
 
-    //comment de test push
+        // Username validation
+        if (!username.trim()) {
+            newErrors.username = 'Vui lòng nhập tài khoản';
+        } else if (username.trim().length < 3) {
+            newErrors.username = 'Tài khoản phải có ít nhất 3 ký tự';
+        }
+
+        // Password validation
+        if (!password) {
+            newErrors.password = 'Vui lòng nhập mật khẩu';
+        } else if (password.length < 6) {
+            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        }
+
+        setValidationErrors(newErrors);
+        return !newErrors.username && !newErrors.password;
+    };
+
+    const handleInputChange = (field, value) => {
+        if (field === 'username') {
+            setUsername(value);
+        } else if (field === 'password') {
+            setPassword(value);
+        }
+
+        // Clear validation error when user types
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
+        // Clear general error message when user types
+        if (error) {
+            setError('');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        // Validate form before submission
+        if (!validateForm()) {
+            return;
+        }
+
         setIsLoading(true);
 
         try {
             await login({ username, password });
-            // Navigate to dashboard on successful login
             navigate('/course');
         } catch (err) {
             if (err.response) {
-                setError(err.response.data.message || 'Tài khoàn hoặc mật khẩu không đúng');
+                setError(err.response.data.message || 'Tài khoản hoặc mật khẩu không đúng');
             } else if (err.request) {
                 setError('Máy chủ không có phản hồi, vui lòng thử lại');
             } else {
@@ -38,7 +90,6 @@ const LoginPage = () => {
             setIsLoading(false);
         }
     };
-
 
     return (
         <div className="flex h-screen bg-cyan-50">
@@ -67,40 +118,52 @@ const LoginPage = () => {
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Tài khoản</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                Tài khoản
+                            </label>
                             <input
                                 type="text"
                                 id="email"
                                 value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                                onChange={(e) => handleInputChange('username', e.target.value)}
+                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 
+                                    ${validationErrors.username ? 'border-red-500' : 'border-gray-300'}`}
                                 placeholder="abc"
-                                required
                             />
+                            {validationErrors.username && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.username}</p>
+                            )}
                         </div>
                         <div className="mb-6">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                                Mật khẩu
+                            </label>
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                                    onChange={(e) => handleInputChange('password', e.target.value)}
+                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500
+                                        ${validationErrors.password ? 'border-red-500' : 'border-gray-300'}`}
                                     placeholder="••••••••"
-                                    required
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 >
-                                    {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
+                                    {showPassword ?
+                                        <EyeOff className="h-5 w-5 text-gray-400" /> :
+                                        <Eye className="h-5 w-5 text-gray-400" />
+                                    }
                                 </button>
                             </div>
+                            {validationErrors.password && (
+                                <p className="text-red-500 text-sm mt-1">{validationErrors.password}</p>
+                            )}
                         </div>
                         <div className="flex items-center justify-between mb-6">
-
                             <a
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -138,10 +201,7 @@ const LoginPage = () => {
                 onClose={() => setIsForgotPasswordOpen(false)}
             />
         </div>
-
     );
-
-
 };
 
 export default LoginPage;

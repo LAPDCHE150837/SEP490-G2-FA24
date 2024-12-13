@@ -3,7 +3,7 @@ package com.nihongo.sep490g2fa24.dtoMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.*;
 import com.nihongo.sep490g2fa24.v1.model.Kanji;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
-import com.nihongo.sep490g2fa24.v1.model.Vocabulary;
+import com.nihongo.sep490g2fa24.v1.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

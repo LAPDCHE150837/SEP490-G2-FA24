@@ -64,7 +64,7 @@ public class VocabularyService {
         vocabularyRepository.deleteById(id);
     }
 
-    public UserVocabulary addUserVocabulary(UserVocabulary userVocabulary, String username) {
+    public UserVocabulary addUserVocabulary(UserVocabulary userVocabulary,String username) {
         // Fetch the user by username or throw an exception if not found
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -83,5 +83,8 @@ public class VocabularyService {
             return userVocabularyRepository.save(userVocabulary);
         }
     }
-}
 
+
+
+
+}

@@ -3,7 +3,11 @@ package com.nihongo.sep490g2fa24.v1.controllers;
 import com.nihongo.sep490g2fa24.dtoMapper.LessonMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.LessonDetailDTO;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
+import com.nihongo.sep490g2fa24.v1.model.User;
+import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
+import com.nihongo.sep490g2fa24.v1.repositories.UserVocabularyRepository;
 import com.nihongo.sep490g2fa24.v1.services.impl.LessonService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -28,6 +32,9 @@ public class LessonController {
 
     private final LessonService lessonService;
     private final LessonMapper lessonMapper;
+    private final UserRepository userRepository;
+    private final UserVocabularyRepository userVocabularyRepository;
+
     @GetMapping("/video/{lessonId}")
     public ResponseEntity<Resource> getVideo(@PathVariable String lessonId) throws IOException {
         Lesson lesson = lessonService.getLessonById(lessonId);
@@ -84,5 +91,18 @@ public class LessonController {
     public BaseApiResponse<Void> deleteLesson(@PathVariable String id) {
         lessonService.deleteLesson(id);
         return BaseApiResponse.succeed();
+    }
+
+
+    @GetMapping("/course/{courseId}/contents/total")
+    public Integer getTotalContentsByCourse(@PathVariable String courseId) {
+        return lessonService.countTotalContentsByCourse(courseId);
+    }
+
+
+    @GetMapping("/course/{courseId}/user/total")
+    public Long getTotalCourseByUser(@PathVariable String courseId, HttpServletRequest req) {
+        User user = userRepository.findByUsername(req.getRemoteUser()).orElseThrow() ;
+        return userVocabularyRepository.countLearningCourseForUser(user.getId(),courseId);
     }
 }
