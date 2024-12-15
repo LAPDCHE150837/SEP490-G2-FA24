@@ -20,7 +20,7 @@ const CRMLayout = ({ children }) => {
 
     const navigation = [
         // { name: 'Dashboard', icon: Home, path: '/dashboard', roles: ['ROLE_ADMIN', 'MANAGER'] },
-        { name: 'Quản lí khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_TEACHER']},
+        { name: 'Quản lí Khóa học', icon: DollarSign, path: '/course_crud',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Bài học', icon: Calendar, path: '/lesson_crud',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Bài kiểm tra', icon: Calendar, path: '/test',roles: ['ROLE_TEACHER']},
         { name: 'Quản lí Câu hỏi', icon: Calendar, path: '/question',roles: ['ROLE_TEACHER']},
