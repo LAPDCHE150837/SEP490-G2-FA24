@@ -1,6 +1,7 @@
 package com.nihongo.sep490g2fa24.v1.services;
 
 import com.nihongo.sep490g2fa24.v1.model.Course;
+import com.nihongo.sep490g2fa24.v1.model.User;
 import com.nihongo.sep490g2fa24.v1.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,13 @@ public class CourseService {
     private final KanjiRepository kanjiRepository;
     private final TestRepository testRepository;
     private final UserAnswerRepository userAnswerRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional(readOnly = true)
-    public List<Course> getAllCourses() {
-        return courseRepository.findByStatus(true);
+    public List<Course> getAllCourses(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow() ;
+        return courseRepository.findByStatusAndUser(true,user);
     }
 
     public Course getCourseById(String id) {
@@ -40,10 +43,12 @@ public class CourseService {
 
 
     @Transactional
-    public Course createCourse(Course course) {
+    public Course createCourse(Course course,String username) {
         if (courseRepository.existsByTitleAndStatus(course.getTitle(), true)) {
             throw new RuntimeException("Course with this title already exists");
         }
+        User user = userRepository.findByUsername(username).orElseThrow() ;
+        course.setUser(user);
         return courseRepository.save(course);
     }
 
@@ -64,7 +69,8 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteCourse(String courseId) {
+    public void
+    deleteCourse(String courseId) {
         // Step 1: Find the course by ID
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
@@ -73,6 +79,10 @@ public class CourseService {
 
         // Step 3: Delete the course
         courseRepository.save(course);
+    }
+
+    public List<Course> getAllCoursesForUser() {
+        return courseRepository.findByStatus(true);
     }
 }
 

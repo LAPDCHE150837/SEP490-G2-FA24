@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import CourseCard from "../CourseCard.jsx";
 import axios from 'axios';
-import {getCourse} from "../../../service/Course.js";
+import {getCourse, getCourseForUser} from "../../../service/Course.js";
 
 // API
 
@@ -14,7 +14,7 @@ export const CourseList = () => {
         const fetchCourses = async () => {
             try {
                 setIsLoading(true);
-                const response = await getCourse();
+                const response = await getCourseForUser();
                 setCourses(response.data.data);
 
             } catch (err) {

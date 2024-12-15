@@ -17,6 +17,17 @@ export const getCourse = async () => {
     }
 };
 
+export const getCourseForUser = async () => {
+    try {
+        return await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/courses/a`,
+            getAuthConfig()
+        );
+    } catch (e) {
+        throw e;
+    }
+};
+
 export const getCourseById = async (id) => {
     try {
         return await axios.get(

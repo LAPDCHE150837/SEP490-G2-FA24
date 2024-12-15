@@ -6,6 +6,7 @@ import com.nihongo.sep490g2fa24.v1.model.Course;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.services.CourseService;
 import com.nihongo.sep490g2fa24.v1.services.impl.LessonService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,17 @@ public class CourseController {
     private final LessonService lessonService;
 
     @GetMapping
-    public BaseApiResponse<List<CourseListDTO>> getAllCourses() {
-        List<Course> courses = courseService.getAllCourses();
+    public BaseApiResponse<List<CourseListDTO>> getAllCourses(HttpServletRequest req) {
+        List<Course> courses = courseService.getAllCourses(req.getRemoteUser());
+        List<CourseListDTO> courseDTOs = courses.stream()
+                .map(CourseMapper::toListDTO)
+                .collect(Collectors.toList());
+        return BaseApiResponse.succeed(courseDTOs);
+    }
+
+    @GetMapping("/a")
+    public BaseApiResponse<List<CourseListDTO>> getAllCoursesForUser() {
+        List<Course> courses = courseService.getAllCoursesForUser();
         List<CourseListDTO> courseDTOs = courses.stream()
                 .map(CourseMapper::toListDTO)
                 .collect(Collectors.toList());
@@ -42,8 +52,8 @@ public class CourseController {
 
 
     @PostMapping
-    public BaseApiResponse<Course> createCourse(@RequestBody Course course) {
-        return BaseApiResponse.succeed(courseService.createCourse(course));
+    public BaseApiResponse<Course> createCourse(@RequestBody Course course, HttpServletRequest req) {
+        return BaseApiResponse.succeed(courseService.createCourse(course,req.getRemoteUser()));
     }
 
     @PutMapping("/{id}")
@@ -73,3 +83,4 @@ public class CourseController {
         return BaseApiResponse.succeed();
     }
 }
+

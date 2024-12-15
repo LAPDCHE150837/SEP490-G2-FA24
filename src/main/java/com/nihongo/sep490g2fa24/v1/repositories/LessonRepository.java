@@ -29,13 +29,13 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
 
     Optional<Lesson> findByIdAndStatus(String id, Boolean status);
 
-    @Query("SELECT l FROM Lesson l WHERE l.course.status = true AND l.isDeleted = true")
-    List<Lesson> findLessonsByCourseStatusTrue();
+    @Query("SELECT l FROM Lesson l WHERE l.course.status = true AND l.isDeleted = true AND l.course.user.id = :userId")
+    List<Lesson> findLessonsByCourseStatusTrue(@Param("userId") String userId);
 
     @Query("SELECT l FROM Lesson l " +
             "JOIN UserVocabulary uv ON l.id = uv.vocabulary.lesson.id " +
             "WHERE uv.vocabulary.lesson.id = :lessonId AND uv.user.id = :userId AND uv.isLearning = true")
-    List<Lesson> findLessonsWithLearnedVocabularyTrue(@Param("lessonId") String lessonId, @Param("userId") String userId);
+    List<Lesson> findLessonsWithLearnedVocabularyTrue(@Param("lessonId") String lessonId,@Param("userId") String userId);
 
     @Query("SELECT l FROM Lesson l " +
             "JOIN UserVocabulary uv ON l.id = uv.vocabulary.lesson.id " +

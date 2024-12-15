@@ -36,8 +36,9 @@ public class LessonService {
     private final LessonMapper lessonMapper;
 
     @Transactional(readOnly = true)
-    public List<Lesson> getAllLessons() {
-        return lessonRepository.findLessonsByCourseStatusTrue();
+    public List<Lesson> getAllLessons(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return lessonRepository.findLessonsByCourseStatusTrue(user.getId());
     }
 
     @Transactional(readOnly = true)

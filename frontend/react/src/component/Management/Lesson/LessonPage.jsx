@@ -123,7 +123,7 @@ const LessonPage = () => {
         }
     };
 
-    useEffect(() => {
+    useEffect(() => {``
         fetchLessons();
         fetchCourses();
     }, []);
