@@ -34,6 +34,7 @@ import {AuthRoute} from "./context/AuthRoute.jsx";
 import FlashcardStudyIsNotMemeory from "./component/FlashCard/FlashcardStudyIsNotMemory.jsx";
 import MatchingGame from "./component/FlashCard/MatchingGame.jsx";
 import AccessDenied from "./component/AccessDenied.jsx";
+import Certificate from "./component/Certificate/Certificate.jsx";
 
 
 function App() {
@@ -50,7 +51,7 @@ function App() {
             <Route path="/question" element={<ProtectedRoute><QuestionList/></ProtectedRoute>}/>
             <Route path="/user" element={<ProtectedRoute><User/></ProtectedRoute>}/>
             <Route path="/denied" element={<ProtectedRoute><AccessDenied/></ProtectedRoute>}/>
-            {/*<Route path="/blog" element={<Blog/>}/>*/}
+            <Route path="/certificate/:certificateId" element={<Certificate/>}/>
             <Route element={<DashboardLayout/>}>
                 <Route path="/reset" element={<ProtectedRoute><ChangePassword/></ProtectedRoute>}/>
                 <Route path="/flashcards/:setId/cards" element={<ProtectedRoute><FlashcardCRUD/></ProtectedRoute>}/>

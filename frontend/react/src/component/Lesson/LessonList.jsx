@@ -5,8 +5,7 @@ import {getLesson} from "../../service/Lesson.js";
 import {getCourseById} from "../../service/Course.js";
 import axios from "axios";
 
-const LessonHeader = ({course}) => (
-
+const LessonHeader = ({course, userTotal, contentsTotal}) => (
     <div className="bg-white rounded-lg shadow-md p-6 mb-4">
         <div className="flex items-center justify-between">
             <div>
@@ -15,7 +14,26 @@ const LessonHeader = ({course}) => (
             </div>
             <div className="text-right">
                 <div className="text-sm text-gray-500 mb-2">Trình độ: {course?.level}</div>
+            </div>
+        </div>
 
+        {/* Progress Bar Section */}
+        <div className="mt-4">
+            <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">
+                    Tiến độ khóa học
+                </span>
+                <span className="text-sm font-medium text-gray-700">
+                    {userTotal}/{contentsTotal} ({contentsTotal > 0 ? Math.round((userTotal / contentsTotal) * 100) : 0}%)
+                </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                    className="bg-green-600 h-2.5 rounded-full transition-all duration-300"
+                    style={{
+                        width: `${contentsTotal > 0 ? (userTotal / contentsTotal) * 100 : 0}%`
+                    }}
+                ></div>
             </div>
         </div>
     </div>
@@ -91,7 +109,13 @@ const LessonList = () => {
     const [course, setCourse] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [userTotal, setUserTotal] = useState(0);
+    const [contentsTotal, setContentsTotal] = useState(0);
+    const getAuthConfig = () => ({
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+    });
     useEffect(() => {
         const fetchLessons = async () => {
             try {
@@ -104,6 +128,7 @@ const LessonList = () => {
                 setLoading(false);
             }
         };
+
 
         const fetchCourse = async () => {
             try {
@@ -119,6 +144,29 @@ const LessonList = () => {
 
         fetchLessons();
         fetchCourse();
+    }, [courseId]);
+    useEffect(() => {
+        const fetchTotals = async () => {
+            try {
+                const [userResponse, contentsResponse] = await Promise.all([
+                    axios.get(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/user/total`,
+                        getAuthConfig()
+                    ),
+                    axios.get(
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/contents/total`,
+                        getAuthConfig()
+                    )
+                ]);
+
+                setUserTotal(userResponse.data);
+                setContentsTotal(contentsResponse.data);
+            } catch (error) {
+                console.error('Error fetching course totals:', error);
+            }
+        };
+
+        fetchTotals();
     }, [courseId]);
 
     if (loading) {
@@ -144,6 +192,7 @@ const LessonList = () => {
                         <ArrowLeft size={24}/>
                         <span>Khóa học/Danh sách bài học</span>
                     </button>
+
                 </div>
                 <div className="text-center py-8">
                     <h2 className="text-2xl font-bold text-red-500">Không tìm thấy khóa học</h2>
@@ -161,7 +210,11 @@ const LessonList = () => {
                 <ArrowLeft size={24}/>
                 <span>Khóa học/Danh sách bài học</span>
             </button>
-            <LessonHeader course={course}/>
+            <LessonHeader
+                course={course}
+                userTotal={userTotal}
+                contentsTotal={contentsTotal}
+            />
 
             <div className="space-y-2">
 

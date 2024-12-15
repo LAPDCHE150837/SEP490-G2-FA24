@@ -27,3 +27,26 @@ export const getLessonById = async (id) => {
         throw e;
     }
 };
+
+export const addUserItem = async (id) => {
+    try {
+        return await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/addItem/${id}`,
+            getAuthConfig()
+        );
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const getLessonUserVocabulary = async (lessonId,isLearning) => {
+    try {
+        return await axios.get(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/user_vocabulary/${lessonId}/${isLearning}`,
+            getAuthConfig()
+        );
+    } catch (e) {
+        throw e;
+    }
+};
+

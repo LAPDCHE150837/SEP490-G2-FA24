@@ -11,9 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, String> {
-    List<Lesson> findByCourseIdAndStatusOrderByOrderIndex(String courseId, Boolean status);
+    List<Lesson> findByCourseIdAndStatusOrderByCreatedAt(String courseId, Boolean status);
 
-    // Optional<Integer> findMaxOrderIndexByCourseId(String courseId);
 
     List<Lesson> findByCourseIdAndStatusAndOrderIndexGreaterThan(
             String courseId, Boolean status, Integer orderIndex);
@@ -33,4 +32,13 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
     @Query("SELECT l FROM Lesson l WHERE l.course.status = true AND l.isDeleted = true")
     List<Lesson> findLessonsByCourseStatusTrue();
 
+    @Query("SELECT l FROM Lesson l " +
+            "JOIN UserVocabulary uv ON l.id = uv.vocabulary.lesson.id " +
+            "WHERE uv.vocabulary.lesson.id = :lessonId AND uv.user.id = :userId AND uv.isLearning = true")
+    List<Lesson> findLessonsWithLearnedVocabularyTrue(@Param("lessonId") String lessonId, @Param("userId") String userId);
+
+    @Query("SELECT l FROM Lesson l " +
+            "JOIN UserVocabulary uv ON l.id = uv.vocabulary.lesson.id " +
+            "WHERE uv.vocabulary.lesson.id = :lessonId AND uv.user.id = :userId AND uv.isLearning = false")
+    List<Lesson> findLessonsWithLearnedVocabularyFalse(@Param("lessonId") String lessonId,@Param("userId") String userId);
 }

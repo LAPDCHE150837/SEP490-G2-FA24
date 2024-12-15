@@ -1,5 +1,8 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
+
+import com.nihongo.sep490g2fa24.dtoMapper.UserDTOMapper;
+import com.nihongo.sep490g2fa24.v1.dtos.course.UserDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.request.ChangePasswordRequest;
 import com.nihongo.sep490g2fa24.v1.dtos.response.user.PersonalInfoResponse;
 import com.nihongo.sep490g2fa24.v1.model.User;
@@ -22,6 +25,7 @@ public class UserController {
     private final UserService userService;
     private final CourseService courseService;
     private final UserRepository userRepository;
+    private final UserDTOMapper userDTOMapper;
 
     //    @GetMapping("/course/find-all")
 //    BaseApiResponse<List<CourseDTO>> getAllCourses() {
@@ -31,6 +35,13 @@ public class UserController {
     public BaseApiResponse<PersonalInfoResponse> getUser(HttpServletRequest request) {
         User user = userRepository.findByUsername(request.getRemoteUser()).orElseThrow() ;
         return BaseApiResponse.succeed(userService.getUser(user.getId()));
+    }
+
+    @GetMapping("/{id}")
+    public BaseApiResponse<UserDTO> getUserById(@PathVariable String id) {
+        User user = userRepository.findById(id).orElseThrow() ;
+        UserDTO userDTO = userDTOMapper.apply(user);
+        return BaseApiResponse.succeed(userDTO);
     }
 
     @PostMapping("/change-password")

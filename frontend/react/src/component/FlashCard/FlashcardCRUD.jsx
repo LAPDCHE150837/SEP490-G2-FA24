@@ -175,12 +175,14 @@ const FlashcardCRUD = () => {
                         <Plus size={20}/>
                         <span>Thêm thẻ</span>
                     </button>
-                    <button
-                        onClick={() => navigate(`/flashcards/${setId}/game`)}
-                        className="flex items-center space-x-2 bg-yellow-500 text-white px-4 py-2.5 rounded-lg hover:bg-yellow-600 transition-colors shadow-sm"
-                    >
-                        <span>Chơi game</span>
-                    </button>
+                    {cards.length ? (
+                        <button
+                            onClick={() => navigate(`/flashcards/${setId}/game`)}
+                            className="flex items-center space-x-2 bg-yellow-500 text-white px-4 py-2.5 rounded-lg hover:bg-yellow-600 transition-colors shadow-sm"
+                        >
+                            <span>Chơi game</span>
+                        </button>
+                    ) : ""}
                 </div>
             </div>
 

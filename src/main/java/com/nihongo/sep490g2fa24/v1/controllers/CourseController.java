@@ -41,7 +41,6 @@ public class CourseController {
     }
 
 
-
     @PostMapping
     public BaseApiResponse<Course> createCourse(@RequestBody Course course) {
         return BaseApiResponse.succeed(courseService.createCourse(course));
@@ -74,4 +73,3 @@ public class CourseController {
         return BaseApiResponse.succeed();
     }
 }
-

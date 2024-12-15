@@ -1,9 +1,11 @@
 package com.nihongo.sep490g2fa24.v1.controllers;
 
+
 import com.nihongo.sep490g2fa24.dtoMapper.LessonMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.LessonDetailDTO;
 import com.nihongo.sep490g2fa24.v1.model.Lesson;
 import com.nihongo.sep490g2fa24.v1.model.User;
+import com.nihongo.sep490g2fa24.v1.repositories.LessonRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserRepository;
 import com.nihongo.sep490g2fa24.v1.repositories.UserVocabularyRepository;
 import com.nihongo.sep490g2fa24.v1.services.impl.LessonService;
@@ -23,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class LessonController {
     private final LessonMapper lessonMapper;
     private final UserRepository userRepository;
     private final UserVocabularyRepository userVocabularyRepository;
+    private final LessonRepository lessonRepository;
 
     @GetMapping("/video/{lessonId}")
     public ResponseEntity<Resource> getVideo(@PathVariable String lessonId) throws IOException {
@@ -101,8 +103,31 @@ public class LessonController {
 
 
     @GetMapping("/course/{courseId}/user/total")
-    public Long getTotalCourseByUser(@PathVariable String courseId, HttpServletRequest req) {
+    public Long getTotalCourseByUser(@PathVariable String courseId,HttpServletRequest req) {
         User user = userRepository.findByUsername(req.getRemoteUser()).orElseThrow() ;
         return userVocabularyRepository.countLearningCourseForUser(user.getId(),courseId);
+    }
+
+    @PostMapping("/addItem/{id}")
+    public BaseApiResponse<Lesson> createUserLesson(
+            @PathVariable("id") String id,
+            HttpServletRequest req)  {
+        return BaseApiResponse.succeed(lessonService.createUserLesson(id, req.getRemoteUser()));
+    }
+
+
+    @GetMapping("/vocabularies/{lessonId}/filter")
+    public BaseApiResponse<List<LessonDetailDTO>> getAllLessonWhichHasVocaAndIsLearningEqualTrue(@PathVariable String lessonId, HttpServletRequest req, @RequestParam String isLearning) {
+        User user = userRepository.findByUsername(req.getRemoteUser()).orElseThrow(() ->
+                new IllegalArgumentException("User not found with username: " + req.getRemoteUser())); ;
+        List<Lesson> lessons = switch (isLearning) {
+            case "learned" -> lessonRepository.findLessonsWithLearnedVocabularyTrue(lessonId, user.getId());
+            case "unlearned" ->  lessonRepository.findLessonsWithLearnedVocabularyFalse(lessonId, user.getId());
+            default -> lessonRepository.findAll();
+        };
+        List<LessonDetailDTO> lessonDTOs = lessons.stream()
+                .map(lessonMapper::toDetailDTO)
+                .collect(Collectors.toList());
+        return BaseApiResponse.succeed(lessonDTOs);
     }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Flag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
+import {Modal} from "./Modal.jsx";
 
 const TestExam = () => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const TestExam = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [remainingTime, setRemainingTime] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const getAuthConfig = () => ({
         headers: {
             'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
@@ -141,8 +143,12 @@ const TestExam = () => {
             return newSet;
         });
     };
+    const handleConfirmSubmit = () => {
+        setShowConfirmModal(true);
+    };
 
     const handleSubmit = async () => {
+        setShowConfirmModal(false);
         const timeTaken = examData.duration * 60 - remainingTime;
         const questions = examData.questions;
         const correctAnswers = questions.reduce((count, question) => {
@@ -168,11 +174,9 @@ const TestExam = () => {
                 throw new Error('Failed to save test results');
             }
 
-
-
             // Then save each user answer
             for (const question of questions) {
-                if (!selectedAnswers[question.id]) continue; // Skip unanswered questions
+                if (!selectedAnswers[question.id]) continue;
 
                 const selectedOptionText = selectedAnswers[question.id];
                 const selectedOption = question.options.find(opt => opt.optionText === selectedOptionText);
@@ -193,7 +197,6 @@ const TestExam = () => {
                 });
             }
 
-
             // Navigate to results page
             navigate(`/courses/${courseId}/lessons/${lessonId}/test/${testId}/result`, {
                 state: {
@@ -205,7 +208,6 @@ const TestExam = () => {
             alert('Failed to save test results. Please try again.');
             console.error('Error saving test results:', error);
         }
-
     };
 
     const currentQuestionData = examData.questions[currentQuestion];
@@ -236,7 +238,7 @@ const TestExam = () => {
                                 </span>
                                 </div>
                                 <button
-                                    onClick={handleSubmit}
+                                    onClick={handleConfirmSubmit}
                                     className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                                 >
                                     Nộp bài
@@ -354,13 +356,21 @@ const TestExam = () => {
 
                     {/* Submit Button */}
                     <button
-                        onClick={handleSubmit}
+                        onClick={handleConfirmSubmit}
                         className="w-full mt-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                     >
                         Nộp bài
                     </button>
+                    <Modal
+                        isOpen={showConfirmModal}
+                        onClose={() => setShowConfirmModal(false)}
+                        onConfirm={handleSubmit}
+                        totalQuestions={examData?.questions.length || 0}
+                        answeredQuestions={Object.keys(selectedAnswers).length}
+                    />
                 </div>
             </div>
+
         </div>
     );
 };

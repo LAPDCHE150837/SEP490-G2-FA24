@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
-const FlashcardStudy = () => {
+const FlashcardStudyIsNotMemeory = () => {
     const { setId } = useParams();
     const [cards, setCards] = useState([]);
     const [flipped, setFlipped] = useState(false);
@@ -37,8 +37,8 @@ const FlashcardStudy = () => {
 
     const fetchCards = async () => {
         try {
-            const { data } = await api.get('/flashcards/a', {
-                params: { setId }
+            const { data } = await api.get(`/flashcards/not/${setId}`, {
+
             });
             const formattedCards = data.data.map(card => ({
                 id: card.id,
@@ -270,4 +270,4 @@ const FlashcardStudy = () => {
         </div>
     );
 };
-export default FlashcardStudy;
+export default FlashcardStudyIsNotMemeory;

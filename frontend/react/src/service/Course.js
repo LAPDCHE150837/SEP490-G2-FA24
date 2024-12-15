@@ -62,3 +62,22 @@ export const deleteCourse = async (courseId) => {
         throw e;
     }
 };
+
+
+export const createAchievement = async (courseId) => {
+    try {
+        await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-achievements/${courseId}`,
+            {},
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        console.log('Achievement created successfully');
+    } catch (error) {
+        console.error('Error creating achievement:', error);
+    }
+};

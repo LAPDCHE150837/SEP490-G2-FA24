@@ -1,12 +1,11 @@
 package com.nihongo.sep490g2fa24.v1.services.impl;
 
+
 import com.nihongo.sep490g2fa24.dtoMapper.LessonMapper;
 import com.nihongo.sep490g2fa24.v1.dtos.course.LessonDetailDTO;
 import com.nihongo.sep490g2fa24.v1.dtos.course.LessonListDTO;
-import com.nihongo.sep490g2fa24.v1.model.Course;
-import com.nihongo.sep490g2fa24.v1.model.Lesson;
-import com.nihongo.sep490g2fa24.v1.repositories.CourseRepository;
-import com.nihongo.sep490g2fa24.v1.repositories.LessonRepository;
+import com.nihongo.sep490g2fa24.v1.model.*;
+import com.nihongo.sep490g2fa24.v1.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LessonService {
+    private final UserRepository userRepository;
+    private final UserVocabularyRepository userVocabularyRepository;
+    private final UserGrammarRepository userGrammarRepository;
+    private final UserKanjiRepository userKanjiRepository;
     @Value("${app.upload.dir}")
     private String uploadDir;
     private final LessonRepository lessonRepository;
@@ -45,7 +48,7 @@ public class LessonService {
 
     @Transactional(readOnly = true)
     public List<Lesson> getLessonsByCourseId(String courseId) {
-        return lessonRepository.findByCourseIdAndStatusOrderByOrderIndex(courseId, true);
+        return lessonRepository.findByCourseIdAndStatusOrderByCreatedAt(courseId, true);
     }
 
     @Transactional
@@ -149,6 +152,7 @@ public class LessonService {
         // Update course total lessons
         course.setTotalLessons(course.getTotalLessons() - 1);
         lesson.setIsDeleted(false);
+        lesson.setStatus(false);
         courseRepository.save(course);
 
 
@@ -168,6 +172,48 @@ public class LessonService {
                         lesson.getGrammars().size() +
                         lesson.getKanjis().size())
                 .sum();
+    }
+
+
+    public Lesson createUserLesson(String id, String remoteUser) {
+        // Retrieve the lesson and user from the repositories
+        Lesson lesson = lessonRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Lesson not found with id: " + id));
+        User user = userRepository.findByUsername(remoteUser).orElseThrow(() ->
+                new IllegalArgumentException("User not found with username: " + remoteUser));
+
+        // Iterate through vocabularies and save each UserVocabulary if it does not exist
+        for (Vocabulary vocabulary : lesson.getVocabularies()) {
+            if (!userVocabularyRepository.existsByUserAndVocabulary(user, vocabulary)) {
+                UserVocabulary userVocabulary = new UserVocabulary();
+                userVocabulary.setUser(user);
+                userVocabulary.setVocabulary(vocabulary);
+                userVocabularyRepository.save(userVocabulary);
+            }
+        }
+
+        // Iterate through grammars and save each UserGrammar if it does not exist
+        for (Grammar grammar : lesson.getGrammars()) {
+            if (!userGrammarRepository.existsByUserAndGrammar(user, grammar)) {
+                UserGrammar userGrammar = new UserGrammar();
+                userGrammar.setUser(user);
+                userGrammar.setGrammar(grammar);
+                userGrammarRepository.save(userGrammar);
+            }
+        }
+
+        // Iterate through kanjis and save each UserKanji if it does not exist
+        for (Kanji kanji : lesson.getKanjis()) {
+            if (!userKanjiRepository.existsByUserAndKanji(user, kanji)) {
+                UserKanji userKanji = new UserKanji();
+                userKanji.setUser(user);
+                userKanji.setKanji(kanji);
+                userKanjiRepository.save(userKanji);
+            }
+        }
+
+        // Return the lesson (optional, based on requirements)
+        return lesson;
     }
 
 

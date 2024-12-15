@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Search, Edit2, Trash2, Check,ChevronLeft,ChevronRight,Eye,EyeOff   } from 'lucide-react';
+import { UserPlus, Search, Edit2, Trash2, Check,ChevronLeft,ChevronRight,Eye  } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area,XAxis,YAxis,Tooltip } from 'recharts';
 import axios from 'axios';
 import CRMLayout from "../Crm.jsx";
@@ -192,6 +192,7 @@ const UserManagement = () => {
         const colors = {
             ADMIN: 'bg-red-100 text-red-800',
             USER: 'bg-blue-100 text-blue-800',
+            CONTENT: 'bg-purple-100 text-purple-800',
             STUDENT: 'bg-green-100 text-green-800'
         };
         return colors[role] || 'bg-gray-100 text-gray-800';

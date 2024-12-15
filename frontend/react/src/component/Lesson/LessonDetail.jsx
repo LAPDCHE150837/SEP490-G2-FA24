@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, GraduationCap, Volume2} from 'lucide-react';
-import {getLessonById} from "../../service/Lesson.js";
+import {ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, GraduationCap, Volume2,Settings } from 'lucide-react';
+import {addUserItem, getLessonById, getLessonUserVocabulary} from "../../service/Lesson.js";
 import axios from "axios";
+import ContentSlider from "./ContentSlider.jsx";
+import {createAchievement} from "../../service/Course.js";
 
 const LessonNavigation = ({lesson, activeSection, setActiveSection}) => {
     const {courseId} = useParams();
@@ -48,6 +50,8 @@ const LessonNavigation = ({lesson, activeSection, setActiveSection}) => {
     useEffect(() => {
         setExpandedLesson(lesson?.id);
     }, [lesson?.id]);
+
+
 
 
     if (loading) {
@@ -118,48 +122,61 @@ const LessonNavigation = ({lesson, activeSection, setActiveSection}) => {
                     className={`w-full text-left p-2 rounded-lg text-sm ${
                         isCurrentLesson && activeSection === 'vocabulary' ? 'bg-cyan-100 text-cyan-700' : 'hover:bg-gray-100'
                     }`}
-                    onClick={() => {
-                        if (isCurrentLesson) {
-                            setActiveSection('vocabulary');
-                        } else {
-                            navigate(`/courses/${lesson.courseId}/lessons/${lessonId}`);
-                            setActiveSection('vocabulary');
+                    onClick={async () => {
+                        try {
+                            // Trigger navigation or section update
+                            if (isCurrentLesson) {
+                                setActiveSection('vocabulary');
+                            } else {
+                                navigate(`/courses/${lesson.courseId}/lessons/${lessonId}`);
+                                setActiveSection('vocabulary');
+                            }
+
+                            // API call to addUserItem
+                            const response = await axios.post(
+                                `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/addItem/${lessonId}`,
+                                {},
+                                {
+                                    headers: {
+                                        Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Replace as needed
+                                        'Content-Type': 'application/json',
+                                    },
+                                }
+                            );
+
+                            console.log("API call successful:", response.data);
+                        } catch (error) {
+                            console.error("Error adding user item:", error);
                         }
                     }}
                 >
                     Từ vựng {lessonData?.vocabularies?.length > 0 && `(${lessonData.vocabularies.length})`}
-                    {/*<button*/}
-                    {/*    onClick={async (e) => {*/}
-                    {/*        e.stopPropagation();*/}
-                    {/*        try {*/}
-                    {/*            await axios.post('http://localhost:8080/api/v1/vocabularies/user',*/}
-                    {/*                {*/}
-                    {/*                    vocabulary: { id: lessonData.vocabularies[0].id }*/}
-                    {/*                },*/}
-                    {/*                {*/}
-                    {/*                    headers: { 'Authorization': `Bearer ${localStorage.getItem("access_token")}` }*/}
-                    {/*                }*/}
-                    {/*            );*/}
-                    {/*        } catch (error) {*/}
-                    {/*            console.error('Error:', error);*/}
-                    {/*        }*/}
-                    {/*    }}*/}
-                    {/*    className="px-2 py-1 text-xs rounded bg-gray-100 hover:bg-gray-200"*/}
-                    {/*>*/}
-                    {/*    Đã học*/}
-                    {/*</button>*/}
                 </button>
                 <button
                     className={`w-full text-left p-2 rounded-lg text-sm ${
                         isCurrentLesson && activeSection === 'grammar' ? 'bg-cyan-100 text-cyan-700' : 'hover:bg-gray-100'
                     }`}
-                    onClick={() => {
+                    onClick={async () => {
                         if (isCurrentLesson) {
                             setActiveSection('grammar');
                         } else {
                             navigate(`/courses/${lesson.courseId}/lessons/${lessonId}`);
                             setActiveSection('grammar');
                         }
+                        // API call to addUserItem
+                        const response = await axios.post(
+                            `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/addItem/${lessonId}`,
+                            {},
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Replace as needed
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        );
+
+                        console.log("API call successful:", response.data);
+
                     }}
                 >
                     Ngữ pháp {lessonData?.grammars?.length > 0 && `(${lessonData.grammars.length})`}
@@ -168,14 +185,29 @@ const LessonNavigation = ({lesson, activeSection, setActiveSection}) => {
                     className={`w-full text-left p-2 rounded-lg text-sm ${
                         isCurrentLesson && activeSection === 'kanji' ? 'bg-cyan-100 text-cyan-700' : 'hover:bg-gray-100'
                     }`}
-                    onClick={() => {
+                    onClick={async () => {
                         if (isCurrentLesson) {
                             setActiveSection('kanji');
                         } else {
                             navigate(`/courses/${lesson.courseId}/lessons/${lessonId}`);
                             setActiveSection('kanji');
                         }
+
+                        // API call to addUserItem
+                        const response = await axios.post(
+                            `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/addItem/${lessonId}`,
+                            {},
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Replace as needed
+                                    'Content-Type': 'application/json',
+                                },
+                            }
+                        );
+
+                        console.log("API call successful:", response.data);
                     }}
+
                 >
                     Hán tự {lessonData?.kanjis?.length > 0 && `(${lessonData.kanjis.length})`}
                 </button>
@@ -224,6 +256,7 @@ const LessonDetail = () => {
     const [activeSection, setActiveSection] = useState('video');
     const [isPlaying, setIsPlaying] = useState(false);
     const [lesson, setLesson] = useState(null);
+    const [userVocabulary, setUserVocabulary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
@@ -240,9 +273,14 @@ const LessonDetail = () => {
     const [userTotal, setUserTotal] = useState(0);
     const [contentsTotal, setContentsTotal] = useState(0);
     const [showCongrats, setShowCongrats] = useState(false);
-
-
+    const [filterStatus, setFilterStatus] = useState('all'); // 'all', 'learned', 'unlearned'
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [grammarFilterStatus, setGrammarFilterStatus] = useState('all');
+    const [showGrammarFilterModal, setShowGrammarFilterModal] = useState(false);
+    const [kanjiFilterStatus, setKanjiFilterStatus] = useState('all');
+    const [showKanjiFilterModal, setShowKanjiFilterModal] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
+
     const getAuthConfig = () => ({
         headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -250,15 +288,28 @@ const LessonDetail = () => {
     });
 
     useEffect(() => {
+        // Reset all slide positions when section changes
+        setVocabularyCurrentSlide(0);
+        setGrammarCurrentSlide(0);
+        setKanjiCurrentSlide(0);
+    }, [activeSection]);
+    useEffect(() => {
+        // Reset all slide positions when lesson changes
+        setVocabularyCurrentSlide(0);
+        setGrammarCurrentSlide(0);
+        setKanjiCurrentSlide(0);
+    }, [lessonId]);
+
+    useEffect(() => {
         const fetchTotals = async () => {
             try {
                 const [userResponse, contentsResponse] = await Promise.all([
                     axios.get(
-                        `http://localhost:8080/api/v1/lessons/course/${courseId}/user/total`,
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/user/total`,
                         getAuthConfig()
                     ),
                     axios.get(
-                        `http://localhost:8080/api/v1/lessons/course/${courseId}/contents/total`,
+                        `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/contents/total`,
                         getAuthConfig()
                     )
                 ]);
@@ -266,9 +317,9 @@ const LessonDetail = () => {
                 setUserTotal(userResponse.data);
                 setContentsTotal(contentsResponse.data);
 
-                // Check if course is completed
-                if (contentsResponse.data > 0 &&
-                    userResponse.data / contentsResponse.data === 1) {
+                // Check if course is completed and create achievement
+                if (contentsResponse.data > 0 && userResponse.data / contentsResponse.data === 1) {
+                    await createAchievement(courseId);
                     setShowCongrats(true);
                 }
             } catch (error) {
@@ -277,9 +328,7 @@ const LessonDetail = () => {
         };
 
         fetchTotals();
-
     }, [courseId]);
-
 
 
     useEffect(() => {
@@ -307,6 +356,7 @@ const LessonDetail = () => {
             fetchTotals();
         }
     }, [lessonId]);
+
     useEffect(() => {
         const fetchLesson = async () => {
             try {
@@ -322,6 +372,7 @@ const LessonDetail = () => {
 
         fetchLesson();
     }, [lessonId]);
+
 
     useEffect(() => {
         const fetchUserProgress = async () => {
@@ -372,7 +423,9 @@ const LessonDetail = () => {
 
         fetchLearningStatus();
     }, [lesson]);
-
+    useEffect(() => {
+        checkCompletion();
+    }, [vocabLearningStatus, grammarLearningStatus, kanjiLearningStatus]);
     // Add this useEffect to fetch learning status for all grammar
     useEffect(() => {
         const fetchGrammarStatus = async () => {
@@ -421,7 +474,100 @@ const LessonDetail = () => {
         fetchKanjiStatus();
     }, [lesson]);
 
-// Add this useEffect after your existing useEffects in LessonDetail component
+    useEffect(() => {
+        const fetchFilteredVocabularies = async (lessonId, filter) => {
+            try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/vocabularies/${lessonId}/filter?isLearning=${filter}`,
+                    getAuthConfig()
+                );
+                setUserVocabulary(response.data.data)
+            } catch (error) {
+                console.error('Error fetching filtered vocabularies:', error);
+                return [];
+            }
+        }
+
+    },[lessonId]);
+
+
+    // Add this FilterModal component
+    const FilterModal = ({ isOpen, onClose, currentFilter, onFilterChange, totalLearned, totalUnlearned, total, type = 'vocabulary' }) => {
+        if (!isOpen) return null;
+
+        const getTypeText = () => {
+            switch (type) {
+                case 'grammar':
+                    return 'ngữ pháp';
+                case 'kanji':
+                    return 'Kanji';
+                default:
+                    return 'từ vựng';
+            }
+        };
+
+        const typeText = getTypeText();
+
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-80">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold">Tùy chỉnh</h3>
+                        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                            ✕
+                        </button>
+                    </div>
+
+                    <div className="space-y-2">
+                        <button
+                            onClick={() => {
+                                onFilterChange('unlearned');
+                                onClose();
+                            }}
+                            className={`w-full p-3 text-left rounded-lg flex justify-between items-center ${
+                                currentFilter === 'unlearned' ? 'bg-green-100 text-green-700' : 'bg-gray-50 hover:bg-gray-100'
+                            }`}
+                        >
+                            <span>{typeText} chưa thuộc</span>
+                            <span className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                            {totalUnlearned}
+                        </span>
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                onFilterChange('learned');
+                                onClose();
+                            }}
+                            className={`w-full p-3 text-left rounded-lg flex justify-between items-center ${
+                                currentFilter === 'learned' ? 'bg-green-100 text-green-700' : 'bg-gray-50 hover:bg-gray-100'
+                            }`}
+                        >
+                            <span>{typeText} đã thuộc</span>
+                            <span className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                            {totalLearned}
+                        </span>
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                onFilterChange('all');
+                                onClose();
+                            }}
+                            className={`w-full p-3 text-left rounded-lg flex justify-between items-center ${
+                                currentFilter === 'all' ? 'bg-green-100 text-green-700' : 'bg-gray-50 hover:bg-gray-100'
+                            }`}
+                        >
+                            <span>Tất cả {typeText}</span>
+                            <span className="bg-gray-200 px-2 py-1 rounded-full text-sm">
+                            {total}
+                        </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };// Add this useEffect after your existing useEffects in LessonDetail component
     const checkCompletion = async () => {
         // Skip if no lesson data or if already completed
         if (!lesson || isCompleted) return;
@@ -444,12 +590,13 @@ const LessonDetail = () => {
 
         // Only update if all items are learned and there are items to learn
         if (isAllLearned && (totalVocabs > 0 || totalGrammars > 0 || totalKanjis > 0)) {
-            const method = !data ? 'POST' : 'PUT';
-            const url = !data
-                ? `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress`
-                : `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress/lesson/${lessonId}`;
-
             try {
+                // Update completion status
+                const method = !data ? 'POST' : 'PUT';
+                const url = !data
+                    ? `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress`
+                    : `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress/lesson/${lessonId}`;
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -468,16 +615,14 @@ const LessonDetail = () => {
                     throw new Error('Failed to update completion status');
                 }
 
-                // Update local state
                 setIsCompleted(true);
 
-                // Update data state if it's a new completion
                 if (!data) {
                     const result = await response.json();
                     setData(result.data);
                 }
 
-                // Refetch totals to update progress
+                // Refetch totals and check for course completion
                 const [userResponse, contentsResponse] = await Promise.all([
                     axios.get(
                         `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/user/total`,
@@ -492,9 +637,8 @@ const LessonDetail = () => {
                 setUserTotal(userResponse.data);
                 setContentsTotal(contentsResponse.data);
 
-                // Show congratulations if course is completed
-                if (contentsResponse.data > 0 &&
-                    userResponse.data / contentsResponse.data === 1) {
+                // Create achievement if course is completed
+                if (contentsResponse.data > 0 && userResponse.data / contentsResponse.data === 1) {
                     setShowCongrats(true);
                 }
             } catch (error) {
@@ -616,37 +760,68 @@ const LessonDetail = () => {
     }
 
     const handleToggleCompletion = async () => {
+        try {
+            const method = !data ? 'POST' : 'PUT';
+            const url = !data
+                ? `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress`
+                : `${import.meta.env.VITE_API_BASE_URL}/api/v1/user-progress/lesson/${lessonId}`;
 
-        const method = !data ? 'POST' : 'PUT';  // Use data state to check if progress exists
-        const url = !data
-            ? `http://localhost:8080/api/v1/user-progress`
-            : `http://localhost:8080/api/v1/user-progress/lesson/${lessonId}`;
-
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                lesson: {
-                    id: lessonId
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+                    'Content-Type': 'application/json'
                 },
-                completed: !isCompleted
-            })
-        });
+                body: JSON.stringify({
+                    lesson: {
+                        id: lessonId
+                    },
+                    completed: !isCompleted
+                })
+            });
 
+            if (!response.ok) {
+                throw new Error('Failed to update completion status');
+            }
 
-        setIsCompleted(!isCompleted);
-        // Update data state if it's a POST request
-        if (!data) {
-            const result = await response.json();
-            setData(result.data);
+            setIsCompleted(!isCompleted);
+
+            // Update data state if it's a POST request
+            if (!data) {
+                const result = await response.json();
+                if (result.code === 'MSG000000') {
+                    setData(result.data);
+                } else {
+                    throw new Error(result.message);
+                }
+            }
+
+            // Refetch totals
+            const [userResponse, contentsResponse] = await Promise.all([
+                axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/user/total`,
+                    getAuthConfig()
+                ),
+                axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/api/v1/lessons/course/${courseId}/contents/total`,
+                    getAuthConfig()
+                )
+            ]);
+
+            setUserTotal(userResponse.data);
+            setContentsTotal(contentsResponse.data);
+
+            // Show congratulations if course is completed
+            if (contentsResponse.data > 0 &&
+                userResponse.data / contentsResponse.data === 1) {
+                setShowCongrats(true);
+            }
+
+        } catch (error) {
+            console.error('Error updating completion status:', error);
+            alert('Không thể cập nhật trạng thái hoàn thành. Vui lòng thử lại.');
         }
-
-
     };
-
     const playAudio = (text, isJapanese = true) => {
         if (isPlaying) return;
 
@@ -721,397 +896,112 @@ const LessonDetail = () => {
 
 
     const VocabularyContent = () => {
-        const totalSlides = lesson.vocabularies?.length || 0;
+        const totalVocabs = lesson.vocabularies?.length || 0;
+        const learnedVocabs = Object.values(vocabLearningStatus).filter(status => status).length;
+        const unlearnedVocabs = totalVocabs - learnedVocabs;
 
         return (
             <div className="relative h-full">
-                {lesson.vocabularies && lesson.vocabularies.length > 0 ? (
-                    <>
-                        {/* Prev Button */}
-                        {vocabularyCurrentSlide  > 0 && (
-                            <button
-                                onClick={() => setVocabularyCurrentSlide(prev => prev - 1)}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronLeft size={24}/>
-                            </button>
-                        )}
+                <button onClick={() => setShowFilterModal(true)}>
+                    <Settings size={20} className="text-gray-600" />
+                </button>
 
-                        {/* Content */}
-                        <div className="h-full overflow-hidden">
-                            <div
-                                className="flex transition-transform duration-300 h-full"
-                                style={{transform: `translateX(-${vocabularyCurrentSlide * 100}%)`}}
-                            >
-                                {lesson.vocabularies.map((vocab, index) => (
-                                    <div key={index} className="min-w-full px-16">
-                                        <div
-                                            className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                            <div
-                                                className="grid grid-cols-4 gap-8"> {/* Increased gap from gap-6 to gap-8 */}
-                                                <div className="col-span-1">
-                                                    {vocab.imageUrl ? (
-                                                        <img
-                                                            src={vocab.imageUrl}
-                                                            alt={vocab.word}
-                                                            className="w-full h-40 object-cover rounded-lg shadow-sm"
-                                                        />
-                                                    ) : (
-                                                        <div
-                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                            <span className="text-gray-400">No image</span>
-                                                        </div>
-                                                    )}
-                                                </div>
+                <FilterModal
+                    isOpen={showFilterModal}
+                    onClose={() => setShowFilterModal(false)}
+                    currentFilter={filterStatus}
+                    onFilterChange={setFilterStatus}
+                    totalLearned={learnedVocabs}
+                    totalUnlearned={unlearnedVocabs}
+                    total={totalVocabs}
+                />
 
-                                                <div className="col-span-3">
-                                                    <div
-                                                        className="flex items-center justify-between mb-6"> {/* Increased margin */}
-                                                        <div className="flex items-center space-x-4">
-                                                            <span className="text-4xl font-bold text-gray-800">
-                                                                {vocab.word}
-                                                            </span>
-                                                            <span className="text-xl text-gray-600">({vocab.reading})</span>
-                                                            <button
-                                                                onClick={() => playAudio(vocab.word)}
-                                                                disabled={isPlaying}
-                                                                className={`p-2 hover:bg-blue-50 rounded-full transition-colors ${isPlaying ? 'opacity-50' : ''}`}
-                                                            >
-                                                                <Volume2 className="text-blue-500" size={20}/>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => isLearning(vocab.id)}
-                                                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
-                                                                ${!vocabLearningStatus[vocab.id]
-                                                                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                                }`}
-                                                            >
-                                                                {!vocabLearningStatus[vocab.id] ? (
-                                                                    <>
-                                                                        <div
-                                                                            className="w-2 h-2 rounded-full bg-gray-400"></div>
-                                                                        Chưa học
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <div
-                                                                            className="w-2 h-2 rounded-full bg-green-500"></div>
-                                                                        Đã học
-                                                                    </>
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="space-y-4">
-                                                        <p className="text-lg text-gray-700">
-                                                            <span className="font-medium">Nghĩa:</span> {vocab.meaning}
-                                                        </p>
-                                                        {vocab.example && (
-                                                            <div className="mt-6 p-6 bg-gray-50 rounded-lg">
-                                                                <p className="text-gray-800 font-medium">Ví dụ:</p>
-                                                                <p className="text-lg">{vocab.example}</p>
-                                                                <p className="text-gray-600">{vocab.exampleReading}</p>
-                                                                <p className="text-gray-700 mt-1">{vocab.exampleMeaning}</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Next Button */}
-                        {vocabularyCurrentSlide < totalSlides - 1 && (
-                            <button
-                                onClick={() => setVocabularyCurrentSlide(prev => prev + 1)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronRight size={24}/>
-                            </button>
-                        )}
-
-                        {/* Slide Counter */}
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {vocabularyCurrentSlide + 1}/{totalSlides}
-                        </div>
-                    </>
-                ) : (
-                    <div className="text-center py-4 text-gray-500">Không có từ vựng</div>
-                )}
+                <ContentSlider
+                    items={lesson.vocabularies}
+                    currentSlide={vocabularyCurrentSlide}
+                    setCurrentSlide={setVocabularyCurrentSlide}
+                    filterStatus={filterStatus}
+                    learningStatus={vocabLearningStatus}
+                    onLearningToggle={isLearning}
+                    isPlaying={isPlaying}
+                    playAudio={playAudio}
+                    contentType="vocabulary"
+                />
             </div>
         );
     };
-
     const GrammarContent = () => {
-        const totalSlides = lesson.grammars?.length || 0;
-
+        const totalGrammars = lesson.grammars?.length || 0;
+        const learnedGrammars = Object.values(grammarLearningStatus).filter(status => status).length;
+        const unlearnedGrammars = totalGrammars - learnedGrammars;
         return (
             <div className="relative h-full">
-                {lesson.grammars && lesson.grammars.length > 0 ? (
-                    <>
-                        {grammarCurrentSlide > 0 && (
-                            <button
-                                onClick={() => setGrammarCurrentSlide(prev => prev - 1)}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronLeft size={24}/>
-                            </button>
-                        )}
+                <button onClick={() => setShowGrammarFilterModal(true)}>
+                    <Settings size={20} className="text-gray-600" />
+                </button>
 
-                        <div className="h-full overflow-hidden">
-                            <div
-                                className="flex transition-transform duration-300 h-full"
-                                style={{transform: `translateX(-${grammarCurrentSlide * 100}%)`}}
-                            >
-                                {lesson.grammars.map((gram, index) => (
-                                    <div key={index} className="min-w-full px-8">
-                                        <div
-                                            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                            <div className="grid grid-cols-4 gap-6">
-                                                <div className="col-span-1">
-                                                    {gram.imageUrl ? (
-                                                        <img
-                                                            src={gram.imageUrl}
-                                                            alt={gram.pattern}
-                                                            className="w-full h-40 object-cover rounded-lg shadow-sm"
-                                                        />
-                                                    ) : (
-                                                        <div
-                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                            <span className="text-gray-400">No image</span>
-                                                        </div>
-                                                    )}
-                                                </div>
+                <FilterModal
+                    isOpen={showGrammarFilterModal}
+                    onClose={() => setShowGrammarFilterModal(false)}
+                    currentFilter={grammarFilterStatus}
+                    onFilterChange={setGrammarFilterStatus}
+                    totalLearned={learnedGrammars}
+                    totalUnlearned={unlearnedGrammars}
+                    total={totalGrammars}
+                    type="grammar"
+                />
 
-                                                <div className="col-span-3">
-                                                    <div className="mb-4">
-                                                        <div className="flex items-center space-x-3">
-                                                            <h3 className="text-2xl font-bold text-blue-600">{gram.pattern}</h3>
-                                                            <button
-                                                                onClick={() => playAudio(gram.pattern)}
-                                                                disabled={isPlaying}
-                                                                className={`p-2 hover:bg-blue-50 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
-                                                            >
-                                                                <Volume2 className="text-blue-500" size={20}/>
-                                                            </button>
-                                                            <button
-                                                                onClick={() => isGrammarLearning(gram.id)}
-                                                                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
-                                                                ${!grammarLearningStatus[gram.id]
-                                                                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                                }`}
-                                                            >
-                                                                {!grammarLearningStatus[gram.id] ? (
-                                                                    <>
-                                                                        <div
-                                                                            className="w-2 h-2 rounded-full bg-gray-400"></div>
-                                                                        Chưa học
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <div
-                                                                            className="w-2 h-2 rounded-full bg-green-500"></div>
-                                                                        Đã học
-                                                                    </>
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                        <p className="text-lg text-gray-700 mt-2">{gram.meaning}</p>
-                                                    </div>
-
-                                                    <div className="space-y-4">
-                                                        <div className="p-4 bg-gray-50 rounded-lg">
-                                                            <p className="font-medium text-gray-700 mb-2">Cách dùng:</p>
-                                                            <p className="text-gray-600">{gram.grammarUsage}</p>
-                                                        </div>
-
-                                                        {gram.example && (
-                                                            <div className="p-4 bg-blue-50 rounded-lg">
-                                                                <p className="font-medium text-blue-700 mb-2">Ví dụ:</p>
-                                                                <p className="text-lg">{gram.example}</p>
-                                                                <p className="text-gray-600 mt-1">{gram.exampleReading}</p>
-                                                                <p className="text-gray-700 mt-1">{gram.exampleMeaning}</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {grammarCurrentSlide < totalSlides - 1 && (
-                            <button
-                                onClick={() => setGrammarCurrentSlide(prev => prev + 1)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronRight size={24}/>
-                            </button>
-                        )}
-
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {grammarCurrentSlide + 1}/{totalSlides}
-                        </div>
-                    </>
-                ) : (
-                    <div className="text-center py-4 text-gray-500">Không có ngữ pháp</div>
-                )}
+                <ContentSlider
+                    items={lesson.grammars}
+                    currentSlide={grammarCurrentSlide}
+                    setCurrentSlide={setGrammarCurrentSlide}
+                    filterStatus={grammarFilterStatus}
+                    learningStatus={grammarLearningStatus}
+                    onLearningToggle={isGrammarLearning}
+                    isPlaying={isPlaying}
+                    playAudio={playAudio}
+                    contentType="grammar"
+                />
             </div>
         );
     };
 
     const KanjiContent = () => {
-        const totalSlides = lesson.kanjis?.length || 0;
-
+        const totalKanjis = lesson.kanjis?.length || 0;
+        const learnedKanjis = Object.values(kanjiLearningStatus).filter(status => status).length;
+        const unlearnedKanjis = totalKanjis - learnedKanjis;
         return (
             <div className="relative h-full">
-                {lesson.kanjis && lesson.kanjis.length > 0 ? (
-                    <>
-                        {kanjiCurrentSlide > 0 && (
-                            <button
-                                onClick={() => setKanjiCurrentSlide(prev => prev - 1)}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronLeft size={24}/>
-                            </button>
-                        )}
+                <button onClick={() => setShowKanjiFilterModal(true)}>
+                    <Settings size={20} className="text-gray-600" />
+                </button>
 
-                        <div className="h-full overflow-hidden">
-                            <div
-                                className="flex transition-transform duration-300 h-full"
-                                style={{transform: `translateX(-${kanjiCurrentSlide * 100}%)`}}
-                            >
-                                {lesson.kanjis.map((kanji, index) => (
-                                    <div key={index} className="min-w-full px-8">
-                                        <div
-                                            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                            <div className="grid grid-cols-4 gap-6">
-                                                <div className="col-span-1">
-                                                    {kanji.imageUrl ? (
-                                                        <img
-                                                            src={kanji.imageUrl}
-                                                            alt={kanji.character}
-                                                            className="w-full h-40 object-cover rounded-lg shadow-sm"
-                                                        />
-                                                    ) : (
-                                                        <div
-                                                            className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                            <span className="text-gray-400">No image</span>
-                                                        </div>
-                                                    )}
-                                                </div>
+                <FilterModal
+                    isOpen={showKanjiFilterModal}
+                    onClose={() => setShowKanjiFilterModal(false)}
+                    currentFilter={kanjiFilterStatus}
+                    onFilterChange={setKanjiFilterStatus}
+                    totalLearned={learnedKanjis}
+                    totalUnlearned={unlearnedKanjis}
+                    total={totalKanjis}
+                    type="kanji"
+                />
 
-                                                <div className="col-span-3">
-                                                    <div className="flex items-center mb-4">
-                                                        <span
-                                                            className="text-6xl font-bold text-gray-800">{kanji.character}</span>
-                                                        <button
-                                                            onClick={() => playAudio(kanji.character)}
-                                                            disabled={isPlaying}
-                                                            className={`ml-4 p-2 hover:bg-blue-50 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
-                                                        >
-                                                            <Volume2 className="text-blue-500" size={24}/>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => iskanjiLearning(kanji.id)}
-                                                            className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-200
-                                                                ${!kanjiLearningStatus[kanji.id]
-                                                                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                            }`}
-                                                        >
-                                                            {!kanjiLearningStatus[kanji.id] ? (
-                                                                <>
-                                                                    <div
-                                                                        className="w-2 h-2 rounded-full bg-gray-400"></div>
-                                                                    Chưa học
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <div
-                                                                        className="w-2 h-2 rounded-full bg-green-500"></div>
-                                                                    Đã học
-                                                                </>
-                                                            )}
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-2 gap-6 mt-4">
-                                                        <div className="p-4 bg-gray-50 rounded-lg">
-                                                            <h4 className="font-semibold text-gray-700 mb-2">Onyomi</h4>
-                                                            <div className="flex items-center">
-                                                                <p className="text-lg text-gray-600">{kanji.onyomi}</p>
-                                                                <button
-                                                                    onClick={() => playAudio(kanji.onyomi)}
-                                                                    disabled={isPlaying}
-                                                                    className={`ml-2 hover:bg-gray-100 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
-                                                                >
-                                                                    <Volume2 className="text-green-500" size={16}/>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="p-4 bg-gray-50 rounded-lg">
-                                                            <h4 className="font-semibold text-gray-700 mb-2">Kunyomi</h4>
-                                                            <div className="flex items-center">
-                                                                <p className="text-lg text-gray-600">{kanji.kunyomi}</p>
-                                                                <button
-                                                                    onClick={() => playAudio(kanji.kunyomi)}
-                                                                    disabled={isPlaying}
-                                                                    className={`ml-2 hover:bg-gray-100 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
-                                                                >
-                                                                    <Volume2 className="text-green-500" size={16}/>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                                                        <h4 className="font-semibold text-blue-700 mb-2">Nghĩa</h4>
-                                                        <div className="flex items-center">
-                                                            <p className="text-lg text-gray-700">{kanji.meaning}</p>
-                                                            <button
-                                                                onClick={() => playAudio(kanji.meaning, false)}
-                                                                className={`ml-2 hover:bg-blue-100 rounded-full ${isPlaying ? 'opacity-50' : ''}`}
-                                                            >
-                                                                <Volume2 className="text-blue-500" size={16}/>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {kanjiCurrentSlide < totalSlides - 1 && (
-                            <button
-                                onClick={() => setKanjiCurrentSlide(prev => prev + 1)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full p-3 shadow-lg hover:bg-white transition-all"
-                            >
-                                <ChevronRight size={24}/>
-                            </button>
-                        )}
-
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full">
-                            {kanjiCurrentSlide + 1}/{totalSlides}
-                        </div>
-                    </>
-                ) : (
-                    <div className="text-center py-4 text-gray-500">Không có Kanji</div>
-                )}
+                <ContentSlider
+                    items={lesson.kanjis}
+                    currentSlide={kanjiCurrentSlide}
+                    setCurrentSlide={setKanjiCurrentSlide}
+                    filterStatus={kanjiFilterStatus}
+                    learningStatus={kanjiLearningStatus}
+                    onLearningToggle={iskanjiLearning}
+                    isPlaying={isPlaying}
+                    playAudio={playAudio}
+                    contentType="kanji"
+                />
             </div>
         );
+
+
     };
     return (
         <div className="min-h-screen bg-gray-50">
@@ -1157,6 +1047,7 @@ const LessonDetail = () => {
                         <div className="flex items-center space-x-4">
                             <button
                                 onClick={handleToggleCompletion}
+                                disabled={true}
                                 className={`flex items-center space-x-2 px-6 py-2.5 rounded-lg transition-all transform hover:scale-105 ${
                                     isCompleted
                                         ? 'bg-green-500 text-white hover:bg-green-600 shadow-lg'
@@ -1171,7 +1062,7 @@ const LessonDetail = () => {
                                 ) : (
                                     <>
                                         <Check size={20}/>
-                                        <span className="font-medium">Đánh dấu hoàn thành</span>
+                                        <span className="font-medium">Chưa hoàn thành</span>
                                     </>
                                 )}
                             </button>
