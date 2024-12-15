@@ -51,8 +51,8 @@ public class LessonController {
     }
 
     @GetMapping
-    public BaseApiResponse<List<LessonDetailDTO>> getAllLessons() {
-        List<Lesson> lessons = lessonService.getAllLessons();
+    public BaseApiResponse<List<LessonDetailDTO>> getAllLessons(HttpServletRequest req) {
+        List<Lesson> lessons = lessonService.getAllLessons(req.getRemoteUser());
         List<LessonDetailDTO> lessonDTOs = lessons.stream()
                 .map(lessonMapper::toDetailDTO)
                 .collect(Collectors.toList());

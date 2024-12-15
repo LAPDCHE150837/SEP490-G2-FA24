@@ -3,6 +3,7 @@ package com.nihongo.sep490g2fa24.v1.controllers;
 import com.nihongo.sep490g2fa24.v1.dtos.course.TestQuestionDTO;
 import com.nihongo.sep490g2fa24.v1.model.TestQuestion;
 import com.nihongo.sep490g2fa24.v1.services.impl.TestQuestionService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class TestQuestionController {
     private final TestQuestionService questionService;
 
     @GetMapping
-    public BaseApiResponse<List<TestQuestionDTO>> getAllQuestions() {
-        return BaseApiResponse.succeed(questionService.getAllQuestions());
+    public BaseApiResponse<List<TestQuestionDTO>> getAllQuestions(HttpServletRequest request) {
+        return BaseApiResponse.succeed(questionService.getAllQuestions(request.getRemoteUser()));
     }
 
     @GetMapping("/{id}")

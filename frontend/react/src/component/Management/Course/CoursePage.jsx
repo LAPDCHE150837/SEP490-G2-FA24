@@ -78,7 +78,7 @@ const CoursePage = () => {
                 navigate("/denied")
             }
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/api/v1/courses');
+            const response = await axios.get('http://localhost:8080/api/v1/courses',getAuthConfig());
             setCourses(response.data.data);
             setError(null);
         } catch (err) {

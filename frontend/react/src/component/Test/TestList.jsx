@@ -19,7 +19,7 @@ const TestListUser = () => {
     useEffect(() => {
         const fetchTests = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/v1/tests', getAuthConfig());
+                const response = await fetch('http://localhost:8080/api/v1/tests/a', getAuthConfig());
                 if (!response.ok) {
                     throw new Error('Failed to fetch tests');
                 }
