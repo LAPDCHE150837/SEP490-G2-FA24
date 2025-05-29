@@ -19,7 +19,7 @@ public class CourseListDTO {
 
     private String level; // N5, N4, N3, etc.
 
-    private String imageUrl;
+    private String imageUrl; // update url
 
     private Integer totalLessons = 0;
 
